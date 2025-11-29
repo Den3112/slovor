@@ -1,15 +1,35 @@
 import type { WordPressPost } from "@/types/wordpress";
 
-// Read WP base URL from environment variable. Required for build and runtime.
-// Set NEXT_PUBLIC_WP_BASE in .env.local or in your deployment platform.
-const WP_BASE = process.env.NEXT_PUBLIC_WP_BASE;
+/**
+ * WordPress API client for Slovor marketplace.
+ * Fetches posts and details from the WordPress REST API.
+ * Environment variable NEXT_PUBLIC_WP_BASE is required.
+ */
 
-if (!WP_BASE) {
-  throw new Error(
-    "Missing required environment variable: NEXT_PUBLIC_WP_BASE. " +
-    "Copy .env.example to .env.local and set NEXT_PUBLIC_WP_BASE to the WordPress REST API base URL."
-  );
+// Validate environment at module load time
+function validateWpBase(): string {
+  const wpBase = process.env.NEXT_PUBLIC_WP_BASE;
+
+  if (!wpBase) {
+    throw new Error(
+      "Missing required environment variable: NEXT_PUBLIC_WP_BASE. " +
+      "Copy .env.example to .env.local and set NEXT_PUBLIC_WP_BASE to the WordPress REST API base URL (e.g., http://slovor.ct.ws/wp-json/wp/v2)."
+    );
+  }
+
+  // Validate URL format
+  try {
+    new URL(wpBase);
+  } catch {
+    throw new Error(
+      `Invalid NEXT_PUBLIC_WP_BASE URL: "${wpBase}". Must be a valid absolute URL.`
+    );
+  }
+
+  return wpBase;
 }
+
+const WP_BASE = validateWpBase();
 
 /**
  * Fetch list of posts from the WordPress REST API.
