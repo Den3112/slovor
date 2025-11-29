@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /.next/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /private/
+
+Sitemap: https://slovor.sk/sitemap.xml
+
+# Crawl delay for courtesy
+Crawl-delay: 1
+
+# Google Search Console verification
+Host: https://slovor.sk
