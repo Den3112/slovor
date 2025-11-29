@@ -1,10 +1,19 @@
 # Code owners for automatic reviewer assignment
 # Lines starting with '#' are comments
 
-# Default owner for the repository
-* @Den3112
+# Business logic and API clients — backend/data layer ownership
+/src/lib/ @Den3112
 
-# Owners for specific areas
-/src/ @Den3112
+# Documentation and architecture
 /docs/ @Den3112
-/.github/ @Den3112
+
+# GitHub workflows and CI/CD configuration
+/.github/workflows/ @Den3112
+
+# Configuration files
+/next.config.ts @Den3112
+/tsconfig.json @Den3112
+/tailwind.config.ts @Den3112
+
+# Default catch-all for files not explicitly owned
+* @Den3112
