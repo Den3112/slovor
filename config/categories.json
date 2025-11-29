@@ -1,0 +1,99 @@
+[
+  {
+    "id": "vehicles",
+    "name": "Vehicles",
+    "icon": "car",
+    "subcategories": [
+      { "id": "cars", "name": "Cars" },
+      { "id": "motorcycles", "name": "Motorcycles" },
+      { "id": "trucks", "name": "Trucks & Vans" },
+      { "id": "parts", "name": "Parts & Accessories" },
+      { "id": "boats", "name": "Boats" }
+    ]
+  },
+  {
+    "id": "real-estate",
+    "name": "Real Estate",
+    "icon": "home",
+    "subcategories": [
+      { "id": "apartments", "name": "Apartments" },
+      { "id": "houses", "name": "Houses" },
+      { "id": "land", "name": "Land & Plots" },
+      { "id": "commercial", "name": "Commercial" },
+      { "id": "rentals", "name": "Rentals" }
+    ]
+  },
+  {
+    "id": "electronics",
+    "name": "Electronics",
+    "icon": "device",
+    "subcategories": [
+      { "id": "phones", "name": "Phones" },
+      { "id": "computers", "name": "Computers & Laptops" },
+      { "id": "audio", "name": "Audio & Headphones" },
+      { "id": "gaming", "name": "Gaming" },
+      { "id": "tv-video", "name": "TV & Video" }
+    ]
+  },
+  {
+    "id": "jobs",
+    "name": "Jobs",
+    "icon": "briefcase",
+    "subcategories": [
+      { "id": "full-time", "name": "Full-time" },
+      { "id": "part-time", "name": "Part-time" },
+      { "id": "freelance", "name": "Freelance" },
+      { "id": "remote", "name": "Remote" },
+      { "id": "internships", "name": "Internships" }
+    ]
+  },
+  {
+    "id": "home-garden",
+    "name": "Home & Garden",
+    "icon": "leaf",
+    "subcategories": [
+      { "id": "furniture", "name": "Furniture" },
+      { "id": "appliances", "name": "Appliances" },
+      { "id": "decor", "name": "Decor" },
+      { "id": "garden", "name": "Garden tools" },
+      { "id": "kitchen", "name": "Kitchen" }
+    ]
+  },
+  {
+    "id": "fashion",
+    "name": "Fashion",
+    "icon": "hanger",
+    "subcategories": [
+      { "id": "women", "name": "Women" },
+      { "id": "men", "name": "Men" },
+      { "id": "kids", "name": "Kids" },
+      { "id": "shoes", "name": "Shoes" },
+      { "id": "accessories", "name": "Accessories" }
+    ]
+  },
+  {
+    "id": "services",
+    "name": "Services",
+    "icon": "tools",
+    "subcategories": [
+      { "id": "home-services", "name": "Home services" },
+      { "id": "transport", "name": "Transport" },
+      { "id": "education", "name": "Education" },
+      { "id": "health", "name": "Health & Beauty" },
+      { "id": "events", "name": "Events" }
+    ]
+  },
+  {
+    "id": "hobby-sport",
+    "name": "Hobby & Sport",
+    "icon": "ball",
+    "subcategories": [
+      { "id": "fitness", "name": "Fitness" },
+      { "id": "outdoor", "name": "Outdoor" },
+      { "id": "collectibles", "name": "Collectibles" },
+      { "id": "music", "name": "Music" },
+      { "id": "crafts", "name": "DIY & Crafts" }
+    ]
+  }
+]
+
