@@ -1,0 +1,10 @@
+# Code owners for automatic reviewer assignment
+# Lines starting with '#' are comments
+
+# Default owner for the repository
+* @Den3112
+
+# Owners for specific areas
+/src/ @Den3112
+/docs/ @Den3112
+/.github/ @Den3112

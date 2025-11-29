@@ -1,6 +1,9 @@
 import type { WordPressPost } from "@/types/wordpress";
 
-const WP_BASE = "http://slovor.ct.ws/wp-json/wp/v2";
+// Read WP base URL from environment variable for flexibility in different
+// environments (development, staging, production). Falls back to the
+// original hard-coded value for backwards compatibility.
+const WP_BASE = process.env.NEXT_PUBLIC_WP_BASE ?? "http://slovor.ct.ws/wp-json/wp/v2";
 
 /**
  * Fetch list of posts from the WordPress REST API.
