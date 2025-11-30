@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Link from "next/link";
+import Image from "next/image";
 import "./globals.css";
 import { ThemeToggle } from "../components/theme-toggle";
 
@@ -85,33 +87,31 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className="min-h-screen bg-white text-gray-900 dark:bg-slate-950 dark:text-slate-50">
-        <div className="flex min-h-screen flex-col bg-white/90 text-gray-900 dark:bg-slate-950 dark:text-slate-50">
+      <body className="min-h-screen bg-white text-primaryDark dark:bg-slate-950">
+        <div className="flex min-h-screen flex-col">
           <header
-            className="border-b border-slate-200 bg-background-soft/80 px-4 py-3 shadow-sm backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80"
+            className="sticky top-0 z-50 border-b border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-slate-800 dark:bg-slate-900"
             role="banner"
           >
             <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
-              <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                <img 
-                  src="/logo-slovor.png" 
-                  alt="Slovor Logo" 
-                  className="h-8 w-8 md:h-10 md:w-10"
-                  width={40}
-                  height={40}
+              <Link href="/" className="flex items-center h-10 px-2 hover:opacity-90 transition-opacity">
+                <Image
+                  src="/logo-slovor.png"
+                  alt="Slovor"
+                  width={32}
+                  height={32}
+                  className="h-8 w-auto"
+                  priority
                 />
-                <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  Slovor
-                </span>
-              </a>
-              <nav className="flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300" role="navigation" aria-label="Main navigation">
-                <a href="#" className="transition hover:text-brand dark:hover:text-brand-light focus-visible:outline-2 focus-visible:outline-offset-2">
+              </Link>
+              <nav className="flex items-center gap-6 text-sm font-medium text-primaryDark dark:text-slate-300" role="navigation" aria-label="Main navigation">
+                <a href="#" className="transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2">
                   Browse
                 </a>
-                <a href="#" className="transition hover:text-brand dark:hover:text-brand-light focus-visible:outline-2 focus-visible:outline-offset-2">
+                <a href="#" className="transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2">
                   Post ad
                 </a>
-                <a href="#" className="transition hover:text-brand dark:hover:text-brand-light focus-visible:outline-2 focus-visible:outline-offset-2">
+                <a href="#" className="transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2">
                   Support
                 </a>
                 <ThemeToggle />
