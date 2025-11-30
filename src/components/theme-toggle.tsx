@@ -6,15 +6,26 @@ type Theme = "light" | "dark";
 
 const THEME_KEY = "slovor-theme";
 
+/**
+ * Validate and return a safe theme value.
+ * Ensures the value is either "light" or "dark".
+ */
+function validateTheme(value: unknown): Theme {
+  if (value === "dark" || value === "light") {
+    return value;
+  }
+  return "light";
+}
+
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window === "undefined") {
       return "light";
     }
 
-    const stored = window.localStorage.getItem(THEME_KEY) as Theme | null;
+    const stored = window.localStorage.getItem(THEME_KEY);
     if (stored) {
-      return stored;
+      return validateTheme(stored);
     }
 
     return window.matchMedia("(prefers-color-scheme: dark)").matches

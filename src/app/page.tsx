@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { fetchPosts } from "@/lib/wordpress/client";
-import { stripHtmlTags } from "@/lib/html";
+import { stripHtmlTags, sanitizeHtmlContent } from "@/lib/html";
 
 /**
  * Landing page for Slovor showcasing the top marketplace categories.
@@ -34,8 +34,8 @@ export default async function HomePage() {
                 <div className="flex-1">
                   <h2
                     className="text-xl font-semibold text-slate-100 mb-2"
-                    // Title is delivered as pre-rendered HTML from WP
-                    dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+                    // Title is sanitized to prevent XSS attacks
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtmlContent(post.title.rendered) }}
                   />
 
                   <p className="text-sm text-slate-400 leading-relaxed max-h-20 overflow-hidden">
