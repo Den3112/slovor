@@ -25,6 +25,7 @@
     "jsx": "react-jsx",
     "incremental": true,
     "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
     "plugins": [
       {
         "name": "next"
@@ -43,4 +44,4 @@
     "**/*.mts"
   ],
   "exclude": ["node_modules"]
-
+}
