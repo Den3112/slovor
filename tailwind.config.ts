@@ -9,10 +9,24 @@ const config = {
   theme: {
     extend: {
       colors: {
+        primary: {
+          DEFAULT: "#1E88E5",  // Bright blue from the sky
+          dark: "#0D47A1",     // Navy blue from outer ring
+          light: "#90CAF9",    // Lighter blue tint
+        },
+        accent: {
+          DEFAULT: "#43A047",  // Green from the bottom
+          dark: "#2E7D32",
+          light: "#66BB6A",
+        },
+        background: {
+          soft: "#F5F9FF",     // Very light bluish background
+        },
+        // Keep existing brand colors for backward compatibility
         brand: {
-          DEFAULT: "#2E7D6E",
-          dark: "#1F5A4D",
-          light: "#4A9F8C",
+          DEFAULT: "#1E88E5",
+          dark: "#0D47A1",
+          light: "#90CAF9",
         },
         secondary: {
           DEFAULT: "#5B8FA3",
