@@ -50,7 +50,7 @@ export async function fetchPosts(): Promise<WordPressPost[]> {
     // Keep error handling simple and observable in server logs
     // Return an empty array so callers can continue rendering gracefully
     // without throwing.
-    // eslint-disable-next-line no-console
+     
     console.error("fetchPosts error:", err);
     return [];
   }
@@ -72,7 +72,7 @@ export async function fetchPost(id: number | string): Promise<WordPressPost | nu
     const data = (await res.json()) as WordPressPost;
     return data;
   } catch (err) {
-    // eslint-disable-next-line no-console
+     
     console.error(`fetchPost(${id}) error:`, err);
     return null;
   }

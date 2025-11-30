@@ -1,3 +1,6 @@
+import React from 'react';
+import Link from 'next/link';
+
 /**
  * Not found (404) page.
  * Displayed when a route does not exist.
@@ -11,15 +14,15 @@ export default function NotFound() {
           Page not found
         </h2>
         <p className="mb-8 max-w-md text-slate-400">
-          Sorry, the page you're looking for doesn't exist. It may have been
+          Sorry, the page you&apos;re looking for doesn&apos;t exist. It may have been
           moved or deleted.
         </p>
-        <a
+        <Link
           href="/"
           className="inline-flex items-center rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700 transition-colors"
         >
           Back to home
-        </a>
+        </Link>
       </div>
     </div>
   );
