@@ -1,5 +1,5 @@
 {
-  "wordpressBaseUrl": "https://example.com",
+  "wordpressBaseUrl": "http://slovor.ct.ws",
   "adsEndpoint": "/wp-json/slovor/v1/ads"
 }
 

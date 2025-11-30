@@ -1,5 +1,22 @@
 import type { NextConfig } from "next";
 
+// Extract hostname from NEXT_PUBLIC_WP_BASE environment variable
+function getWordPressHostname(): string {
+  const wpBase = process.env.NEXT_PUBLIC_WP_BASE;
+  if (!wpBase) {
+    // Fallback to default for development
+    return "slovor.ct.ws";
+  }
+  try {
+    const url = new URL(wpBase);
+    return url.hostname;
+  } catch {
+    return "slovor.ct.ws";
+  }
+}
+
+const wpHostname = getWordPressHostname();
+
 const nextConfig: NextConfig = {
   // Security headers
   headers: async () => [
@@ -32,11 +49,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "http",
-        hostname: "slovor.ct.ws",
+        hostname: wpHostname,
       },
       {
         protocol: "https",
-        hostname: "slovor.ct.ws",
+        hostname: wpHostname,
       },
     ],
   },

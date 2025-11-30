@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { fetchPost } from "@/lib/wordpress/client";
+import { sanitizeHtmlContent } from "@/lib/html";
 
 type Params = { params: { id: string } };
 
@@ -50,14 +51,14 @@ export default async function PostPage({ params }: Params) {
       <header className="mb-8">
         <h1
           className="text-4xl md:text-5xl font-extrabold text-white leading-tight"
-          dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtmlContent(post.title.rendered) }}
         />
 
         <div className="mt-3 text-sm text-slate-400">{published}</div>
       </header>
 
       <section className="prose prose-invert max-w-none text-slate-100 leading-relaxed">
-        <div dangerouslySetInnerHTML={{ __html: post.content.rendered }} />
+        <div dangerouslySetInnerHTML={{ __html: sanitizeHtmlContent(post.content.rendered) }} />
       </section>
     </article>
   );

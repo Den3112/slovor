@@ -2,6 +2,8 @@
 
 Thanks for your interest in contributing! This document outlines the workflow, coding standards, and expectations for contributions to the Slovor Marketplace frontend.
 
+**Important:** For comprehensive project standards, guidelines, and best practices, see [AI_CONTRIBUTING_GUIDELINES.md](./AI_CONTRIBUTING_GUIDELINES.md). This is the single source of truth for all project standards.
+
 How to contribute
 - Fork the repository and create a feature branch: `git checkout -b feature/short-description`
 - Keep PRs focused and small — one change per PR when possible
