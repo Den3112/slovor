@@ -13,7 +13,7 @@ function validateWpBase(): string {
   if (!wpBase) {
     throw new Error(
       "Missing required environment variable: NEXT_PUBLIC_WP_BASE. " +
-      "Copy .env.example to .env.local and set NEXT_PUBLIC_WP_BASE to the WordPress REST API base URL (e.g., http://slovor.ct.ws/wp-json/wp/v2)."
+        "Copy .env.example to .env.local and set NEXT_PUBLIC_WP_BASE to the WordPress REST API base URL (e.g., http://slovor.ct.ws/wp-json/wp/v2)."
     );
   }
 
@@ -21,9 +21,7 @@ function validateWpBase(): string {
   try {
     new URL(wpBase);
   } catch {
-    throw new Error(
-      `Invalid NEXT_PUBLIC_WP_BASE URL: "${wpBase}". Must be a valid absolute URL.`
-    );
+    throw new Error(`Invalid NEXT_PUBLIC_WP_BASE URL: "${wpBase}". Must be a valid absolute URL.`);
   }
 
   return wpBase;
@@ -50,7 +48,7 @@ export async function fetchPosts(): Promise<WordPressPost[]> {
     // Keep error handling simple and observable in server logs
     // Return an empty array so callers can continue rendering gracefully
     // without throwing.
-     
+
     console.error("fetchPosts error:", err);
     return [];
   }
@@ -72,7 +70,6 @@ export async function fetchPost(id: number | string): Promise<WordPressPost | nu
     const data = (await res.json()) as WordPressPost;
     return data;
   } catch (err) {
-     
     console.error(`fetchPost(${id}) error:`, err);
     return null;
   }

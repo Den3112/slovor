@@ -19,10 +19,7 @@ export class ApiError extends Error {
 export function createApiClient(baseUrl: string) {
   const normalizedBase = baseUrl.replace(/\/$/, "");
 
-  return async function request<T>(
-    path: string,
-    init?: RequestInit,
-  ): Promise<T> {
+  return async function request<T>(path: string, init?: RequestInit): Promise<T> {
     const response = await fetch(`${normalizedBase}${path}`, {
       headers: {
         Accept: "application/json",
@@ -41,4 +38,3 @@ export function createApiClient(baseUrl: string) {
     return payload as T;
   };
 }
-

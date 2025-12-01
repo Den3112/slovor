@@ -5,6 +5,7 @@ This document describes how to deploy the Slovor frontend to Vercel and other pl
 ## Vercel Deployment (Recommended)
 
 Vercel is the recommended platform for Next.js applications. It provides:
+
 - Automatic deployments on git push
 - Edge functions and middleware support
 - Automatic SSL certificates
@@ -31,16 +32,16 @@ In Vercel project settings, add the following environment variables:
 
 #### Required
 
-| Variable | Value | Example |
-|----------|-------|---------|
+| Variable              | Value                       | Example                           |
+| --------------------- | --------------------------- | --------------------------------- |
 | `NEXT_PUBLIC_WP_BASE` | WordPress REST API base URL | `https://slovor.sk/wp-json/wp/v2` |
 
 #### Optional
 
-| Variable | Value | Purpose |
-|----------|-------|---------|
-| `NEXT_PUBLIC_SENTRY_DSN` | Sentry project DSN | Error tracking in production |
-| `NEXT_PUBLIC_USE_WORDPRESS` | `true` or `false` | Use live WordPress API for ads |
+| Variable                    | Value              | Purpose                        |
+| --------------------------- | ------------------ | ------------------------------ |
+| `NEXT_PUBLIC_SENTRY_DSN`    | Sentry project DSN | Error tracking in production   |
+| `NEXT_PUBLIC_USE_WORDPRESS` | `true` or `false`  | Use live WordPress API for ads |
 
 ### Step 3: Configure Build Settings
 
@@ -169,11 +170,13 @@ Then open http://localhost:3000 in your browser.
 ### Self-Hosted (VPS/Docker)
 
 1. Build the application:
+
    ```bash
    npm run build
    ```
 
 2. Start the server:
+
    ```bash
    npm run start
    ```
@@ -218,6 +221,7 @@ If `NEXT_PUBLIC_SENTRY_DSN` is set:
 **Error:** `npm ERR! code ERESOLVE`
 
 **Solution:** Use `--legacy-peer-deps` flag:
+
 ```bash
 npm install --legacy-peer-deps
 ```
@@ -296,6 +300,7 @@ Vercel will automatically deploy the reverted code.
 ### Image Optimization
 
 Images are automatically optimized by Next.js:
+
 - WebP format for modern browsers
 - AVIF format for latest browsers
 - Responsive images for different screen sizes

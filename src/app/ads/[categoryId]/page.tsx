@@ -19,9 +19,7 @@ export default async function CategoryAdsPage({ params }: AdsPageProps) {
   const category = categories.find((item) => item.id === categoryId) ?? notFound();
 
   const shouldUseLiveAds = process.env.NEXT_PUBLIC_USE_WORDPRESS === "true";
-  const wordpressAds = shouldUseLiveAds
-    ? await fetchAdsByCategory(category.id)
-    : null;
+  const wordpressAds = shouldUseLiveAds ? await fetchAdsByCategory(category.id) : null;
 
   // Integration note: swap the mock branch once the WordPress backend is ready.
   const ads = shouldUseLiveAds
@@ -43,15 +41,13 @@ export default async function CategoryAdsPage({ params }: AdsPageProps) {
   return (
     <section className="space-y-8">
       <header className="space-y-3 rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
-        <p className="text-sm font-semibold uppercase tracking-wide text-brand">
-          {category.name}
-        </p>
+        <p className="text-sm font-semibold uppercase tracking-wide text-brand">{category.name}</p>
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Featured ads in {category.name}
         </h1>
         <p className="text-base text-slate-600 dark:text-slate-300">
-          Explore curated offers including {subcategorySummary} and more, all posted by
-          the Slovor community.
+          Explore curated offers including {subcategorySummary} and more, all posted by the Slovor
+          community.
         </p>
         <Link
           href="/"
@@ -76,9 +72,7 @@ export default async function CategoryAdsPage({ params }: AdsPageProps) {
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                   {ad.title}
                 </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  {ad.location}
-                </p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{ad.location}</p>
                 <p className="text-xl font-bold text-brand">{ad.price}</p>
               </div>
 

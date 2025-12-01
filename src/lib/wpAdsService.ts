@@ -31,10 +31,7 @@ export type WpAdDetail = WpAdSummary & {
 /**
  * Fetches ad summaries scoped to a category.
  */
-export async function fetchAdsByCategory(
-  categoryId: string,
-  page = 1,
-): Promise<WpAdSummary[]> {
+export async function fetchAdsByCategory(categoryId: string, page = 1): Promise<WpAdSummary[]> {
   const url = `${adsEndpoint}?category=${categoryId}&page=${page}`;
 
   if (shouldUseLiveApi) {
@@ -66,8 +63,7 @@ const buildMockSummaries = (categoryId: string, page: number): WpAdSummary[] => 
       price: `€${(idx + 1) * 150}`,
       location: ["Bratislava", "Košice", "Žilina"][idx % 3],
       categoryId,
-      excerpt:
-        "Placeholder data returned while the WordPress backend is still under development.",
+      excerpt: "Placeholder data returned while the WordPress backend is still under development.",
       createdAt: new Date(Date.now() - idx * 86_400_000).toISOString(),
     };
   });
@@ -82,8 +78,7 @@ const buildMockDetail = (adId: string): WpAdDetail => {
     categoryId: adId.split("-")[0] ?? "general",
     excerpt: "Extended teaser used on list pages.",
     createdAt: new Date().toISOString(),
-    description:
-      "Full ad description returned by the upcoming WordPress integration.",
+    description: "Full ad description returned by the upcoming WordPress integration.",
     images: [
       "https://placehold.co/600x400?text=Slovor+Ad",
       "https://placehold.co/600x400?text=Gallery",
@@ -92,4 +87,3 @@ const buildMockDetail = (adId: string): WpAdDetail => {
     contactPhone: "+421 900 000 000",
   };
 };
-

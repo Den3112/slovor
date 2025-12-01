@@ -62,8 +62,8 @@ Post titles and content are returned as pre-rendered HTML by WordPress. The fron
 
 ### Required
 
-| Variable | Description | Example |
-|----------|-------------|---------|
+| Variable              | Description                 | Example                             |
+| --------------------- | --------------------------- | ----------------------------------- |
 | `NEXT_PUBLIC_WP_BASE` | WordPress REST API base URL | `http://slovor.ct.ws/wp-json/wp/v2` |
 
 **⚠️ Important:** This variable is **required** and must be set before the application starts. If missing, the app will throw an error with clear instructions.
@@ -71,11 +71,13 @@ Post titles and content are returned as pre-rendered HTML by WordPress. The fron
 ### Setup
 
 1. Copy `.env.example` to `.env.local`:
+
    ```bash
    cp .env.example .env.local
    ```
 
 2. Set `NEXT_PUBLIC_WP_BASE` to your WordPress API URL:
+
    ```env
    NEXT_PUBLIC_WP_BASE=https://slovor.sk/wp-json/wp/v2
    ```
@@ -134,4 +136,3 @@ If HTML content appears broken:
 1. Check browser console for sanitization warnings
 2. Verify WordPress content uses standard HTML tags
 3. Custom HTML tags may be stripped by the sanitizer
-

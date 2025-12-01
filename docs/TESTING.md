@@ -68,14 +68,14 @@ src/
 Test utility functions in `src/lib/__tests__/`:
 
 ```typescript
-import { stripHtmlTags } from '../html'
+import { stripHtmlTags } from "../html";
 
-describe('stripHtmlTags', () => {
-  it('should remove HTML tags', () => {
-    const result = stripHtmlTags('<p>Hello</p>')
-    expect(result).toBe('Hello')
-  })
-})
+describe("stripHtmlTags", () => {
+  it("should remove HTML tags", () => {
+    const result = stripHtmlTags("<p>Hello</p>");
+    expect(result).toBe("Hello");
+  });
+});
 ```
 
 ### Component Tests
@@ -100,13 +100,15 @@ describe('ThemeToggle', () => {
 ### 1. Test Behavior, Not Implementation
 
 ❌ Bad:
+
 ```typescript
-it('should call setState', () => {
+it("should call setState", () => {
   // Testing internal implementation
-})
+});
 ```
 
 ✅ Good:
+
 ```typescript
 it('should display dark theme when button is clicked', () => {
   render(<ThemeToggle />)
@@ -121,13 +123,13 @@ Prefer queries that reflect how users interact with the component:
 
 ```typescript
 // ✅ Good
-screen.getByRole('button', { name: /toggle/i })
-screen.getByLabelText('Email')
-screen.getByText('Submit')
+screen.getByRole("button", { name: /toggle/i });
+screen.getByLabelText("Email");
+screen.getByText("Submit");
 
 // ❌ Avoid
-screen.getByTestId('submit-btn')
-screen.getByClassName('button')
+screen.getByTestId("submit-btn");
+screen.getByClassName("button");
 ```
 
 ### 3. Test User Interactions
@@ -138,9 +140,9 @@ import { fireEvent } from '@testing-library/react'
 it('should toggle theme', () => {
   render(<ThemeToggle />)
   const button = screen.getByRole('button')
-  
+
   fireEvent.click(button)
-  
+
   expect(button).toHaveTextContent('Dark')
 })
 ```
@@ -148,9 +150,9 @@ it('should toggle theme', () => {
 ### 4. Mock External Dependencies
 
 ```typescript
-jest.mock('@/lib/wordpress/client', () => ({
+jest.mock("@/lib/wordpress/client", () => ({
   fetchPosts: jest.fn(() => Promise.resolve([])),
-}))
+}));
 ```
 
 ## Common Test Patterns
@@ -158,23 +160,23 @@ jest.mock('@/lib/wordpress/client', () => ({
 ### Testing Async Functions
 
 ```typescript
-it('should fetch posts', async () => {
-  const posts = await fetchPosts()
-  expect(posts).toEqual([])
-})
+it("should fetch posts", async () => {
+  const posts = await fetchPosts();
+  expect(posts).toEqual([]);
+});
 ```
 
 ### Testing Error Handling
 
 ```typescript
-it('should handle fetch errors gracefully', async () => {
-  jest.mock('@/lib/wordpress/client', () => ({
-    fetchPosts: jest.fn(() => Promise.reject(new Error('Network error'))),
-  }))
-  
-  const posts = await fetchPosts()
-  expect(posts).toEqual([])
-})
+it("should handle fetch errors gracefully", async () => {
+  jest.mock("@/lib/wordpress/client", () => ({
+    fetchPosts: jest.fn(() => Promise.reject(new Error("Network error"))),
+  }));
+
+  const posts = await fetchPosts();
+  expect(posts).toEqual([]);
+});
 ```
 
 ### Testing localStorage
@@ -183,7 +185,7 @@ it('should handle fetch errors gracefully', async () => {
 it('should save theme to localStorage', () => {
   render(<ThemeToggle />)
   fireEvent.click(screen.getByRole('button'))
-  
+
   expect(localStorage.getItem('slovor-theme')).toBe('dark')
 })
 ```

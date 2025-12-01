@@ -1,44 +1,44 @@
-import { render, screen } from '@testing-library/react'
-import { ThemeToggle } from '../theme-toggle'
+import { render, screen } from "@testing-library/react";
+import { ThemeToggle } from "../theme-toggle";
 
 // Mock localStorage before importing component
 const localStorageMock = (() => {
-  let store: Record<string, string> = {}
+  let store: Record<string, string> = {};
 
   return {
     getItem: (key: string) => store[key] || null,
     setItem: (key: string, value: string) => {
-      store[key] = value.toString()
+      store[key] = value.toString();
     },
     removeItem: (key: string) => {
-      delete store[key]
+      delete store[key];
     },
     clear: () => {
-      store = {}
+      store = {};
     },
-  }
-})()
+  };
+})();
 
-Object.defineProperty(global, 'localStorage', {
+Object.defineProperty(global, "localStorage", {
   value: localStorageMock,
   writable: true,
-})
+});
 
-describe('ThemeToggle', () => {
+describe("ThemeToggle", () => {
   beforeEach(() => {
-    localStorageMock.clear()
-    document.documentElement.classList.remove('dark')
-  })
+    localStorageMock.clear();
+    document.documentElement.classList.remove("dark");
+  });
 
-  it('should render theme toggle button', () => {
-    render(<ThemeToggle />)
-    const button = screen.getByRole('button')
-    expect(button).toBeInTheDocument()
-  })
+  it("should render theme toggle button", () => {
+    render(<ThemeToggle />);
+    const button = screen.getByRole("button");
+    expect(button).toBeInTheDocument();
+  });
 
-  it('should display theme text', () => {
-    render(<ThemeToggle />)
-    const button = screen.getByRole('button')
-    expect(button.textContent).toMatch(/Light|Dark/)
-  })
-})
+  it("should display theme text", () => {
+    render(<ThemeToggle />);
+    const button = screen.getByRole("button");
+    expect(button.textContent).toMatch(/Light|Dark/);
+  });
+});

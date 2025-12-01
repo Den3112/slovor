@@ -18,12 +18,14 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
 **Assessment:** GOOD (well-organized)
 
 ### Findings
+
 - ✅ Clear separation of concerns: `/src/app`, `/src/components`, `/src/lib`, `/src/types`
 - ✅ App Router properly utilized for page routing
 - ✅ Business logic correctly isolated in `src/lib/`
 - ✅ TypeScript types organized in `src/types/`
 
 ### Improvements Made
+
 - None needed; structure follows Next.js best practices.
 
 ---
@@ -33,11 +35,13 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
 **Assessment:** IMPROVED
 
 ### Issues Found
+
 - ⚠️ `allowJs: true` — allowed JavaScript, weakening type safety
 - ⚠️ `skipLibCheck: true` — skipped library type checking
 - ⚠️ Missing strict compiler options: `noUnusedLocals`, `noUnusedParameters`, `noImplicitReturns`
 
 ### Fixes Applied
+
 - ✅ **Disabled `allowJs`** — enforce TypeScript-only codebase
 - ✅ **Disabled `skipLibCheck`** — validate all library types
 - ✅ **Added strict flags:**
@@ -50,6 +54,7 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
 - ✅ **Updated target to ES2020** for modern JavaScript features
 
 ### Recommendation
+
 - Run `npm run lint -- --fix` to fix auto-fixable issues from stricter config
 
 ---
@@ -59,12 +64,14 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
 **Assessment:** GOOD, OPTIMIZED
 
 ### Implemented
+
 - ✅ App Router with Server Components by default
 - ✅ Dynamic routes `[id]` for post details
 - ✅ Server-side data fetching with `async` components
 - ✅ Proper next.js caching (`{ next: { revalidate: 60 } }`)
 
 ### Improvements Made
+
 - ✅ **Added security headers** in `next.config.ts`:
   - `X-Content-Type-Options: nosniff`
   - `X-Frame-Options: DENY`
@@ -87,10 +94,12 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
 **Assessment:** GOOD, ENHANCED
 
 ### Current Setup
+
 - ✅ ESLint configured with Next.js & TypeScript presets
 - ✅ Proper globals and ignores set up
 
 ### Improvements Made
+
 - ✅ **Added Prettier** for consistent code formatting
   - `.prettierrc` config created
   - `format` and `format:check` scripts added
@@ -103,6 +112,7 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
   ```
 
 ### Recommendations
+
 - Set up pre-commit hook with `husky` to run lint/format before commits
 - Add `@typescript-eslint/recommended` rules in `eslint.config.mjs`
 
@@ -113,6 +123,7 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
 **Assessment:** GOOD, ENHANCED
 
 ### Implemented
+
 - ✅ **Image optimization** — Next.js Image component support configured
 - ✅ **Bundle size management:**
   - Server Components by default (no client-side bloat)
@@ -123,6 +134,7 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
 - ✅ **Source maps disabled** in production
 
 ### Recommendations
+
 - [ ] Add `next/image` for WordPress featured images
 - [ ] Implement `React.lazy()` for route-based code splitting
 - [ ] Monitor Core Web Vitals with Lighthouse CI (already configured)
@@ -135,11 +147,13 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
 **Assessment:** IMPROVED
 
 ### Issues Found
+
 - ⚠️ Missing security headers
 - ⚠️ `NEXT_PUBLIC_WP_BASE` had fallback (no env enforcement)
 - ⚠️ HTML rendering with `dangerouslySetInnerHTML` (unvalidated)
 
 ### Fixes Applied
+
 - ✅ **Security headers added** in next.config.ts (see #3)
 - ✅ **Environment variable validation:**
   - Removed fallback — `NEXT_PUBLIC_WP_BASE` now required
@@ -149,6 +163,7 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
 - ✅ **Removed `poweredByHeader`** — don't advertise Next.js version
 
 ### Recommendations
+
 - [ ] Sanitize HTML from WordPress before rendering (install `sanitize-html`)
 - [ ] Add CORS validation if backend is on different domain
 - [ ] Set up Content Security Policy (CSP) headers for strict control
@@ -161,12 +176,14 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
 **Assessment:** IMPROVED
 
 ### Issues Found
+
 - ⚠️ No robots.txt
 - ⚠️ Minimal metadata in layout
 - ⚠️ No Open Graph tags
 - ⚠️ Missing canonical URLs
 
 ### Fixes Applied
+
 - ✅ **robots.txt created** with proper directives and sitemap link
 - ✅ **Enhanced metadata:**
   - Title, description, keywords
@@ -178,6 +195,7 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
 - ✅ **Manifest & favicon links added**
 
 ### Recommendations
+
 - [ ] Generate and add `public/sitemap.xml` (dynamic from WordPress posts)
 - [ ] Create structured data (JSON-LD) for rich snippets
 - [ ] Add breadcrumb schema for post pages
@@ -190,12 +208,14 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
 **Assessment:** IMPROVED
 
 ### Issues Found
+
 - ⚠️ Missing semantic HTML (`<header>`, `<nav>`, `<main>`, `<footer>`)
 - ⚠️ No ARIA labels
 - ⚠️ No skip links
 - ⚠️ Incomplete focus styles
 
 ### Fixes Applied
+
 - ✅ **Semantic HTML:**
   - Added `<header role="banner">`, `<nav role="navigation">`, `<main role="main">`, `<footer role="contentinfo">`
   - Added `aria-label="Main navigation"` to nav
@@ -208,6 +228,7 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
   - Tab order logical
 
 ### Recommendations
+
 - [ ] Add skip links for keyboard users
 - [ ] Test with screen readers (NVDA, JAWS)
 - [ ] Add `alt` text for WordPress images
@@ -221,12 +242,14 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
 **Assessment:** MISSING (recommended to add)
 
 ### Current State
+
 - ❌ No test framework installed
 - ❌ No unit tests
 - ❌ No integration tests
 - ❌ No E2E tests
 
 ### Recommendations
+
 - [ ] Add **Jest** for unit tests
 - [ ] Add **React Testing Library** for component tests
 - [ ] Add **Playwright** or **Cypress** for E2E tests
@@ -234,6 +257,7 @@ Slovor Frontend is a Next.js 16 + TypeScript application serving as an MVP class
 - [ ] Integrate tests into CI workflow
 
 ### Quick Setup Commands
+
 ```bash
 npm install --save-dev jest @testing-library/react @testing-library/jest-dom ts-jest
 npm install --save-dev playwright @playwright/test
@@ -246,11 +270,13 @@ npm install --save-dev playwright @playwright/test
 **Assessment:** GOOD, ENHANCED
 
 ### Current Setup
+
 - ✅ GitHub Actions CI on push/PR to main
 - ✅ Build, lint, test steps
 - ✅ Optional Lighthouse CI and Vercel deployment
 
 ### Improvements Made
+
 - ✅ **Lighthouse CI configured** — `.lhci/lighthouserc.json`
   - Performance: ≥75%
   - Accessibility: ≥90%
@@ -261,6 +287,7 @@ npm install --save-dev playwright @playwright/test
   - Vercel deployment (if `VERCEL_*` tokens set)
 
 ### Recommendations
+
 - [ ] Add secrets to GitHub Actions for `LHCI_TOKEN` and Vercel tokens
 - [ ] Configure Lighthouse to run against deployed preview
 - [ ] Add code coverage reporting
@@ -273,6 +300,7 @@ npm install --save-dev playwright @playwright/test
 **Assessment:** COMPREHENSIVE
 
 ### Implemented
+
 - ✅ `README.md` — project overview, setup, deployment
 - ✅ `CONTRIBUTING.md` — contribution guidelines, code standards
 - ✅ `docs/architecture.md` — architecture & design decisions
@@ -284,6 +312,7 @@ npm install --save-dev playwright @playwright/test
 - ✅ `CODEOWNERS` — code ownership & review assignments
 
 ### Recommendations
+
 - [ ] Add `/docs/testing.md` — testing strategies and examples
 - [ ] Add `/docs/deployment.md` — deployment checklist
 - [ ] Add `/docs/troubleshooting.md` — common issues & solutions
@@ -296,11 +325,13 @@ npm install --save-dev playwright @playwright/test
 **Assessment:** GOOD
 
 ### Current
+
 - ✅ Initialized repository with meaningful commits
 - ✅ All code on `main` branch
 - ✅ `.git ignore` properly configured
 
 ### Recommendations
+
 - [ ] Establish branch naming convention: `feat/`, `fix/`, `docs/`, `chore/`
 - [ ] Require PR reviews before merge to main
 - [ ] Set up commit message linting with Husky & commitlint
@@ -313,6 +344,7 @@ npm install --save-dev playwright @playwright/test
 **Assessment:** IMPROVED
 
 ### Implemented
+
 - ✅ **Global error boundary** — `global-error.tsx`
 - ✅ **404 page** — `not-found.tsx`
 - ✅ **WordPress client error handling:**
@@ -320,10 +352,12 @@ npm install --save-dev playwright @playwright/test
   - Graceful fallbacks (empty arrays/null)
 
 ### Improvements Made
+
 - ✅ Error components render user-friendly messages
 - ✅ Error IDs for debugging
 
 ### Recommendations
+
 - [ ] Add centralized error tracking (Sentry, LogRocket)
 - [ ] Implement structured logging instead of `console.log`
 - [ ] Add error recovery UI (retry buttons)
@@ -337,6 +371,7 @@ npm install --save-dev playwright @playwright/test
 **Assessment:** NOT IMPLEMENTED
 
 ### Recommendations
+
 - [ ] Add **Web Vitals monitoring** — `next/navigation` hook
 - [ ] Install **Vercel Analytics** or **Google Analytics 4**
 - [ ] Track user behavior with **Mixpanel** or **Amplitude**
@@ -344,6 +379,7 @@ npm install --save-dev playwright @playwright/test
 - [ ] Set up error tracking with **Sentry**
 
 ### Example Setup
+
 ```typescript
 // src/app/layout.tsx
 import { Analytics } from "@vercel/analytics/react";
@@ -364,34 +400,37 @@ export default function RootLayout({ children }) {
 
 ## Summary of Critical Fixes Implemented
 
-| # | Issue | Fix | Impact |
-|---|-------|-----|--------|
-| 1 | Loose TypeScript | Enabled strict mode, disabled `allowJs` | Type safety ↑↑↑ |
-| 2 | No security headers | Added in next.config.ts | Security ↑↑ |
-| 3 | Missing SEO | Added metadata, Open Graph, robots.txt | SEO ↑↑ |
-| 4 | No error handling | Added error boundary & 404 page | UX ↑↑ |
-| 5 | Weak env validation | URL validation, no fallback | Security ↑ |
-| 6 | Poor accessibility | Added semantic HTML, ARIA, focus styles | A11y ↑↑ |
-| 7 | No formatting | Added Prettier with scripts | Code quality ↑ |
-| 8 | Empty Next.js config | Image optimization, compression, etc. | Performance ↑ |
+| #   | Issue                | Fix                                     | Impact          |
+| --- | -------------------- | --------------------------------------- | --------------- |
+| 1   | Loose TypeScript     | Enabled strict mode, disabled `allowJs` | Type safety ↑↑↑ |
+| 2   | No security headers  | Added in next.config.ts                 | Security ↑↑     |
+| 3   | Missing SEO          | Added metadata, Open Graph, robots.txt  | SEO ↑↑          |
+| 4   | No error handling    | Added error boundary & 404 page         | UX ↑↑           |
+| 5   | Weak env validation  | URL validation, no fallback             | Security ↑      |
+| 6   | Poor accessibility   | Added semantic HTML, ARIA, focus styles | A11y ↑↑         |
+| 7   | No formatting        | Added Prettier with scripts             | Code quality ↑  |
+| 8   | Empty Next.js config | Image optimization, compression, etc.   | Performance ↑   |
 
 ---
 
 ## Next Priority Actions
 
 ### High Priority (1-2 weeks)
+
 1. [ ] Test stricter TypeScript config — fix any new errors
 2. [ ] Add HTML sanitization for WordPress content
 3. [ ] Run Lighthouse audit and fix issues
 4. [ ] Set up test framework and write first tests
 
 ### Medium Priority (2-4 weeks)
+
 5. [ ] Add error tracking (Sentry)
 6. [ ] Implement analytics
 7. [ ] Create dynamic sitemap
 8. [ ] Add structured data (JSON-LD)
 
 ### Low Priority (1-2 months)
+
 9. [ ] Set up monitoring & alerts
 10. [ ] Add advanced caching strategies
 11. [ ] Implement search/filtering UI

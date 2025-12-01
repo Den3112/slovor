@@ -78,6 +78,7 @@ Slovor is a minimal classifieds/marketplace frontend built with Next.js 16 and T
 ### Terminology Rules
 
 **NEVER translate these terms:**
+
 - Command names: `npm`, `git`, `next`, `vercel`
 - Package names: `react`, `typescript`, `tailwind`, `sanitize-html`
 - Technology names: `Next.js`, `React`, `TypeScript`, `Tailwind CSS`
@@ -115,18 +116,20 @@ Slovor is a minimal classifieds/marketplace frontend built with Next.js 16 and T
 ### Import Organization
 
 Follow this order:
+
 1. React and Next.js imports
 2. Third-party library imports
 3. Relative imports from `@/` alias
 4. Local relative imports
 
 Example:
+
 ```typescript
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { sanitizeHtmlContent } from '@/lib/html'
-import { fetchPosts } from '@/lib/wordpress/client'
-import type { WordPressPost } from '@/types/wordpress'
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { sanitizeHtmlContent } from "@/lib/html";
+import { fetchPosts } from "@/lib/wordpress/client";
+import type { WordPressPost } from "@/types/wordpress";
 ```
 
 ### File Naming
@@ -187,9 +190,10 @@ src/
 - Use `sanitizeHtmlContent()` from `src/lib/html.ts`
 - Never use `dangerouslySetInnerHTML` without sanitization
 - Example:
+
   ```typescript
   import { sanitizeHtmlContent } from '@/lib/html'
-  
+
   const safeHtml = sanitizeHtmlContent(userContent)
   return <div dangerouslySetInnerHTML={{ __html: safeHtml }} />
   ```
@@ -203,11 +207,11 @@ src/
 - Example in `src/lib/wordpress/client.ts`:
   ```typescript
   function validateWpBase(): string {
-    const wpBase = process.env.NEXT_PUBLIC_WP_BASE
+    const wpBase = process.env.NEXT_PUBLIC_WP_BASE;
     if (!wpBase) {
-      throw new Error('Missing NEXT_PUBLIC_WP_BASE')
+      throw new Error("Missing NEXT_PUBLIC_WP_BASE");
     }
-    return wpBase
+    return wpBase;
   }
   ```
 
@@ -228,6 +232,7 @@ src/
 ### OWASP Guidelines
 
 Follow OWASP Top 10:
+
 - A01: Broken Access Control — Use proper authentication
 - A02: Cryptographic Failures — Use HTTPS, secure headers
 - A03: Injection — Sanitize all inputs, use parameterized queries
@@ -267,10 +272,10 @@ Follow OWASP Top 10:
   /**
    * Sanitize HTML content from WordPress to prevent XSS attacks.
    * Allows safe tags like <p>, <strong>, <em>, <a>, etc.
-   * 
+   *
    * @param html - Raw HTML string from WordPress
    * @returns Sanitized HTML string safe for rendering
-   * 
+   *
    * @example
    * const safe = sanitizeHtmlContent('<p>Hello <script>alert("xss")</script></p>')
    * // Returns: '<p>Hello </p>'
@@ -320,13 +325,13 @@ Follow OWASP Top 10:
 - Use Jest for testing
 - Example:
   ```typescript
-  describe('sanitizeHtmlContent', () => {
-    it('should remove script tags', () => {
-      const input = '<p>Hello <script>alert("xss")</script></p>'
-      const result = sanitizeHtmlContent(input)
-      expect(result).not.toContain('<script>')
-    })
-  })
+  describe("sanitizeHtmlContent", () => {
+    it("should remove script tags", () => {
+      const input = '<p>Hello <script>alert("xss")</script></p>';
+      const result = sanitizeHtmlContent(input);
+      expect(result).not.toContain("<script>");
+    });
+  });
   ```
 
 ### Component Tests
@@ -384,6 +389,7 @@ npm test -- --testNamePattern="pattern"  # Run specific tests
 - **Chores:** `chore/what-changed`
 
 Examples:
+
 - `feat/wordpress-post-caching`
 - `fix/theme-toggle-persistence`
 - `docs/deployment-guide`
@@ -402,6 +408,7 @@ footer (optional)
 ```
 
 **Types:**
+
 - `feat` — New feature
 - `fix` — Bug fix
 - `docs` — Documentation changes
@@ -411,6 +418,7 @@ footer (optional)
 - `chore` — Build, dependencies, tooling
 
 **Examples:**
+
 ```
 feat(wordpress): add post caching with ISR
 
@@ -437,17 +445,20 @@ the WordPress REST API integration.
 ### Pull Request Workflow
 
 1. **Create branch from main:**
+
    ```bash
    git checkout -b feat/feature-name
    ```
 
 2. **Make changes and commit:**
+
    ```bash
    git add .
    git commit -m "feat(scope): description"
    ```
 
 3. **Push to GitHub:**
+
    ```bash
    git push origin feat/feature-name
    ```
@@ -610,13 +621,8 @@ slovor-frontend/
 - Alt text for images
 - Example:
   ```tsx
-  <button
-    type="button"
-    onClick={toggleTheme}
-    aria-label="Toggle theme"
-    className="..."
-  >
-    {theme === 'dark' ? 'Light' : 'Dark'}
+  <button type="button" onClick={toggleTheme} aria-label="Toggle theme" className="...">
+    {theme === "dark" ? "Light" : "Dark"}
   </button>
   ```
 
@@ -651,15 +657,18 @@ Only use custom CSS when Tailwind utilities are insufficient:
 Set in Vercel project settings:
 
 **Required:**
+
 - `NEXT_PUBLIC_WP_BASE` — WordPress REST API base URL
 
 **Optional:**
+
 - `NEXT_PUBLIC_SENTRY_DSN` — Sentry DSN for error tracking
 - `NEXT_PUBLIC_USE_WORDPRESS` — Use real WordPress API (true/false)
 
 ### Deployment Process
 
 1. **Push to main branch:**
+
    ```bash
    git push origin main
    ```
@@ -686,6 +695,7 @@ Set in Vercel project settings:
 ### Rollback
 
 If deployment fails:
+
 1. Check Vercel deployment logs
 2. Fix the issue locally
 3. Push fix to main
@@ -793,25 +803,27 @@ git pull origin main     # Pull latest from main
 
 ### Required Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
+| Variable              | Description                 | Example                           |
+| --------------------- | --------------------------- | --------------------------------- |
 | `NEXT_PUBLIC_WP_BASE` | WordPress REST API base URL | `https://slovor.sk/wp-json/wp/v2` |
 
 ### Optional Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NEXT_PUBLIC_SENTRY_DSN` | Sentry DSN for error tracking | (not set) |
-| `NEXT_PUBLIC_USE_WORDPRESS` | Use real WordPress API | `false` |
+| Variable                    | Description                   | Default   |
+| --------------------------- | ----------------------------- | --------- |
+| `NEXT_PUBLIC_SENTRY_DSN`    | Sentry DSN for error tracking | (not set) |
+| `NEXT_PUBLIC_USE_WORDPRESS` | Use real WordPress API        | `false`   |
 
 ### Setup
 
 1. Copy `.env.example` to `.env.local`:
+
    ```bash
    cp .env.example .env.local
    ```
 
 2. Update values in `.env.local`:
+
    ```env
    NEXT_PUBLIC_WP_BASE=https://your-wordpress-site.com/wp-json/wp/v2
    NEXT_PUBLIC_SENTRY_DSN=https://your-key@sentry.io/your-project-id
@@ -828,6 +840,7 @@ git pull origin main     # Pull latest from main
 **Error:** TypeScript compilation errors
 
 **Solution:**
+
 ```bash
 npm run build  # See detailed error messages
 # Fix TypeScript errors
@@ -839,6 +852,7 @@ npm run lint   # Check for linting issues
 **Error:** Test failures
 
 **Solution:**
+
 ```bash
 npm test                    # Run all tests
 npm test:watch              # Run in watch mode for debugging
@@ -851,6 +865,7 @@ npm test:coverage           # Check coverage
 **Error:** ESLint errors
 
 **Solution:**
+
 ```bash
 npm run lint                # See all errors
 npm run lint:fix            # Auto-fix fixable errors
@@ -862,6 +877,7 @@ npm run format              # Format code with Prettier
 **Error:** Vercel deployment error
 
 **Solution:**
+
 1. Check Vercel logs: https://vercel.com/dashboard
 2. Verify environment variables are set
 3. Check build output for errors
@@ -872,6 +888,7 @@ npm run format              # Format code with Prettier
 **Error:** Cannot fetch posts from WordPress
 
 **Solution:**
+
 1. Verify `NEXT_PUBLIC_WP_BASE` is correct
 2. Test URL directly in browser
 3. Check WordPress CORS settings
@@ -883,6 +900,7 @@ npm run format              # Format code with Prettier
 **Error:** Port 3000 is already in use
 
 **Solution:**
+
 ```bash
 # Kill process using port 3000
 lsof -ti:3000 | xargs kill -9  # macOS/Linux
@@ -929,6 +947,7 @@ This file is the **single source of truth** for all project standards. All chang
 ### Updates to Guidelines
 
 When updating these guidelines:
+
 1. Update this file
 2. Notify all team members
 3. Update related documentation
@@ -937,6 +956,7 @@ When updating these guidelines:
 ### Questions or Conflicts
 
 If you encounter:
+
 - **Unclear guidelines:** Ask for clarification
 - **Conflicting standards:** Reference this file
 - **New situations:** Suggest guidelines update
@@ -944,6 +964,7 @@ If you encounter:
 ### Continuous Improvement
 
 These guidelines evolve with the project. Suggestions for improvements are welcome through:
+
 - GitHub issues
 - Pull request discussions
 - Team meetings

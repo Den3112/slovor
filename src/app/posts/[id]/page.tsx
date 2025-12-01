@@ -40,10 +40,7 @@ export default async function PostPage({ params }: Params) {
   return (
     <article className="max-w-6xl mx-auto px-4 py-12">
       <div className="mb-6">
-        <Link
-          href="/"
-          className="text-sm text-slate-400 hover:text-slate-200"
-        >
+        <Link href="/" className="text-sm text-slate-400 hover:text-slate-200">
           ← Back to home
         </Link>
       </div>

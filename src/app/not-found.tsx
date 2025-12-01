@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 /**
  * Not found (404) page.
@@ -9,12 +9,10 @@ export default function NotFound() {
     <div className="flex min-h-[60vh] items-center justify-center">
       <div className="text-center">
         <h1 className="mb-4 text-5xl font-bold text-white">404</h1>
-        <h2 className="mb-4 text-2xl font-semibold text-slate-100">
-          Page not found
-        </h2>
+        <h2 className="mb-4 text-2xl font-semibold text-slate-100">Page not found</h2>
         <p className="mb-8 max-w-md text-slate-400">
-          Sorry, the page you&apos;re looking for doesn&apos;t exist. It may have been
-          moved or deleted.
+          Sorry, the page you&apos;re looking for doesn&apos;t exist. It may have been moved or
+          deleted.
         </p>
         <Link
           href="/"

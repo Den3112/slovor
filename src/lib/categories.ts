@@ -29,4 +29,3 @@ const categories = categoriesData as Category[];
 export function loadCategories(): Category[] {
   return categories;
 }
-

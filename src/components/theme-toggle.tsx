@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 
@@ -28,9 +28,7 @@ export function ThemeToggle() {
       return validateTheme(stored);
     }
 
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   });
 
   const applyTheme = (value: Theme) => {
@@ -61,4 +59,3 @@ export function ThemeToggle() {
     </button>
   );
 }
-

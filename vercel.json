@@ -10,9 +10,6 @@
       "value": "http://slovor.ct.ws/wp-json/wp/v2"
     }
   ],
-  "envDescription": {
-    "NEXT_PUBLIC_WP_BASE": "Required. WordPress REST API base URL for fetching posts and ads."
-  },
   "git": {
     "deploymentEnabled": {
       "main": true

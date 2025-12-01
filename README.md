@@ -80,14 +80,14 @@ cp .env.example .env.local
 
 ### Required Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
+| Variable              | Description                 | Example                             |
+| --------------------- | --------------------------- | ----------------------------------- |
 | `NEXT_PUBLIC_WP_BASE` | WordPress REST API base URL | `http://slovor.ct.ws/wp-json/wp/v2` |
 
 ### Optional Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
+| Variable                    | Description                    | Default |
+| --------------------------- | ------------------------------ | ------- |
 | `NEXT_PUBLIC_USE_WORDPRESS` | Use live WordPress API for ads | `false` |
 
 ## Features
@@ -137,6 +137,7 @@ cp .env.example .env.local
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for:
+
 - Code style guidelines
 - Commit message conventions
 - PR process

@@ -74,10 +74,10 @@ tracesSampleRate: 1.0, // 100% - for development
 
 ## Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `NEXT_PUBLIC_SENTRY_DSN` | Sentry project DSN | No (optional) |
-| `NODE_ENV` | Environment (development/production) | Yes |
+| Variable                 | Description                          | Required      |
+| ------------------------ | ------------------------------------ | ------------- |
+| `NEXT_PUBLIC_SENTRY_DSN` | Sentry project DSN                   | No (optional) |
+| `NODE_ENV`               | Environment (development/production) | Yes           |
 
 ## Disabling Sentry
 
@@ -86,11 +86,13 @@ To disable Sentry, simply don't set `NEXT_PUBLIC_SENTRY_DSN`. The app will work 
 ## Best Practices
 
 1. **Use meaningful error messages:**
+
    ```typescript
    throw new Error("Failed to fetch posts from WordPress API");
    ```
 
 2. **Add context to errors:**
+
    ```typescript
    Sentry.captureException(error, {
      tags: {
@@ -101,14 +103,15 @@ To disable Sentry, simply don't set `NEXT_PUBLIC_SENTRY_DSN`. The app will work 
    ```
 
 3. **Monitor critical paths:**
+
    ```typescript
    const transaction = Sentry.startTransaction({
      name: "fetch-posts",
      op: "http.client",
    });
-   
+
    // Your code
-   
+
    transaction.finish();
    ```
 

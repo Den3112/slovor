@@ -84,7 +84,7 @@ const catalog: Record<Category["id"], Ad[]> = loadCategories().reduce(
     }));
     return acc;
   },
-  {} as Record<Category["id"], Ad[]>,
+  {} as Record<Category["id"], Ad[]>
 );
 
 /**
@@ -93,4 +93,3 @@ const catalog: Record<Category["id"], Ad[]> = loadCategories().reduce(
 export function getMockAdsByCategory(categoryId: string): Ad[] {
   return catalog[categoryId as Category["id"]] ?? [];
 }
-
