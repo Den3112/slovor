@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { createSupabaseServiceClient } from "@/lib/supabase/server";
 
 type AdDetailPageProps = {
@@ -52,7 +51,7 @@ async function getAdWithCategory(adId: string) {
 }
 
 export default async function AdDetailPage({ params }: AdDetailPageProps) {
-  const { categorySlug, adId } = await params;
+  const { adId } = await params;
   const ad = await getAdWithCategory(adId);
 
   if (!ad) notFound();
