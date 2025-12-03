@@ -1,18 +1,5 @@
 {
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm ci",
   "framework": "nextjs",
-  "env": [
-    {
-      "key": "NEXT_PUBLIC_WP_BASE",
-      "description": "WordPress REST API base URL (e.g., https://slovor.sk/wp-json/wp/v2)",
-      "value": "http://slovor.ct.ws/wp-json/wp/v2"
-    }
-  ],
-  "git": {
-    "deploymentEnabled": {
-      "main": true
-    }
-  }
+  "buildCommand": "npm run build",
+  "installCommand": "npm install"
 }

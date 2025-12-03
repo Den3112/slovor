@@ -1,4 +1,9 @@
 import type { WordPressPost } from "@/types/wordpress";
+import {
+  validateWordPressPosts,
+  validateWordPressPost,
+  validateWordPressBaseUrl,
+} from "./validation";
 
 /**
  * WordPress API client for Slovor marketplace.
@@ -7,21 +12,19 @@ import type { WordPressPost } from "@/types/wordpress";
  */
 
 // Validate environment at module load time
-function validateWpBase(): string {
+function validateWpBase(): string | null {
   const wpBase = process.env.NEXT_PUBLIC_WP_BASE;
 
-  if (!wpBase) {
-    throw new Error(
-      "Missing required environment variable: NEXT_PUBLIC_WP_BASE. " +
-        "Copy .env.example to .env.local and set NEXT_PUBLIC_WP_BASE to the WordPress REST API base URL (e.g., http://slovor.ct.ws/wp-json/wp/v2)."
-    );
-  }
-
-  // Validate URL format
-  try {
-    new URL(wpBase);
-  } catch {
-    throw new Error(`Invalid NEXT_PUBLIC_WP_BASE URL: "${wpBase}". Must be a valid absolute URL.`);
+  if (!validateWordPressBaseUrl(wpBase)) {
+    if (!wpBase) {
+      console.warn(
+        "Missing environment variable: NEXT_PUBLIC_WP_BASE. " +
+          "Copy .env.example to .env.local and set NEXT_PUBLIC_WP_BASE to the WordPress REST API base URL (e.g., http://slovor.ct.ws/wp-json/wp/v2)."
+      );
+    } else {
+      console.warn(`Invalid NEXT_PUBLIC_WP_BASE URL: "${wpBase}". Must be a valid absolute URL.`);
+    }
+    return null;
   }
 
   return wpBase;
@@ -34,6 +37,10 @@ const WP_BASE = validateWpBase();
  * Returns an array of WordPressPost or an empty array on error.
  */
 export async function fetchPosts(): Promise<WordPressPost[]> {
+  if (!WP_BASE) {
+    return [];
+  }
+
   try {
     const res = await fetch(`${WP_BASE}/posts`, { next: { revalidate: 60 } });
 
@@ -42,8 +49,16 @@ export async function fetchPosts(): Promise<WordPressPost[]> {
       return [];
     }
 
-    const data = (await res.json()) as WordPressPost[];
-    return data;
+    const rawData = await res.json();
+    const validation = validateWordPressPosts(rawData);
+
+    if (!validation.success) {
+      console.error("fetchPosts: Invalid API response format:", validation.error);
+      return [];
+    }
+
+    // Cast validated data to WordPressPost[] since validation ensures compatibility
+    return validation.data as WordPressPost[];
   } catch (err) {
     // Keep error handling simple and observable in server logs
     // Return an empty array so callers can continue rendering gracefully
@@ -59,6 +74,15 @@ export async function fetchPosts(): Promise<WordPressPost[]> {
  * Returns the post or null if not found or on error.
  */
 export async function fetchPost(id: number | string): Promise<WordPressPost | null> {
+  if (!WP_BASE) {
+    return null;
+  }
+
+  if (typeof id !== "number" && typeof id !== "string") {
+    console.error(`fetchPost: Invalid id type: ${typeof id}`);
+    return null;
+  }
+
   try {
     const res = await fetch(`${WP_BASE}/posts/${id}`, { next: { revalidate: 60 } });
 
@@ -67,8 +91,16 @@ export async function fetchPost(id: number | string): Promise<WordPressPost | nu
       return null;
     }
 
-    const data = (await res.json()) as WordPressPost;
-    return data;
+    const rawData = await res.json();
+    const validation = validateWordPressPost(rawData);
+
+    if (!validation.success) {
+      console.error(`fetchPost(${id}): Invalid API response format:`, validation.error);
+      return null;
+    }
+
+    // Cast validated data to WordPressPost since validation ensures compatibility
+    return validation.data as WordPressPost;
   } catch (err) {
     console.error(`fetchPost(${id}) error:`, err);
     return null;

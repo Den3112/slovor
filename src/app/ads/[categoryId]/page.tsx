@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { loadCategories } from "@/lib/categories";
-import { getMockAdsByCategory } from "@/lib/mockAds";
-import { fetchAdsByCategory } from "@/lib/wpAdsService";
+import { getMockAdsByCategory, type Ad } from "@/lib/mockAds";
 
 type AdsPageProps = {
   params: Promise<{
@@ -18,19 +17,8 @@ export default async function CategoryAdsPage({ params }: AdsPageProps) {
   const categories = loadCategories();
   const category = categories.find((item) => item.id === categoryId) ?? notFound();
 
-  const shouldUseLiveAds = process.env.NEXT_PUBLIC_USE_WORDPRESS === "true";
-  const wordpressAds = shouldUseLiveAds ? await fetchAdsByCategory(category.id) : null;
-
-  // Integration note: swap the mock branch once the WordPress backend is ready.
-  const ads = shouldUseLiveAds
-    ? wordpressAds!.map((ad) => ({
-        id: ad.id,
-        title: ad.title,
-        price: ad.price,
-        location: ad.location,
-        description: ad.excerpt,
-      }))
-    : getMockAdsByCategory(category.id);
+  // Using mock data for now - WordPress integration pending
+  const ads = getMockAdsByCategory(category.id);
 
   // Summarize a few subcategories to add context to the header copy.
   const subcategorySummary = category.subcategories
@@ -63,7 +51,7 @@ export default async function CategoryAdsPage({ params }: AdsPageProps) {
         </p>
       ) : (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {ads.map((ad) => (
+          {ads.map((ad: Ad) => (
             <article
               key={ad.id}
               className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-brand hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"

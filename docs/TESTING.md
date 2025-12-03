@@ -190,9 +190,18 @@ it('should save theme to localStorage', () => {
 })
 ```
 
+## Testing Strategy
+
+Our testing approach is layered:
+
+- **Unit tests** for utilities and business logic (80%+ coverage required for production `src/lib/**` files)
+- **E2E tests** for UI and user flows (Playwright - planned for future implementation)
+- **Server components** tested via E2E, not unit tests (due to Next.js 16 limitations)
+- **WordPress client** (src/lib/wordpress/client.ts) coverage not enforced due to module-level environment validation
+
 ## Coverage Goals
 
-Aim for:
+For utility and business logic code in `src/lib/**`, aim for:
 
 - **Statements:** ≥80%
 - **Branches:** ≥75%

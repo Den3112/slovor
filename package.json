@@ -2,6 +2,9 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -14,19 +17,23 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@sentry/nextjs": "^8.0.0",
+    "@sentry/nextjs": "^10.27.0",
     "@vercel/speed-insights": "^1.0.11",
+    "dotenv": "^17.2.3",
     "next": "^16.0.5",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "sanitize-html": "^2.13.0"
+    "sanitize-html": "^2.13.0",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.19",
     "@testing-library/jest-dom": "^6.1.5",
-    "@testing-library/react": "^14.1.2",
+    "@testing-library/react": "^16.0.0",
     "@types/jest": "^29.5.11",
-    "@types/node": "^20",
+    "@types/node": "^20.19.25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/sanitize-html": "^2.11.0",
@@ -40,6 +47,7 @@
     "prettier": "^3",
     "tailwindcss": "^4",
     "ts-jest": "^29.1.1",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }

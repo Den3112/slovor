@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Ignore generated files
+    "coverage/**",
+    "rewrite_work_1764522802/**",
   ]),
 ]);
 

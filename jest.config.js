@@ -20,6 +20,40 @@ const customJestConfig = {
     "!src/**/*.stories.{js,jsx,ts,tsx}",
     "!src/**/__tests__/**",
   ],
+  coveragePathIgnorePatterns: ["node_modules"],
+  coverageThreshold: {
+    "src/lib/apiClient.ts": {
+      statements: 80,
+      branches: 75,
+      functions: 80,
+      lines: 80,
+    },
+    "src/lib/categories.ts": {
+      statements: 80,
+      branches: 75,
+      functions: 80,
+      lines: 80,
+    },
+    "src/lib/html.ts": {
+      statements: 80,
+      branches: 75,
+      functions: 80,
+      lines: 80,
+    },
+
+    "src/lib/wordpress/client.ts": {
+      statements: 80,
+      branches: 75,
+      functions: 100,
+      lines: 80,
+    },
+    "src/lib/wordpress/validation.ts": {
+      statements: 80,
+      branches: 75,
+      functions: 80,
+      lines: 80,
+    },
+  },
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
