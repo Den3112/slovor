@@ -127,3 +127,6 @@ backups
 
 # Local environment files
 .env*.local
+
+.vercel
+.env*.local
