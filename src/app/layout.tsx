@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import Image from "next/image";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { ThemeToggle } from "../components/theme-toggle";
 
@@ -150,6 +151,7 @@ export default function RootLayout({
           </footer>
         </div>
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
