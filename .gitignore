@@ -108,5 +108,22 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Build artifacts and caches
+.next
 .vercel
+.swc
+coverage
+backups
+
+# Logs
+*.log
+.DS_Store
+
+# Development tools
+.vscode
+.husky
+.lhci
+.github
+
+# Local environment files
 .env*.local
