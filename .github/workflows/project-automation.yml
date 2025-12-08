@@ -1,0 +1,57 @@
+name: Project Automation
+
+on:
+  issues:
+    types: [opened, closed, labeled]
+  pull_request:
+    types: [opened, closed, merged]
+  push:
+    branches: [main]
+
+jobs:
+  update-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add issue to project
+        if: github.event_name == 'issues' && github.event.action == 'opened'
+        uses: actions/add-to-project@v0.5.0
+        with:
+          project-url: https://github.com/users/Den3112/projects/1
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Move to In Progress
+        if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'in-progress')
+        uses: leonsteinhaeuser/project-beta-automations@v2.1.0
+        with:
+          gh_token: ${{ secrets.GITHUB_TOKEN }}
+          organization: Den3112
+          project_id: 1
+          resource_node_id: ${{ github.event.issue.node_id }}
+          status_value: "In Progress"
+
+      - name: Move to Done
+        if: github.event_name == 'issues' && github.event.action == 'closed'
+        uses: leonsteinhaeuser/project-beta-automations@v2.1.0
+        with:
+          gh_token: ${{ secrets.GITHUB_TOKEN }}
+          organization: Den3112
+          project_id: 1
+          resource_node_id: ${{ github.event.issue.node_id }}
+          status_value: "Done"
+
+      - name: Add PR to project
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        uses: actions/add-to-project@v0.5.0
+        with:
+          project-url: https://github.com/users/Den3112/projects/1
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Move merged PR to Done
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+        uses: leonsteinhaeuser/project-beta-automations@v2.1.0
+        with:
+          gh_token: ${{ secrets.GITHUB_TOKEN }}
+          organization: Den3112
+          project_id: 1
+          resource_node_id: ${{ github.event.pull_request.node_id }}
+          status_value: "Done"
