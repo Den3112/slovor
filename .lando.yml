@@ -2,6 +2,7 @@ name: slovor
 recipe: node
 config:
   node: '18'
+  webroot: slovor
   
 services:
   appserver:
@@ -11,7 +12,7 @@ services:
       - '3000:3000'
       - '54321:54321'
     build:
-      - npm install
+      - cd slovor && npm install
     overrides:
       environment:
         NODE_ENV: development
@@ -27,46 +28,48 @@ services:
       password: postgres
       database: slovor
     config:
-      database: supabase/migrations
+      database: slovor/supabase/migrations
       
 tooling:
   npm:
     service: appserver
     description: Run npm commands
+    cmd: cd slovor && npm
   
   node:
     service: appserver
     description: Run node commands
+    cmd: cd slovor && node
   
   dev:
     service: appserver
     description: Start Next.js development server
-    cmd: npm run dev
+    cmd: cd slovor && npm run dev
   
   build:
     service: appserver
     description: Build Next.js for production
-    cmd: npm run build
+    cmd: cd slovor && npm run build
   
   lint:
     service: appserver
     description: Run ESLint
-    cmd: npm run lint
+    cmd: cd slovor && npm run lint
   
   format:
     service: appserver
     description: Format code with Prettier
-    cmd: npm run format
+    cmd: cd slovor && npm run format
   
   test:
     service: appserver
     description: Run tests
-    cmd: npm run test
+    cmd: cd slovor && npm run test
   
   tsc:
     service: appserver
     description: TypeScript type checking
-    cmd: npx tsc --noEmit
+    cmd: cd slovor && npx tsc --noEmit
   
   setup-check:
     service: appserver
@@ -91,12 +94,12 @@ tooling:
   db-migrate:
     service: appserver
     description: Run Supabase migrations
-    cmd: supabase db push
+    cmd: cd slovor && supabase db push
 
 events:
   post-start:
-    - appserver: echo "\n🚀 Slovor is starting...\n"
-    - appserver: npm install
+    - appserver: echo "\n🚀 Slovor Dev Environment starting...\n"
+    - appserver: cd slovor && npm install
     - appserver: bash scripts/setup-check.sh || bash scripts/setup-repair.sh
     - appserver: echo "\n✅ Slovor is ready!\n"
     - appserver: echo "📚 Quick commands:"
