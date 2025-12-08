@@ -71,8 +71,10 @@ Classifieds marketplace (like Avito/OLX) built with Next.js 15, TypeScript, Supa
 ## Resources
 
 - **Repository:** https://github.com/Den3112/slovor
-- **Supabase:** https://rsywmmnxkvwvhgrgzlei.supabase.co
-- **Vercel:** https://vercel.com/den3112/slovor
+- **GitHub Projects:** https://github.com/users/Den3112/projects/1
+- **Production Site:** https://slovor.vercel.app
+- **Vercel Dashboard:** https://vercel.com/slovors-projects/slovor
+- **Supabase Dashboard:** https://rsywmmnxkvwvhgrgzlei.supabase.co
 
 ---
 

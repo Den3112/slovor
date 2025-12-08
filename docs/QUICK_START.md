@@ -75,6 +75,35 @@ start phase 1
 
 ---
 
+## GitHub Projects Setup
+
+### ✅ Your Setup is CORRECT!
+
+You already created:
+- Project: "@Slovor-Development"
+- Columns: Todo, In Progress, Done
+- URL: https://github.com/users/Den3112/projects/1
+
+### Enable Automation
+
+1. Go to project settings
+2. Click **Workflows** tab
+3. Enable **"Auto-add to project"**
+   - Filter: `repo:Den3112/slovor is:issue,pr`
+4. Enable **"Auto-archive items"**
+   - When: Status is Done
+
+### Create All Phase 1 Tasks as Issues
+
+```bash
+cd slovor
+node scripts/create-issues-from-tasks.js
+```
+
+This will create 13 issues (Tasks 1.1-1.13) and add them to your board automatically!
+
+---
+
 ## Commands
 
 - `start phase X` - Begin phase
@@ -82,6 +111,16 @@ start phase 1
 - `status` - Show progress
 - `approve phase X` - Commit & next
 - `stop` - Pause AI
+
+---
+
+## Links
+
+- **GitHub Repo:** https://github.com/Den3112/slovor
+- **GitHub Projects:** https://github.com/users/Den3112/projects/1
+- **Production:** https://slovor.vercel.app
+- **Vercel Dashboard:** https://vercel.com/slovors-projects/slovor
+- **Supabase:** https://rsywmmnxkvwvhgrgzlei.supabase.co
 
 ---
 

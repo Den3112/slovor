@@ -1,7 +1,18 @@
 # GitHub Projects Integration
 
-**Status:** Fully automated  
-**Board:** https://github.com/users/Den3112/projects/1
+**Status:** ✅ Configured  
+**Board:** https://github.com/users/Den3112/projects/1  
+**Project Name:** @Slovor-Development
+
+---
+
+## ✅ Your Setup is Perfect!
+
+You correctly created:
+- ✅ Project: "@Slovor-Development"
+- ✅ 3 Columns: Todo, In Progress, Done
+- ✅ 2 Issues already added (#5, #6)
+- ✅ Automation running ("setup workflows" message visible)
 
 ---
 
@@ -16,7 +27,7 @@ AI creates GitHub Issue
   ↓
 GitHub Actions add to Project
   ↓
-Issue appears in "Backlog" column
+Issue appears in "Todo" column
 ```
 
 ### 2. Work Progress
@@ -45,27 +56,40 @@ Progress automatically tracked
 
 ---
 
+## Next Step: Create All Phase 1 Issues
+
+Run this command to create 13 issues for all Phase 1 tasks:
+
+```bash
+cd slovor
+node scripts/create-issues-from-tasks.js
+```
+
+**This will:**
+- Create issues #7 through #19 (Tasks 1.1 - 1.13)
+- Add labels: `phase-1`, `infrastructure`, `configuration`
+- Auto-assign to you
+- Auto-add to your project board
+
+---
+
 ## Board Structure
 
 ### Columns
 
 | Column | Description | Auto-move trigger |
 |--------|-------------|------------------|
-| 📋 Backlog | Not started | Issue opened |
-| ✅ Todo | Ready to start | Label: `ready` |
+| 📋 Todo | Not started | Issue opened |
 | 🔄 In Progress | Currently working | Label: `in-progress` |
-| 👀 Review | Code review | PR opened |
-| ✅ Done | Completed | Issue/PR closed |
+| ✅ Done | Completed | Issue closed |
 
 ### Labels
 
 - `phase-1`, `phase-2`, etc. - Phase identifier
 - `infrastructure` - Dev env setup
+- `configuration` - Config files
 - `feature` - New functionality
-- `bug` - Bug fix
-- `documentation` - Docs only
 - `in-progress` - Currently working
-- `ready` - Ready to start
 
 ---
 
@@ -84,20 +108,12 @@ gh issue create \
 
 ### Start Task
 ```bash
-gh issue edit 1 --add-label "in-progress"
+gh issue edit 7 --add-label "in-progress"
 ```
 
 ### Complete Task
 ```bash
-gh issue close 1 --comment "✅ Task completed"
-```
-
-### Create PR
-```bash
-gh pr create \
-  --title "feat: complete phase 1" \
-  --body "Closes #1, #2, #3" \
-  --label "phase-1"
+gh issue close 7 --comment "✅ Task completed"
 ```
 
 ---
@@ -108,7 +124,7 @@ gh pr create \
 https://github.com/users/Den3112/projects/1
 
 ### Mobile
-GitHub Mobile App → Projects → Slovor Development
+GitHub Mobile App → Projects → @Slovor-Development
 
 ### CLI
 ```bash
@@ -124,35 +140,32 @@ gh issue list --label "in-progress"
 
 ---
 
-## Metrics
+## Enable Project Automation
 
-### Velocity
-Tasks completed per day (auto-calculated)
+### Step 1: Go to Project Settings
+1. Open: https://github.com/users/Den3112/projects/1
+2. Click **⋯** (three dots) → **Settings**
 
-### Burndown
-Remaining tasks over time
+### Step 2: Enable Workflows
+1. Click **Workflows** tab
+2. Enable **"Auto-add to project"**
+   - Repository: `Den3112/slovor`
+   - Filter: `is:issue,pr`
+3. Enable **"Auto-archive items"**
+   - When: Status is Done
 
-### Cycle Time
-Time from "Todo" to "Done"
-
----
-
-## Setup (One-time)
-
-### 1. Create Project
-```bash
-# Using GitHub CLI
-gh project create --owner Den3112 --title "Slovor Development"
-```
-
-### 2. Run Issue Creation Script
-```bash
-node scripts/create-issues-from-tasks.js
-```
-
-### 3. Done!
-Everything else is automated.
+### Step 3: Done!
+GitHub Actions (from `.github/workflows/project-automation.yml`) will handle the rest.
 
 ---
 
-**Last Updated:** 2025-12-08
+## Production Links
+
+- **Live Site:** https://slovor.vercel.app
+- **Vercel Dashboard:** https://vercel.com/slovors-projects/slovor
+- **GitHub Repo:** https://github.com/Den3112/slovor
+- **Supabase:** https://rsywmmnxkvwvhgrgzlei.supabase.co
+
+---
+
+**Last Updated:** 2025-12-08 21:10 EET

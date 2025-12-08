@@ -1,82 +1,92 @@
 # GitHub Projects Setup Guide
 
-**Purpose:** Integrate visual Kanban board with our automation system
+**Status:** ✅ Already Created!  
+**Your Project:** https://github.com/users/Den3112/projects/1  
+**Name:** @Slovor-Development
 
 ---
 
-## Step 1: Create GitHub Project
+## ✅ What You Did Right
 
-1. Go to: https://github.com/Den3112?tab=projects
-2. Click **New project**
-3. Choose **Board** template
-4. Name: **Slovor Development**
-5. Click **Create**
+1. Created project "@Slovor-Development"
+2. Set up 3 columns: Todo, In Progress, Done
+3. Added initial issues (#5, #6)
+4. Automation workflows are running
+
+**Perfect setup!** Now let's finish configuration.
 
 ---
 
-## Step 2: Configure Board Columns
+## Step 1: Enable Auto-Add Issues ✅ REQUIRED
 
-### Default Columns (rename):
-- **Backlog** - Not started tasks
-- **Todo** - Ready to work
-- **In Progress** - Currently working
-- **Review** - Code review needed
-- **Done** - Completed tasks
+1. Go to: https://github.com/users/Den3112/projects/1/settings
+2. Click **Workflows** tab
+3. Click **"Auto-add to project"**
+4. Configure:
+   - Repository: `Den3112/slovor`
+   - Filter: `is:issue,pr`
+   - Click **Save**
 
-### Add Custom Fields:
-1. **Phase** (Single select)
+Now all new issues will automatically appear on your board!
+
+---
+
+## Step 2: Create All Phase 1 Tasks
+
+Run this script to create 13 GitHub Issues from your task tracker:
+
+```bash
+cd slovor
+node scripts/create-issues-from-tasks.js
+```
+
+**This creates:**
+- Task 1.1: Dev Container Setup
+- Task 1.2: Environment Configuration
+- Task 1.3: Database Schema
+- ... (all 13 tasks)
+
+**Each issue includes:**
+- Full description
+- Subtask checklist
+- Labels (phase-1, infrastructure, etc.)
+- Auto-assigned to you
+- Auto-added to project board
+
+---
+
+## Step 3: Configure Custom Fields (Optional)
+
+### Add Phase Field
+1. Project settings → **Custom fields**
+2. Click **New field** → **Single select**
+3. Name: **Phase**
+4. Options:
    - Phase 1: MVP Foundation
    - Phase 2: Browsing & Discovery
    - Phase 3: Authentication
    - Phase 4: Ad Management
    - Phase 5: Advanced Features
 
-2. **Priority** (Single select)
+### Add Priority Field
+1. New field → **Single select**
+2. Name: **Priority**
+3. Options:
    - 🔴 Critical
    - 🟡 High
    - 🟢 Medium
    - ⚪ Low
 
-3. **Effort** (Number)
-   - Hours estimate
+### Add Effort Field
+1. New field → **Number**
+2. Name: **Effort (hours)**
+3. Format: Number
 
 ---
 
-## Step 3: Enable Automation
+## Step 4: Verify Automation
 
-GitHub Project has built-in automations:
-
-### Auto-add items
-1. Project settings → Workflows
-2. Enable **Auto-add to project**
-3. Filter: `repo:Den3112/slovor is:issue,pr`
-
-### Auto-archive
-1. Enable **Auto-archive items**
-2. Filter: `is:closed`
-
----
-
-## Step 4: Create Issues from Task Tracker
-
-Run this script to convert TASK_TRACKER.md to GitHub Issues:
-
-```bash
-# In project root
-node scripts/create-issues-from-tasks.js
-```
-
-This will:
-- Create 13 issues for Phase 1 tasks
-- Add labels: `phase-1`, `infrastructure`
-- Link to project automatically
-- Set priority and effort
-
----
-
-## Step 5: Configure GitHub Actions
-
-Our `.github/workflows/project-automation.yml` automatically:
+Our GitHub Action (`.github/workflows/project-automation.yml`) automatically:
 
 ✅ Adds new issues to project  
 ✅ Moves issues with `in-progress` label to "In Progress"  
@@ -84,91 +94,82 @@ Our `.github/workflows/project-automation.yml` automatically:
 ✅ Adds PRs to project  
 ✅ Moves merged PRs to "Done"  
 
-**No manual work needed!**
+**Test it:**
+1. Create a test issue
+2. Check if it appears in "Todo" column
+3. Add label `in-progress`
+4. Check if it moves to "In Progress"
+5. Close issue
+6. Check if it moves to "Done"
 
 ---
 
-## Step 6: AI Integration
+## Board Columns Explained
 
-AI will automatically:
+| Column | When item appears |
+|--------|------------------|
+| **📋 Todo** | Issue opened (default) |
+| **🔄 In Progress** | Issue has label `in-progress` |
+| **✅ Done** | Issue closed |
 
-1. **Create issues** when starting tasks
-2. **Add labels** (`phase-1`, `in-progress`, `done`)
-3. **Update project** via labels (Actions do the moving)
-4. **Close issues** when tasks complete
-5. **Create PRs** for phase completion
+---
 
-**AI Workflow:**
+## AI Integration
+
+When you tell AI to work:
+
 ```
-AI starts Task 1.1
-  ↓
-Creates GitHub Issue #1
-  ↓
-Issue auto-added to Project (Backlog)
-  ↓
-AI adds label: in-progress
-  ↓
-Actions move to "In Progress" column
-  ↓
-AI completes task
-  ↓
-AI closes Issue #1
-  ↓
-Actions move to "Done" column
+Human: start phase 1
+
+AI:
+1. Creates GitHub Issue for Task 1.1
+2. Issue auto-appears in "Todo"
+3. Adds label "in-progress"
+4. Automation moves to "In Progress"
+5. Works on task
+6. Closes issue when done
+7. Automation moves to "Done"
 ```
 
----
-
-## Step 7: View Progress
-
-### Project Board:
-https://github.com/users/Den3112/projects/1
-
-### Quick Stats:
-- Total tasks
-- Completed tasks
-- In Progress
-- Velocity (tasks/day)
+**You see progress in real-time on the board!**
 
 ---
-## Step 8: Mobile Access
+
+## Mobile Access
 
 **GitHub Mobile App:**
 - iOS: https://apps.apple.com/app/github/id1477376905
 - Android: https://play.google.com/store/apps/details?id=com.github.android
 
-View and update project on the go!
+View and update your board anywhere!
 
 ---
 
-## Commands for AI
-
-AI will use these when working:
+## Useful Commands
 
 ```bash
-# Create issue
-gh issue create --title "Task 1.1: Dev Container Setup" --body "..." --label "phase-1,infrastructure"
+# View all issues
+gh issue list --repo Den3112/slovor
 
-# Add label (triggers automation)
-gh issue edit 1 --add-label "in-progress"
+# View Phase 1 tasks
+gh issue list --label "phase-1" --repo Den3112/slovor
 
-# Close issue (moves to Done)
-gh issue close 1 --comment "Task completed"
+# View in-progress tasks
+gh issue list --label "in-progress" --repo Den3112/slovor
 
-# Link to PR
-gh pr create --title "feat: complete phase 1" --body "Closes #1, #2, #3"
+# View project in CLI
+gh project list
 ```
 
 ---
 
-## Benefits
+## Links
 
-✅ **Visual progress** - see status at a glance  
-✅ **No manual updates** - automation handles everything  
-✅ **Team collaboration** - everyone sees same board  
-✅ **Mobile friendly** - check progress anywhere  
-✅ **Historical data** - track velocity over time  
+- **Your Project Board:** https://github.com/users/Den3112/projects/1
+- **Repository:** https://github.com/Den3112/slovor
+- **Production Site:** https://slovor.vercel.app
+- **Vercel Dashboard:** https://vercel.com/slovors-projects/slovor
 
 ---
 
-**Last Updated:** 2025-12-08
+**Last Updated:** 2025-12-08 21:10 EET
