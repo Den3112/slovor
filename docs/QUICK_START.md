@@ -1,12 +1,53 @@
 # Quick Start Guide
 
-**Purpose:** Fast setup for new projects using this template
+**Purpose:** Fast setup for Slovor development
 
 ---
 
-## For New Projects
+## For Slovor Development
+
+### Step 1: Install Lando
+
+**Windows:**
+1. Download: https://github.com/lando/lando/releases/latest
+2. Run `lando-x64-v3.x.x.exe`
+3. Restart computer
+
+**macOS:**
+```bash
+brew install lando
+```
+
+**Linux:**
+```bash
+wget https://files.lando.dev/installer/lando-x64-stable.deb
+sudo dpkg -i lando-x64-stable.deb
+```
+
+### Step 2: Clone & Start
+
+```bash
+git clone https://github.com/Den3112/slovor.git
+cd slovor
+lando start
+```
+
+**Wait 2-3 minutes...** ☕
+
+### Step 3: Develop!
+
+```bash
+lando dev     # Start dev server → http://localhost:3000
+lando lint    # Run linting
+lando test    # Run tests
+```
+
+---
+
+## For New Projects Using This Template
 
 ### Step 1: Clone Template
+
 ```bash
 git clone https://github.com/Den3112/slovor.git my-new-project
 cd my-new-project
@@ -17,111 +58,98 @@ git init
 ### Step 2: Update Project Info
 
 Edit these files:
-- `docs/PROJECT_ROADMAP.md` - Change project name/description
+- `.lando.yml` - Change `name: slovor` to your project name
 - `package.json` - Update name, description
 - `README.md` - Update title
+- `docs/PROJECT_ROADMAP.md` - Change project details
 
 ### Step 3: Setup Services
 
-1. **Create Supabase Project:** https://supabase.com
-2. **Create Vercel Project:** https://vercel.com
-3. **Create Sentry Project:** https://sentry.io
-4. **Get GitHub Token:** https://github.com/settings/tokens
+1. **Supabase:** https://supabase.com
+2. **Vercel:** https://vercel.com
+3. **Sentry:** https://sentry.io
 
 ### Step 4: Update Credentials
 
-Edit `.env.local`:
-```
-NEXT_PUBLIC_SUPABASE_URL=your-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-key
-SENTRY_DSN=your-dsn
-VERCEL_TOKEN=your-token
-GITHUB_TOKEN=your-token
-```
+Edit `.lando.yml` → `services.appserver.overrides.environment` with your keys
 
-### Step 5: Start AI Agent
-
-Open Windsurf/Cursor with Killo Code:
-```
-start phase 1
-```
-
-AI will set up everything automatically!
-
----
-
-## For Slovor Development
-
-### Step 1: Clone Repo
+Or create `.env.local`:
 ```bash
-git clone https://github.com/Den3112/slovor.git
-cd slovor
+cp .env.example .env.local
+# Edit .env.local with real credentials
 ```
 
-### Step 2: Open in Windsurf
+### Step 5: Start
+
 ```bash
-code slovor
-```
-
-### Step 3: Start Dev Container
-F1 → "Dev Containers: Reopen in Container"
-
-### Step 4: Start AI Agent
-Killo Code (Grok):
-```
-start phase 1
+lando start
 ```
 
 ---
 
-## GitHub Projects Setup
+## AI Automation
 
-### ✅ Your Setup is CORRECT!
+### With Killo Code (Windsurf):
 
-You already created:
-- Project: "@Slovor-Development"
-- Columns: Todo, In Progress, Done
-- URL: https://github.com/users/Den3112/projects/1
-
-### Enable Automation
-
-1. Go to project settings
-2. Click **Workflows** tab
-3. Enable **"Auto-add to project"**
-   - Filter: `repo:Den3112/slovor is:issue,pr`
-4. Enable **"Auto-archive items"**
-   - When: Status is Done
-
-### Create All Phase 1 Tasks as Issues
-
-```bash
-cd slovor
-node scripts/create-issues-from-tasks.js
+```
+start phase 1     # AI begins Phase 1 development
+continue          # Resume work
+status            # Check progress
+approve phase 1   # Complete and commit
 ```
 
-This will create 13 issues (Tasks 1.1-1.13) and add them to your board automatically!
+AI will:
+- Execute tasks automatically
+- Update task tracker
+- Run tests
+- Commit changes
+- Move to next phase
+
+[Full AI workflow →](AI_WORKFLOW.md)
 
 ---
 
-## Commands
+## Common Commands
 
-- `start phase X` - Begin phase
-- `continue` - Resume work
-- `status` - Show progress
-- `approve phase X` - Commit & next
-- `stop` - Pause AI
+```bash
+# Development
+lando start       # Start services
+lando dev         # Dev server
+lando stop        # Stop services
+lando restart     # Restart
+lando rebuild     # Rebuild containers
+
+# npm
+lando npm install
+lando npm run build
+lando npx next dev
+
+# Database
+lando psql        # Connect to DB
+lando db-reset    # Reset DB
+lando db-migrate  # Run migrations
+
+# Quality
+lando lint        # ESLint
+lando format      # Prettier
+lando test        # Jest
+lando tsc         # Type check
+
+# Troubleshooting
+lando logs        # View logs
+lando ssh         # SSH into container
+lando info        # Service info
+```
 
 ---
 
 ## Links
 
-- **GitHub Repo:** https://github.com/Den3112/slovor
-- **GitHub Projects:** https://github.com/users/Den3112/projects/1
+- **Full Lando Guide:** [LANDO_SETUP.md](LANDO_SETUP.md)
+- **Project Roadmap:** [PROJECT_ROADMAP.md](PROJECT_ROADMAP.md)
+- **Coding Standards:** [../.github/CODING_STANDARDS.md](../.github/CODING_STANDARDS.md)
 - **Production:** https://slovor.vercel.app
-- **Vercel Dashboard:** https://vercel.com/slovors-projects/slovor
-- **Supabase:** https://rsywmmnxkvwvhgrgzlei.supabase.co
 
 ---
 
-**Questions?** Check `docs/AI_WORKFLOW.md`
+**Questions? Check [LANDO_SETUP.md](LANDO_SETUP.md)!**

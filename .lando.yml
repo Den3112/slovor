@@ -1,0 +1,109 @@
+name: slovor
+recipe: node
+config:
+  node: '18'
+  
+services:
+  appserver:
+    type: node:18
+    scanner: false
+    ports:
+      - '3000:3000'
+      - '54321:54321'
+    build:
+      - npm install
+    overrides:
+      environment:
+        NODE_ENV: development
+        DATABASE_URL: postgres://postgres:postgres@database:5432/slovor
+        NEXT_PUBLIC_SUPABASE_URL: https://rsywmmnxkvwvhgrgzlei.supabase.co
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzeXdtbW54a3Z3dmhncmd6bGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyMDA0MjAsImV4cCI6MjA4MDc3NjQyMH0.pNzBIic-uopmLaP8iU3VtQGasTmicyK-loUMbocYZq0
+  
+  database:
+    type: postgres:15
+    portforward: 5432
+    creds:
+      user: postgres
+      password: postgres
+      database: slovor
+    config:
+      database: supabase/migrations
+      
+tooling:
+  npm:
+    service: appserver
+    description: Run npm commands
+  
+  node:
+    service: appserver
+    description: Run node commands
+  
+  dev:
+    service: appserver
+    description: Start Next.js development server
+    cmd: npm run dev
+  
+  build:
+    service: appserver
+    description: Build Next.js for production
+    cmd: npm run build
+  
+  lint:
+    service: appserver
+    description: Run ESLint
+    cmd: npm run lint
+  
+  format:
+    service: appserver
+    description: Format code with Prettier
+    cmd: npm run format
+  
+  test:
+    service: appserver
+    description: Run tests
+    cmd: npm run test
+  
+  tsc:
+    service: appserver
+    description: TypeScript type checking
+    cmd: npx tsc --noEmit
+  
+  setup-check:
+    service: appserver
+    description: Validate project setup
+    cmd: bash scripts/setup-check.sh
+  
+  setup-repair:
+    service: appserver
+    description: Auto-repair project setup
+    cmd: bash scripts/setup-repair.sh
+  
+  psql:
+    service: database
+    description: Connect to PostgreSQL
+    cmd: psql -U postgres slovor
+  
+  db-reset:
+    service: database
+    description: Reset database
+    cmd: psql -U postgres -c 'DROP DATABASE IF EXISTS slovor; CREATE DATABASE slovor;'
+  
+  db-migrate:
+    service: appserver
+    description: Run Supabase migrations
+    cmd: supabase db push
+
+events:
+  post-start:
+    - appserver: echo "\n🚀 Slovor is starting...\n"
+    - appserver: npm install
+    - appserver: bash scripts/setup-check.sh || bash scripts/setup-repair.sh
+    - appserver: echo "\n✅ Slovor is ready!\n"
+    - appserver: echo "📚 Quick commands:"
+    - appserver: echo "   lando dev          - Start dev server"
+    - appserver: echo "   lando npm install  - Install dependencies"
+    - appserver: echo "   lando lint         - Run linting"
+    - appserver: echo "   lando test         - Run tests"
+    - appserver: echo "   lando psql         - Connect to database\n"
+    - appserver: echo "🤖 AI Commands (Killo Code):"
+    - appserver: echo "   start phase 1      - Begin development\n"
