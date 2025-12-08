@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - node_modules:/workspace/node_modules
+    command: sleep infinity
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/slovor
+    ports:
+      - "3000:3000"
+    networks:
+      - slovor-net
+    depends_on:
+      - postgres
+  
+  postgres:
+    image: supabase/postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: slovor
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ../supabase/migrations:/docker-entrypoint-initdb.d:ro
+    networks:
+      - slovor-net
+
+volumes:
+  postgres-data:
+  node_modules:
+
+networks:
+  slovor-net:
