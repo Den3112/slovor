@@ -18,7 +18,7 @@ all_ok=true
 
 # Load GitHub token from .env.local if exists
 if [ -f "/app/slovor/.env.local" ]; then
-    export $(grep -v '^#' /app/slovor/.env.local | grep 'GITHUB_TOKEN' | xargs)
+    export $(grep -v '^#' /app/slovor/.env.local | grep 'GITHUB_TOKEN' | xargs) 2>/dev/null || true
 fi
 
 # Check Vercel Production
@@ -48,20 +48,20 @@ else
     all_ok=false
 fi
 
-# Check GitHub Projects
-echo -ne "  ${BLUE}⟳${NC} GitHub Projects...           "
+# Check GitHub API Token
+echo -ne "  ${BLUE}⟳${NC} GitHub API Token...          "
 if [ -n "$GITHUB_TOKEN" ]; then
     HTTP_CODE=$(curl -s --max-time 5 -o /dev/null -w "%{http_code}" \
         -H "Authorization: token $GITHUB_TOKEN" \
-        https://api.github.com/users/Den3112/projects)
+        https://api.github.com/user)
     if echo "$HTTP_CODE" | grep -q "200"; then
         echo -e "${GREEN}✓ OK${NC}"
     else
-        echo -e "${RED}✗ FAILED${NC} (token invalid?)"
+        echo -e "${RED}✗ INVALID${NC}"
         all_ok=false
     fi
 else
-    echo -e "${YELLOW}⚠ NO TOKEN${NC}"
+    echo -e "${YELLOW}⚠ NOT SET${NC}"
     echo ""
     echo -e "    ${YELLOW}→${NC} Add GITHUB_TOKEN to slovor/.env.local"
     echo -e "    ${YELLOW}→${NC} Get token: ${BLUE}https://github.com/settings/tokens/new${NC}"
@@ -96,7 +96,7 @@ else
     echo -e "  ${RED}✗ Some services are unreachable${NC}"
     echo ""
     if [ -z "$GITHUB_TOKEN" ]; then
-        echo -e "  ${BOLD}To enable GitHub Projects check:${NC}"
+        echo -e "  ${BOLD}To enable GitHub API access:${NC}"
         echo -e "    1. Get token: ${BLUE}https://github.com/settings/tokens/new${NC}"
         echo -e "    2. Add to ${GREEN}slovor/.env.local${NC}: ${BOLD}GITHUB_TOKEN=your_token${NC}"
         echo -e "    3. Run: ${YELLOW}lando restart${NC}"

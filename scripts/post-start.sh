@@ -132,19 +132,19 @@ else
     echo -e "${RED}✗ FAILED${NC}"
 fi
 
-# GitHub Projects
-echo -ne "    ${BLUE}⟳${NC} GitHub Projects...           "
+# GitHub API Token (check user access instead of projects endpoint)
+echo -ne "    ${BLUE}⟳${NC} GitHub API Token...          "
 if [ -n "$GITHUB_TOKEN" ]; then
     HTTP_CODE=$(curl -s --max-time 3 -o /dev/null -w "%{http_code}" \
         -H "Authorization: token $GITHUB_TOKEN" \
-        https://api.github.com/users/Den3112/projects 2>/dev/null)
+        https://api.github.com/user 2>/dev/null)
     if echo "$HTTP_CODE" | grep -q "200"; then
         echo -e "${GREEN}✓ OK${NC}"
     else
-        echo -e "${RED}✗ FAILED${NC} (token invalid?)"
+        echo -e "${RED}✗ INVALID${NC}"
     fi
 else
-    echo -e "${YELLOW}⚠ NO TOKEN${NC}"
+    echo -e "${YELLOW}⚠ NOT SET${NC}"
 fi
 
 # PostgreSQL
@@ -152,7 +152,7 @@ echo -ne "    ${BLUE}⟳${NC} Local PostgreSQL...          "
 if psql -h database -U postgres -d slovor -c 'SELECT 1' > /dev/null 2>&1; then
     echo -e "${GREEN}✓ RUNNING${NC}"
 else
-    echo -e "${YELLOW}⚠ STOPPED${NC} (run 'lando start')"
+    echo -e "${YELLOW}⚠ STOPPED${NC} (starting...)"
 fi
 
 echo ""
