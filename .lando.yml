@@ -134,6 +134,11 @@ tooling:
     description: Auto-fix project structure issues
     cmd: bash /app/scripts/setup-repair.sh
   
+  update:
+    service: app
+    description: Update Lando and dependencies
+    cmd: bash /app/scripts/lando-update.sh
+  
   psql:
     service: database
     description: PostgreSQL interactive shell

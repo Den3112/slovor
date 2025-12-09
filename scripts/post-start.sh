@@ -26,6 +26,31 @@ if [ ! -f "slovor/.env" ]; then
     echo ""
 fi
 
+# Check for Lando updates
+if command -v lando &> /dev/null; then
+    UPDATE_CHECK=$(lando version 2>&1 || true)
+    if echo "$UPDATE_CHECK" | grep -qi "updates available" || echo "$UPDATE_CHECK" | grep -qi "packages that can be updated"; then
+        PACKAGE_COUNT=$(echo "$UPDATE_CHECK" | grep -oP '\d+(?= package)' | head -1 || echo "several")
+        echo -e "${YELLOW}ℹ${NC} ${BOLD}Updates available!${NC}"
+        echo -e "   Lando has detected ${YELLOW}${PACKAGE_COUNT}${NC} packages that can be updated."
+        echo -e "   Updating fixes bugs, security issues and brings new features."
+        echo ""
+        read -p "Update now? (y/N): " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo ""
+            echo -e "${CYAN}Running lando update...${NC}"
+            lando update || true
+            echo ""
+            echo -e "${GREEN}✓${NC} Update complete!"
+            echo ""
+        else
+            echo -e "${YELLOW}Skipped. Run ${CYAN}lando update${NC} manually when ready.${NC}"
+        fi
+        echo ""
+    fi
+fi
+
 echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${BOLD}${GREEN}🚀 Start Development${NC}"
 echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -69,6 +94,7 @@ echo -e "  ${YELLOW}lando db-migrate${NC}       Run migrations"
 echo ""
 echo -e "${BOLD}Troubleshooting:${NC}"
 echo -e "  ${YELLOW}lando doctor${NC}           Full system diagnostics"
+echo -e "  ${YELLOW}lando update${NC}           Update Lando and dependencies"
 echo -e "  ${YELLOW}lando logs -f${NC}          Watch live logs (Ctrl+C to exit)"
 echo -e "  ${YELLOW}lando restart${NC}          Restart containers"
 echo -e "  ${YELLOW}lando rebuild -y${NC}       Nuclear option: rebuild everything"
