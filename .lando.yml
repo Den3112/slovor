@@ -71,12 +71,12 @@ tooling:
   
   npx:
     service: app
-    description: Run npx commands (e.g., lando npx prisma)
+    description: Run npx commands (e.g. lando npx prisma)
     cmd: cd /app/slovor && npx
   
   dev:
     service: app
-    description: Start Next.js dev server (localhost:3000)
+    description: Start Next.js dev server (localhost 3000)
     cmd: cd /app/slovor && npm run dev
   
   build:
@@ -116,7 +116,7 @@ tooling:
   
   health:
     service: app
-    description: Quick lint + typecheck
+    description: Quick lint and typecheck
     cmd: bash /app/scripts/health-check.sh
   
   doctor:
@@ -146,7 +146,7 @@ tooling:
   
   db-reset:
     service: database
-    description: Drop and recreate database (WARNING: destroys data!)
+    description: Drop and recreate database WARNING destroys data
     cmd: psql -U postgres -c 'DROP DATABASE IF EXISTS slovor; CREATE DATABASE slovor;'
   
   db-migrate:
@@ -171,12 +171,12 @@ tooling:
   
   cleanup:
     service: app
-    description: Clean up unused Docker containers, images, volumes
+    description: Clean up unused Docker containers images volumes
     cmd: bash /app/scripts/docker-cleanup.sh
   
-  cleanup:hard:
+  cleanup-hard:
     service: app
-    description: Nuclear cleanup - removes EVERYTHING (use with caution!)
+    description: Nuclear cleanup removes EVERYTHING use with caution
     cmd: bash /app/scripts/docker-cleanup.sh --hard
 
 events:
