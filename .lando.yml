@@ -1,11 +1,7 @@
 name: slovor
-recipe: node
-
-config:
-  node: '18'
 
 services:
-  appserver:
+  app:
     type: node:18
     scanner: false
     
@@ -14,7 +10,7 @@ services:
       - '54321:54321'
     
     build:
-      - cd slovor && npm install --silent --legacy-peer-deps || npm install --silent --force
+      - cd /app/slovor && npm install --silent --legacy-peer-deps || npm install --silent --force
     
     overrides:
       environment:
@@ -40,79 +36,79 @@ services:
 
 tooling:
   npm:
-    service: appserver
+    service: app
     description: Run npm commands
-    cmd: cd slovor && npm
+    cmd: cd /app/slovor && npm
   
   node:
-    service: appserver
+    service: app
     description: Run node commands
-    cmd: cd slovor && node
+    cmd: cd /app/slovor && node
   
   npx:
-    service: appserver
+    service: app
     description: Run npx commands
-    cmd: cd slovor && npx
+    cmd: cd /app/slovor && npx
   
   dev:
-    service: appserver
+    service: app
     description: Start Next.js development server
-    cmd: cd slovor && npm run dev
+    cmd: cd /app/slovor && npm run dev
   
   build:
-    service: appserver
+    service: app
     description: Build Next.js for production
-    cmd: cd slovor && npm run build
+    cmd: cd /app/slovor && npm run build
   
   start:
-    service: appserver
+    service: app
     description: Start production server
-    cmd: cd slovor && npm run start
+    cmd: cd /app/slovor && npm run start
   
   lint:
-    service: appserver
+    service: app
     description: Run ESLint
-    cmd: cd slovor && npm run lint
+    cmd: cd /app/slovor && npm run lint
   
   lint:fix:
-    service: appserver
+    service: app
     description: Auto-fix ESLint issues
-    cmd: cd slovor && npm run lint -- --fix
+    cmd: cd /app/slovor && npm run lint -- --fix
   
   format:
-    service: appserver
+    service: app
     description: Format code with Prettier
-    cmd: cd slovor && npm run format
+    cmd: cd /app/slovor && npm run format
   
   test:
-    service: appserver
+    service: app
     description: Run tests
-    cmd: cd slovor && npm run test
+    cmd: cd /app/slovor && npm run test
   
   tsc:
-    service: appserver
+    service: app
     description: TypeScript type checking
-    cmd: cd slovor && npx tsc --noEmit
+    cmd: cd /app/slovor && npx tsc --noEmit
   
   health:
-    service: appserver
+    service: app
     description: Quick health check (lint + typecheck)
-    cmd: bash scripts/health-check.sh
+    cmd: bash /app/scripts/health-check.sh
   
   doctor:
-    service: appserver
+    service: app
     description: Full system diagnostics
-    cmd: bash scripts/lando-doctor.sh
+    cmd: bash /app/scripts/lando-doctor.sh
   
   setup-check:
-    service: appserver
+    service: app
     description: Validate project setup
-    cmd: bash scripts/setup-check.sh
+    cmd: bash /app/scripts/setup-check.sh
   
   setup-repair:
-    service: appserver
+    service: app
     description: Auto-repair project setup
-    cmd: bash scripts/setup-repair.sh
+    cmd: bash /app/scripts/setup-repair.sh
   
   psql:
     service: database
@@ -130,18 +126,18 @@ tooling:
     cmd: psql -U postgres -c 'DROP DATABASE IF EXISTS slovor; CREATE DATABASE slovor;'
   
   db-migrate:
-    service: appserver
+    service: app
     description: Run Supabase migrations
-    cmd: cd slovor && supabase db push
+    cmd: cd /app/slovor && supabase db push
   
   logs:
-    service: appserver
+    service: app
     description: Show container logs
     cmd: tail -f /var/log/* 2>/dev/null || echo "No logs available"
 
 events:
   pre-start:
-    - appserver: bash scripts/pre-start-check.sh
+    - app: bash /app/scripts/pre-start-check.sh
   
   post-start:
-    - appserver: bash scripts/post-start.sh
+    - app: bash /app/scripts/post-start.sh
