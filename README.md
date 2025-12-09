@@ -49,7 +49,7 @@ slovor_dev/                    # Repository root
 │   ├── setup-check.sh         # Validate setup
 │   ├── setup-repair.sh        # Auto-fix issues
 │   ├── lando-doctor.sh        # System diagnostics
-│   ├── cleanup-docker.sh      # Docker cleanup (run from WSL)
+│   ├── cleanup-docker.sh      # Docker cleanup
 │   └── show-urls.sh           # Show all URLs
 ├── .github/                   # GitHub workflows
 ├── .lando.yml                 # Lando configuration
@@ -82,17 +82,17 @@ lando db-reset     # Reset database
 lando db-migrate   # Run migrations
 ```
 
-### Docker Cleanup
+### Docker Management
 
 ```bash
-# Safe cleanup (removes unused containers/images/volumes)
-bash scripts/cleanup-docker.sh
+# Docker cleanup (run from WSL, not via lando)
+bash scripts/cleanup-docker.sh        # Safe cleanup
+bash scripts/cleanup-docker.sh --hard # Nuclear cleanup
 
-# Nuclear cleanup (removes EVERYTHING)
-bash scripts/cleanup-docker.sh --hard
+# Container info
+lando info         # Show container info
+lando logs         # Show container logs
 ```
-
-**Run weekly to keep Docker tidy!**
 
 ### Project Management
 
@@ -101,9 +101,6 @@ lando start        # Start containers
 lando stop         # Stop containers
 lando restart      # Restart containers
 lando rebuild      # Rebuild from scratch
-lando poweroff     # Stop all Lando projects
-lando info         # Show container info
-lando logs         # Show container logs
 lando ssh          # Shell into app container
 ```
 
@@ -145,6 +142,20 @@ bash scripts/cleanup-docker.sh --hard
 - **ALL** images
 - **ALL** volumes (including data!)
 - **ALL** networks
+
+### Manual Cleanup
+
+```bash
+# Remove old Lando proxy containers
+docker stop $(docker ps -a | grep landoproxy | awk '{print $1}') 2>/dev/null || true
+docker rm $(docker ps -a | grep landoproxy | awk '{print $1}') 2>/dev/null || true
+
+# Clean everything manually
+docker container prune -f
+docker image prune -f
+docker volume prune -f
+docker network prune -f
+```
 
 ### Docker Desktop Settings
 

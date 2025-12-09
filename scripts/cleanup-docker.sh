@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-# Docker cleanup script - works both standalone and via lando
+# Docker cleanup script - works both standalone and via direct bash call
 # Usage: bash scripts/cleanup-docker.sh [--hard]
-#   or:  lando cleanup / lando cleanup-hard
 
 set -e
 
@@ -19,26 +18,10 @@ if [ "$1" = "--hard" ]; then
     HARD_MODE=true
 fi
 
-# Try to detect if docker is available on host
-# If we're inside container, try to access host docker socket
-if [ -f /.dockerenv ]; then
-    # Inside container - check if docker socket is mounted
-    if [ -S /var/run/docker.sock ]; then
-        # Docker socket available, but need docker CLI
-        # Try to use host's docker via socket
-        export DOCKER_HOST=unix:///var/run/docker.sock
-    fi
-fi
-
 # Check if Docker is available
 if ! command -v docker &> /dev/null; then
-    echo -e "${RED}✗ Docker CLI not found!${NC}"
-    echo -e "${YELLOW}This script must run on the host (WSL), not inside container${NC}"
-    echo ""
-    echo -e "${CYAN}Run this instead:${NC}"
-    echo -e "  ${GREEN}bash scripts/cleanup-docker.sh${NC}       # Safe cleanup"
-    echo -e "  ${GREEN}bash scripts/cleanup-docker.sh --hard${NC} # Nuclear cleanup"
-    echo ""
+    echo -e "${RED}✗ Docker not found!${NC}"
+    echo -e "${YELLOW}Make sure Docker is installed and running${NC}"
     exit 1
 fi
 
@@ -109,18 +92,33 @@ fi
 
 echo ""
 echo -e "${YELLOW}[2/5]${NC} Removing stopped containers..."
-CONTAINERS=$(docker container prune -f 2>&1 | grep -o 'Total reclaimed space: [^']*' || echo "0B")
-echo -e "  ${GREEN}✓${NC} $CONTAINERS"
+CONTAINERS_OUTPUT=$(docker container prune -f 2>&1)
+if echo "$CONTAINERS_OUTPUT" | grep -q "Total reclaimed space"; then
+    CONTAINERS_SPACE=$(echo "$CONTAINERS_OUTPUT" | grep "Total reclaimed space" | sed 's/Total reclaimed space: //')
+    echo -e "  ${GREEN}✓${NC} Freed: $CONTAINERS_SPACE"
+else
+    echo -e "  ${GREEN}✓${NC} No stopped containers to remove"
+fi
 
 echo ""
 echo -e "${YELLOW}[3/5]${NC} Removing unused images..."
-IMAGES=$(docker image prune -f 2>&1 | grep -o 'Total reclaimed space: [^']*' || echo "0B")
-echo -e "  ${GREEN}✓${NC} $IMAGES"
+IMAGES_OUTPUT=$(docker image prune -f 2>&1)
+if echo "$IMAGES_OUTPUT" | grep -q "Total reclaimed space"; then
+    IMAGES_SPACE=$(echo "$IMAGES_OUTPUT" | grep "Total reclaimed space" | sed 's/Total reclaimed space: //')
+    echo -e "  ${GREEN}✓${NC} Freed: $IMAGES_SPACE"
+else
+    echo -e "  ${GREEN}✓${NC} No unused images to remove"
+fi
 
 echo ""
 echo -e "${YELLOW}[4/5]${NC} Removing unused volumes..."
-VOLUMES=$(docker volume prune -f 2>&1 | grep -o 'Total reclaimed space: [^']*' || echo "0B")
-echo -e "  ${GREEN}✓${NC} $VOLUMES"
+VOLUMES_OUTPUT=$(docker volume prune -f 2>&1)
+if echo "$VOLUMES_OUTPUT" | grep -q "Total reclaimed space"; then
+    VOLUMES_SPACE=$(echo "$VOLUMES_OUTPUT" | grep "Total reclaimed space" | sed 's/Total reclaimed space: //')
+    echo -e "  ${GREEN}✓${NC} Freed: $VOLUMES_SPACE"
+else
+    echo -e "  ${GREEN}✓${NC} No unused volumes to remove"
+fi
 
 echo ""
 echo -e "${YELLOW}[5/5]${NC} Removing unused networks..."
@@ -134,7 +132,11 @@ echo -e "${CYAN}─────────────────────�
 echo ""
 
 echo -e "${GREEN}Running Containers:${NC}"
-docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" 2>/dev/null || echo "  None"
+if docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" 2>/dev/null | tail -n +2 | grep -q .; then
+    docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" 2>/dev/null
+else
+    echo "  None"
+fi
 
 echo ""
 echo -e "${GREEN}Disk Usage:${NC}"
@@ -144,7 +146,7 @@ echo ""
 echo -e "${GREEN}✓${NC} Cleanup complete!"
 echo ""
 echo -e "${YELLOW}💡 Tips:${NC}"
-echo -e "  - Run ${CYAN}lando cleanup${NC} weekly to keep Docker tidy"
-echo -e "  - Use ${CYAN}lando cleanup-hard${NC} for nuclear cleanup (removes everything)"
+echo -e "  - Run ${CYAN}bash scripts/cleanup-docker.sh${NC} weekly to keep Docker tidy"
+echo -e "  - Use ${CYAN}bash scripts/cleanup-docker.sh --hard${NC} for nuclear cleanup"
 echo -e "  - Check Docker Desktop settings: limit CPU to 2-4 cores, RAM to 4-6GB"
 echo ""
