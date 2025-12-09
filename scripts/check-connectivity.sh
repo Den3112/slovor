@@ -68,17 +68,27 @@ else
     echo -e "    ${YELLOW}→${NC} Scopes needed: ${BOLD}repo, project${NC}"
 fi
 
-# Check local PostgreSQL
+# Check local PostgreSQL (try localhost:5432 for host, database:5432 for container)
 echo -ne "  ${BLUE}⟳${NC} Local PostgreSQL...          "
-if command -v pg_isready > /dev/null 2>&1; then
-    if pg_isready -h localhost -p 5432 -U postgres > /dev/null 2>&1; then
+if command -v nc > /dev/null 2>&1; then
+    # Use netcat to check if port is open
+    if nc -z localhost 5432 2>/dev/null; then
+        echo -e "${GREEN}✓ RUNNING${NC}"
+    elif nc -z database 5432 2>/dev/null; then
+        echo -e "${GREEN}✓ RUNNING${NC}"
+    else
+        echo -e "${YELLOW}⚠ STOPPED${NC} (run 'lando start')"
+    fi
+elif command -v pg_isready > /dev/null 2>&1; then
+    # Fallback to pg_isready
+    if pg_isready -h localhost -p 5432 -U postgres > /dev/null 2>&1 || pg_isready -h database -p 5432 -U postgres > /dev/null 2>&1; then
         echo -e "${GREEN}✓ RUNNING${NC}"
     else
         echo -e "${YELLOW}⚠ STOPPED${NC} (run 'lando start')"
     fi
 else
-    # Inside container, check via psql
-    if psql -h database -U postgres -d slovor -c 'SELECT 1' > /dev/null 2>&1; then
+    # Last resort: try psql connection
+    if psql -h localhost -U postgres -d slovor -c 'SELECT 1' > /dev/null 2>&1 || psql -h database -U postgres -d slovor -c 'SELECT 1' > /dev/null 2>&1; then
         echo -e "${GREEN}✓ RUNNING${NC}"
     else
         echo -e "${YELLOW}⚠ STOPPED${NC} (run 'lando start')"
