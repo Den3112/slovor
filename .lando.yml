@@ -124,6 +124,11 @@ tooling:
     description: Full system diagnostics and troubleshooting
     cmd: bash /app/scripts/lando-doctor.sh
   
+  status:
+    service: app
+    description: Check connectivity to all services
+    cmd: bash /app/scripts/check-connectivity.sh
+  
   setup-check:
     service: app
     description: Validate project structure
