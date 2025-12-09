@@ -11,7 +11,7 @@
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Works Out of the Box!)
 
 ```bash
 # Clone
@@ -26,6 +26,22 @@ lando dev
 ```
 
 **Done!** Open http://localhost:3000
+
+**All scripts are executable by default** - no `chmod +x` needed!
+
+---
+
+## 📍 Quick Links
+
+### Development
+- **Local:** http://localhost:3000
+- **API:** http://localhost:3000/api
+- **Database:** `postgresql://postgres:postgres@localhost:5432/slovor`
+
+### Production
+- **Live Site:** https://slovor.vercel.app
+- **GitHub:** https://github.com/Den3112/slovor
+- **Supabase:** https://rsywmmnxkvwvhgrgzlei.supabase.co
 
 ---
 
@@ -53,6 +69,7 @@ slovor_dev/                    # Repository root
 │   └── show-urls.sh           # Show all URLs
 ├── .github/                   # GitHub workflows
 ├── .lando.yml                 # Lando configuration
+├── .gitattributes             # Git file attributes (executable scripts)
 └── README.md                  # This file
 ```
 
@@ -186,6 +203,7 @@ These limits prevent Docker from consuming all system resources.
 ### Database
 
 - **PostgreSQL:** localhost:5432
+- **Connection String:** `postgresql://postgres:postgres@localhost:5432/slovor`
 - **User:** postgres
 - **Password:** postgres
 - **Database:** slovor
