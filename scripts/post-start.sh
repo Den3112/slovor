@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 # Post-start welcome message with all essential info
+# This script runs inside the container after lando start
 
-set -e
+# Don't exit on errors - we want to show the welcome message anyway
+set +e
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -19,36 +21,12 @@ echo -e "${CYAN}│${NC}  ${BOLD}${BLUE}Slovor - Ready to Develop${NC}          
 echo -e "${CYAN}└─────────────────────────────────────────────────┘${NC}"
 echo ""
 
-# Check if auto-repair is needed
-if [ ! -f "slovor/.env" ]; then
+# Check if auto-repair is needed (only if .env is missing)
+if [ ! -f "/app/slovor/.env" ]; then
     echo -e "${YELLOW}⚠${NC} Running auto-repair..."
-    bash /app/scripts/setup-repair.sh
+    # Run repair but don't fail if it errors
+    bash /app/scripts/setup-repair.sh 2>/dev/null || echo -e "${YELLOW}⚠${NC} Auto-repair had issues (non-critical)"
     echo ""
-fi
-
-# Check for Lando updates
-if command -v lando &> /dev/null; then
-    UPDATE_CHECK=$(lando version 2>&1 || true)
-    if echo "$UPDATE_CHECK" | grep -qi "updates available" || echo "$UPDATE_CHECK" | grep -qi "packages that can be updated"; then
-        PACKAGE_COUNT=$(echo "$UPDATE_CHECK" | grep -oP '\d+(?= package)' | head -1 || echo "several")
-        echo -e "${YELLOW}ℹ${NC} ${BOLD}Updates available!${NC}"
-        echo -e "   Lando has detected ${YELLOW}${PACKAGE_COUNT}${NC} packages that can be updated."
-        echo -e "   Updating fixes bugs, security issues and brings new features."
-        echo ""
-        read -p "Update now? (y/N): " -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            echo ""
-            echo -e "${CYAN}Running lando update...${NC}"
-            lando update || true
-            echo ""
-            echo -e "${GREEN}✓${NC} Update complete!"
-            echo ""
-        else
-            echo -e "${YELLOW}Skipped. Run ${CYAN}lando update${NC} manually when ready.${NC}"
-        fi
-        echo ""
-    fi
 fi
 
 echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -94,7 +72,6 @@ echo -e "  ${YELLOW}lando db-migrate${NC}       Run migrations"
 echo ""
 echo -e "${BOLD}Troubleshooting:${NC}"
 echo -e "  ${YELLOW}lando doctor${NC}           Full system diagnostics"
-echo -e "  ${YELLOW}lando update${NC}           Update Lando and dependencies"
 echo -e "  ${YELLOW}lando logs -f${NC}          Watch live logs (Ctrl+C to exit)"
 echo -e "  ${YELLOW}lando restart${NC}          Restart containers"
 echo -e "  ${YELLOW}lando rebuild -y${NC}       Nuclear option: rebuild everything"
@@ -183,3 +160,6 @@ echo -e "     ${MAGENTA}https://rsywmmnxkvwvhgrgzlei.supabase.co${NC}"
 echo ""
 echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
+
+# Always exit successfully so lando start doesn't fail
+exit 0
