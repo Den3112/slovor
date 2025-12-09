@@ -49,21 +49,12 @@ slovor_dev/                    # Repository root
 │   ├── setup-check.sh         # Validate setup
 │   ├── setup-repair.sh        # Auto-fix issues
 │   ├── lando-doctor.sh        # System diagnostics
-│   ├── wsl2-setup.sh          # WSL2 installation
+│   ├── docker-cleanup.sh      # Docker cleanup
 │   └── show-urls.sh           # Show all URLs
 ├── .github/                   # GitHub workflows
 ├── .lando.yml                 # Lando configuration
 └── README.md                  # This file
 ```
-
-### Why This Structure?
-
-- **Root** = Development environment (Lando, Docker, scripts)
-- **slovor/** = Application code (Next.js, Supabase)
-- **docs/** = Documentation for developers
-- **scripts/** = Automation and tooling
-
-This keeps environment config separate from app code.
 
 ---
 
@@ -91,6 +82,15 @@ lando db-reset     # Reset database
 lando db-migrate   # Run migrations
 ```
 
+### Docker Management
+
+```bash
+lando cleanup      # Clean unused containers, images, volumes
+lando cleanup:hard # Nuclear cleanup (removes EVERYTHING)
+lando info         # Show container info
+lando logs         # Show container logs
+```
+
 ### Project Management
 
 ```bash
@@ -98,10 +98,59 @@ lando start        # Start containers
 lando stop         # Stop containers
 lando restart      # Restart containers
 lando rebuild      # Rebuild from scratch
-lando info         # Show container info
-lando logs         # Show container logs
 lando ssh          # Shell into app container
 ```
+
+---
+
+## 🧹 Docker Cleanup & Optimization
+
+### Quick Cleanup (Safe)
+
+Removes unused containers, images, and volumes:
+
+```bash
+lando cleanup
+```
+
+Run this **weekly** to keep Docker tidy.
+
+### Nuclear Cleanup (Dangerous)
+
+Removes **EVERYTHING** (use only if really needed):
+
+```bash
+lando cleanup:hard
+```
+
+⚠️ **WARNING:** This will delete all Docker data. You'll need to run `lando rebuild` after.
+
+### Manual Cleanup
+
+```bash
+# Remove old Lando proxy containers
+docker stop $(docker ps -a | grep landoproxy | awk '{print $1}') 2>/dev/null || true
+docker rm $(docker ps -a | grep landoproxy | awk '{print $1}') 2>/dev/null || true
+
+# Clean everything manually
+docker container prune -f
+docker image prune -f
+docker volume prune -f
+docker network prune -f
+```
+
+### Docker Desktop Settings
+
+For optimal performance:
+
+1. Open Docker Desktop → Settings → Resources
+2. Set:
+   - **CPU:** 2-4 cores
+   - **Memory:** 4-6 GB
+   - **Swap:** 1 GB
+   - **Disk:** 64 GB
+
+These limits prevent Docker from consuming all system resources.
 
 ---
 
@@ -211,6 +260,13 @@ lando restart
 ```bash
 lando db-reset
 lando restart
+```
+
+### Docker taking too much space?
+
+```bash
+lando cleanup      # Safe cleanup
+lando cleanup:hard # Nuclear option
 ```
 
 ### Full diagnostic:

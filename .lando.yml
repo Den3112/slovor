@@ -1,6 +1,6 @@
 name: slovor
 
-# No proxy - use localhost:3000 directly
+# Clean container naming: slovor-app, slovor-db
 
 services:
   app:
@@ -24,6 +24,16 @@ services:
         CHOKIDAR_USEPOLLING: 'true'
         CHOKIDAR_INTERVAL: 1000
         PORT: 3000
+      
+      # Resource limits for optimization
+      deploy:
+        resources:
+          limits:
+            cpus: '2'
+            memory: 2G
+          reservations:
+            cpus: '0.5'
+            memory: 512M
   
   database:
     type: postgres:15
@@ -36,6 +46,17 @@ services:
     
     config:
       database: slovor/supabase/migrations
+    
+    overrides:
+      # Resource limits for database
+      deploy:
+        resources:
+          limits:
+            cpus: '1'
+            memory: 1G
+          reservations:
+            cpus: '0.25'
+            memory: 256M
 
 tooling:
   npm:
@@ -50,12 +71,12 @@ tooling:
   
   npx:
     service: app
-    description: Run npx commands
+    description: Run npx commands (e.g., lando npx prisma)
     cmd: cd /app/slovor && npx
   
   dev:
     service: app
-    description: Start Next.js dev server
+    description: Start Next.js dev server (localhost:3000)
     cmd: cd /app/slovor && npm run dev
   
   build:
@@ -70,7 +91,7 @@ tooling:
   
   lint:
     service: app
-    description: Run ESLint
+    description: Run ESLint to check code
     cmd: cd /app/slovor && npm run lint
   
   lint:fix:
@@ -85,22 +106,22 @@ tooling:
   
   test:
     service: app
-    description: Run tests
+    description: Run test suite
     cmd: cd /app/slovor && npm run test
   
   tsc:
     service: app
-    description: TypeScript type checking
+    description: TypeScript type checking (no emit)
     cmd: cd /app/slovor && npx tsc --noEmit
   
   health:
     service: app
-    description: Quick health check
+    description: Quick lint + typecheck
     cmd: bash /app/scripts/health-check.sh
   
   doctor:
     service: app
-    description: Full system diagnostics
+    description: Full system diagnostics and troubleshooting
     cmd: bash /app/scripts/lando-doctor.sh
   
   setup-check:
@@ -110,7 +131,7 @@ tooling:
   
   setup-repair:
     service: app
-    description: Auto-fix project issues
+    description: Auto-fix project structure issues
     cmd: bash /app/scripts/setup-repair.sh
   
   psql:
@@ -125,7 +146,7 @@ tooling:
   
   db-reset:
     service: database
-    description: Reset database (WARNING deletes data)
+    description: Drop and recreate database (WARNING: destroys data!)
     cmd: psql -U postgres -c 'DROP DATABASE IF EXISTS slovor; CREATE DATABASE slovor;'
   
   db-migrate:
@@ -135,18 +156,28 @@ tooling:
   
   logs:
     service: app
-    description: Show container logs
+    description: Show container logs (use Ctrl+C to exit)
     cmd: tail -f /var/log/* 2>/dev/null || echo "No logs available"
   
   urls:
     service: app
-    description: Show all URLs and credentials
+    description: Show all working URLs and connection info
     cmd: bash /app/scripts/show-urls.sh
   
   help:
     service: app
     description: Show detailed usage guide
     cmd: bash /app/scripts/post-start.sh
+  
+  cleanup:
+    service: app
+    description: Clean up unused Docker containers, images, volumes
+    cmd: bash /app/scripts/docker-cleanup.sh
+  
+  cleanup:hard:
+    service: app
+    description: Nuclear cleanup - removes EVERYTHING (use with caution!)
+    cmd: bash /app/scripts/docker-cleanup.sh --hard
 
 events:
   post-start:
