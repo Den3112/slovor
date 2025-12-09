@@ -16,9 +16,11 @@ echo ""
 
 all_ok=true
 
-# Load GitHub token from .env.local if exists
+# Load GitHub token from both possible locations
 if [ -f "/app/slovor/.env.local" ]; then
     export $(grep -v '^#' /app/slovor/.env.local | grep 'GITHUB_TOKEN' | xargs) 2>/dev/null || true
+elif [ -f "slovor/.env.local" ]; then
+    export $(grep -v '^#' slovor/.env.local | grep 'GITHUB_TOKEN' | xargs) 2>/dev/null || true
 fi
 
 # Check Vercel Production
@@ -68,22 +70,37 @@ else
     echo -e "    ${YELLOW}→${NC} Scopes needed: ${BOLD}repo, project${NC}"
 fi
 
-# Check local PostgreSQL
+# Check local PostgreSQL with retry
 echo -ne "  ${BLUE}⟳${NC} Local PostgreSQL...          "
+PG_READY=false
+
 if command -v docker > /dev/null 2>&1; then
     # Running on host - check docker container
     if docker ps --format '{{.Names}}' 2>/dev/null | grep -q 'slovor_database'; then
-        echo -e "${GREEN}✓ RUNNING${NC}"
-    else
-        echo -e "${YELLOW}⚠ STOPPED${NC} (run 'lando start')"
+        # Container is running, now check if PostgreSQL accepts connections
+        for i in {1..5}; do
+            if docker exec slovor_database_1 pg_isready -U postgres > /dev/null 2>&1; then
+                PG_READY=true
+                break
+            fi
+            sleep 1
+        done
     fi
 else
-    # Running inside container - try psql connection
-    if psql -h database -U postgres -d slovor -c 'SELECT 1' > /dev/null 2>&1; then
-        echo -e "${GREEN}✓ RUNNING${NC}"
-    else
-        echo -e "${YELLOW}⚠ STOPPED${NC} (run 'lando start')"
-    fi
+    # Running inside container - try psql connection with retry
+    for i in {1..5}; do
+        if psql -h database -U postgres -d slovor -c 'SELECT 1' > /dev/null 2>&1; then
+            PG_READY=true
+            break
+        fi
+        sleep 1
+    done
+fi
+
+if [ "$PG_READY" = true ]; then
+    echo -e "${GREEN}✓ RUNNING${NC}"
+else
+    echo -e "${YELLOW}⚠ STOPPED${NC} (run 'lando start')"
 fi
 
 echo ""

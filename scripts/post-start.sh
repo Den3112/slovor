@@ -100,9 +100,11 @@ echo -e "${BOLD}${BLUE}📡 System Status${NC}"
 echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
-# Load GitHub token
+# Load GitHub token from both possible locations
 if [ -f "/app/slovor/.env.local" ]; then
     export $(grep -v '^#' /app/slovor/.env.local | grep 'GITHUB_TOKEN' | xargs) 2>/dev/null || true
+elif [ -f "slovor/.env.local" ]; then
+    export $(grep -v '^#' slovor/.env.local | grep 'GITHUB_TOKEN' | xargs) 2>/dev/null || true
 fi
 
 # Check external services
@@ -132,7 +134,7 @@ else
     echo -e "${RED}✗ FAILED${NC}"
 fi
 
-# GitHub API Token (check user access instead of projects endpoint)
+# GitHub API Token
 echo -ne "    ${BLUE}⟳${NC} GitHub API Token...          "
 if [ -n "$GITHUB_TOKEN" ]; then
     HTTP_CODE=$(curl -s --max-time 3 -o /dev/null -w "%{http_code}" \
@@ -147,12 +149,21 @@ else
     echo -e "${YELLOW}⚠ NOT SET${NC}"
 fi
 
-# PostgreSQL
+# PostgreSQL with retry logic
 echo -ne "    ${BLUE}⟳${NC} Local PostgreSQL...          "
-if psql -h database -U postgres -d slovor -c 'SELECT 1' > /dev/null 2>&1; then
+PG_READY=false
+for i in {1..5}; do
+    if psql -h database -U postgres -d slovor -c 'SELECT 1' > /dev/null 2>&1; then
+        PG_READY=true
+        break
+    fi
+    sleep 2
+done
+
+if [ "$PG_READY" = true ]; then
     echo -e "${GREEN}✓ RUNNING${NC}"
 else
-    echo -e "${YELLOW}⚠ STOPPED${NC} (starting...)"
+    echo -e "${YELLOW}⚠ STARTING...${NC}"
 fi
 
 echo ""
