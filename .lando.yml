@@ -3,7 +3,6 @@ recipe: node
 
 config:
   node: '18'
-  webroot: slovor
 
 services:
   appserver:
