@@ -168,16 +168,6 @@ tooling:
     service: app
     description: Show detailed usage guide
     cmd: bash /app/scripts/post-start.sh
-  
-  cleanup:
-    service: app
-    description: Clean up unused Docker containers images volumes
-    cmd: bash /app/scripts/docker-cleanup.sh
-  
-  cleanup-hard:
-    service: app
-    description: Nuclear cleanup removes EVERYTHING use with caution
-    cmd: bash /app/scripts/docker-cleanup.sh --hard
 
 events:
   post-start:

@@ -49,7 +49,7 @@ slovor_dev/                    # Repository root
 │   ├── setup-check.sh         # Validate setup
 │   ├── setup-repair.sh        # Auto-fix issues
 │   ├── lando-doctor.sh        # System diagnostics
-│   ├── docker-cleanup.sh      # Docker cleanup
+│   ├── cleanup-docker.sh      # Docker cleanup
 │   └── show-urls.sh           # Show all URLs
 ├── .github/                   # GitHub workflows
 ├── .lando.yml                 # Lando configuration
@@ -85,8 +85,13 @@ lando db-migrate   # Run migrations
 ### Docker Management
 
 ```bash
-lando cleanup      # Clean unused containers, images, volumes
-lando cleanup:hard # Nuclear cleanup (removes EVERYTHING)
+# Safe cleanup (removes unused containers/images/volumes)
+bash scripts/cleanup-docker.sh
+
+# Nuclear cleanup (removes EVERYTHING)
+bash scripts/cleanup-docker.sh --hard
+
+# Container info
 lando info         # Show container info
 lando logs         # Show container logs
 ```
@@ -110,7 +115,7 @@ lando ssh          # Shell into app container
 Removes unused containers, images, and volumes:
 
 ```bash
-lando cleanup
+bash scripts/cleanup-docker.sh
 ```
 
 Run this **weekly** to keep Docker tidy.
@@ -120,10 +125,25 @@ Run this **weekly** to keep Docker tidy.
 Removes **EVERYTHING** (use only if really needed):
 
 ```bash
-lando cleanup:hard
+bash scripts/cleanup-docker.sh --hard
 ```
 
 ⚠️ **WARNING:** This will delete all Docker data. You'll need to run `lando rebuild` after.
+
+### What Gets Cleaned
+
+**Safe cleanup:**
+- Stopped containers
+- Unused images
+- Unused volumes
+- Unused networks
+- Old Lando proxy containers
+
+**Hard cleanup:**
+- **ALL** containers (running and stopped)
+- **ALL** images
+- **ALL** volumes (including data!)
+- **ALL** networks
 
 ### Manual Cleanup
 
@@ -265,8 +285,8 @@ lando restart
 ### Docker taking too much space?
 
 ```bash
-lando cleanup      # Safe cleanup
-lando cleanup:hard # Nuclear option
+bash scripts/cleanup-docker.sh       # Safe cleanup
+bash scripts/cleanup-docker.sh --hard # Nuclear option
 ```
 
 ### Full diagnostic:
