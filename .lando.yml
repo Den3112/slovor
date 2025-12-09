@@ -1,5 +1,10 @@
 name: slovor
 
+proxy:
+  app:
+    - slovor.lndo.site:3000
+    - slovor-api.lndo.site:3000
+
 services:
   app:
     type: node:18
@@ -21,6 +26,7 @@ services:
         WATCHPACK_POLLING: 'true'
         CHOKIDAR_USEPOLLING: 'true'
         CHOKIDAR_INTERVAL: 1000
+        PORT: 3000
   
   database:
     type: postgres:15
@@ -134,10 +140,12 @@ tooling:
     service: app
     description: Show container logs
     cmd: tail -f /var/log/* 2>/dev/null || echo "No logs available"
+  
+  urls:
+    service: app
+    description: Show all project URLs
+    cmd: bash /app/scripts/show-urls.sh
 
 events:
-  pre-start:
-    - app: bash /app/scripts/pre-start-check.sh
-  
   post-start:
     - app: bash /app/scripts/post-start.sh

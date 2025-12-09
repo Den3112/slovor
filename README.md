@@ -1,10 +1,29 @@
 # Slovor Development Environment
 
-**Monorepo structure** for Slovor marketplace development.
+**Production-ready development setup with Lando, Docker, and WSL2**
 
-[![Production](https://img.shields.io/badge/Production-Live-green)](https://slovor.vercel.app)
-[![GitHub](https://img.shields.io/badge/GitHub-slovor-blue)](https://github.com/Den3112/slovor)
-[![Lando](https://img.shields.io/badge/Lando-Ready-orange)](https://lando.dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Lando](https://img.shields.io/badge/Lando-3.21-blue.svg)](https://lando.dev)
+[![Node](https://img.shields.io/badge/Node-18-green.svg)](https://nodejs.org)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org)
+
+---
+
+## 🚀 Quick Start
+
+```bash
+# Clone
+git clone https://github.com/Den3112/slovor.git slovor_dev
+cd slovor_dev
+
+# Start (everything auto-installs)
+lando start
+
+# Run dev server
+lando dev
+```
+
+**Done!** Open http://localhost:3000
 
 ---
 
@@ -13,189 +32,193 @@
 ```
 slovor_dev/                    # Repository root
 ├── slovor/                    # Main Next.js application
-│   ├── src/
-│   ├── public/
-│   ├── supabase/
+│   ├── src/                   # Source code
+│   ├── public/                # Static assets
+│   ├── supabase/              # Supabase config & migrations
 │   ├── package.json
-│   └── ...
+│   └── .env.example          # Environment template
 ├── docs/                      # Documentation
 │   ├── PROJECT_ROADMAP.md
 │   ├── LANDO_SETUP.md
-│   └── ...
+│   ├── WSL2_SETUP.md
+│   ├── SHELL_SETUP.md
+│   └── TESTING.md
 ├── scripts/                   # Development scripts
-│   ├── setup-check.sh
-│   ├── setup-repair.sh
-│   └── ...
-├── .github/                   # GitHub workflows & configs
-│   ├── workflows/
-│   └── ...
+│   ├── setup-check.sh         # Validate setup
+│   ├── setup-repair.sh        # Auto-fix issues
+│   ├── lando-doctor.sh        # System diagnostics
+│   ├── wsl2-setup.sh          # WSL2 installation
+│   └── show-urls.sh           # Show all URLs
+├── .github/                   # GitHub workflows
 ├── .lando.yml                 # Lando configuration
-├── .lando-version             # Lando version lock
 └── README.md                  # This file
 ```
 
 ### Why This Structure?
 
-✅ **Separation of concerns** - App code separate from dev environment  
-✅ **Cleaner app folder** - `slovor/` contains only application code  
-✅ **Scalability** - Easy to add more apps/packages later  
-✅ **Clear organization** - Docs and scripts in logical places  
+- **Root** = Development environment (Lando, Docker, scripts)
+- **slovor/** = Application code (Next.js, Supabase)
+- **docs/** = Documentation for developers
+- **scripts/** = Automation and tooling
+
+This keeps environment config separate from app code.
 
 ---
-
-## 🚀 Quick Start
-
-### Prerequisites
-- **Lando** - [Install here](https://github.com/lando/lando/releases/latest)
-- **Git** - For cloning repository
-
-### Setup
-
-```bash
-# Clone as slovor_dev
-git clone https://github.com/Den3112/slovor.git slovor_dev
-cd slovor_dev
-
-# Start everything!
-lando start
-
-# Wait 2-3 minutes... Done! 🎉
-```
-
-**That's it!** Lando automatically:
-- ✅ Sets up Node.js 18
-- ✅ Creates PostgreSQL database
-- ✅ Installs dependencies in `slovor/`
-- ✅ Runs setup checks
-- ✅ Starts dev server
-
----
-
 ## 📚 Common Commands
 
 ### Development
+
 ```bash
-lando dev          # Start dev server (http://localhost:3000)
-lando npm install  # Install dependencies
-lando npm run ...  # Any npm command
-lando lint         # Run ESLint
-lando test         # Run tests
+lando dev          # Start Next.js dev server
 lando build        # Build for production
+lando lint         # Run ESLint
+lando lint:fix     # Auto-fix lint issues
+lando test         # Run tests
+lando health       # Quick health check
+lando doctor       # Full system diagnostics
+lando urls         # Show all URLs
 ```
 
 ### Database
+
 ```bash
-lando psql         # Connect to database
+lando psql         # PostgreSQL shell
+lando db-dump      # Export database
 lando db-reset     # Reset database
 lando db-migrate   # Run migrations
 ```
 
 ### Project Management
+
 ```bash
-lando setup-check  # Validate setup
-lando setup-repair # Auto-fix issues
-lando logs         # View logs
-lando restart      # Restart services
-lando stop         # Stop services
+lando start        # Start containers
+lando stop         # Stop containers
+lando restart      # Restart containers
+lando rebuild      # Rebuild from scratch
+lando info         # Show container info
+lando logs         # Show container logs
+lando ssh          # Shell into app container
 ```
 
-[See all commands →](docs/LANDO_SETUP.md)
+---
+
+## 🌐 Access URLs
+
+### Application
+
+- **Local:** http://localhost:3000
+- **Proxy:** http://slovor.lndo.site
+- **API:** http://localhost:3000/api
+
+### Database
+
+- **PostgreSQL:** localhost:5432
+- **User:** postgres
+- **Password:** postgres
+- **Database:** slovor
+
+### External Services
+
+- **Supabase:** https://rsywmmnxkvwvhgrgzlei.supabase.co
+- **GitHub:** https://github.com/Den3112/slovor
+
+Run `lando urls` to see all endpoints.
 
 ---
 
 ## 📖 Documentation
 
-- [Lando Setup Guide](docs/LANDO_SETUP.md) - Full Lando documentation
-- [Quick Start](docs/QUICK_START.md) - Fast setup guide
-- [Project Roadmap](docs/PROJECT_ROADMAP.md) - Development phases
-- [Task Tracker](docs/TASK_TRACKER.md) - Current tasks
-- [CI/CD Pipeline](docs/CI_CD.md) - Automated testing & deployment
-- [Coding Standards](.github/CODING_STANDARDS.md) - Code guidelines
-- [AI Workflow](docs/AI_WORKFLOW.md) - AI automation
+- **[Project Roadmap](docs/PROJECT_ROADMAP.md)** - Development plan
+- **[Lando Setup](docs/LANDO_SETUP.md)** - Lando configuration guide
+- **[WSL2 Setup](docs/WSL2_SETUP.md)** - Windows + WSL2 installation
+- **[Shell Setup](docs/SHELL_SETUP.md)** - Terminal auto-navigation
+- **[Testing Guide](docs/TESTING.md)** - How to test everything
+- **[Coding Standards](.github/CODING_STANDARDS.md)** - Code style guide
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Application (`slovor/`)
-- **Frontend:** Next.js 15, React 19, TypeScript 5, Tailwind CSS 4
-- **Backend:** Supabase (PostgreSQL, Auth, Storage)
-- **Deployment:** Vercel
+### Application (slovor/)
+
+- **Framework:** Next.js 15 (React 19)
+- **Language:** TypeScript
+- **Database:** PostgreSQL + Supabase
+- **Styling:** Tailwind CSS
+- **Linting:** ESLint + Prettier
+- **Testing:** Jest + React Testing Library
 
 ### Development Environment (root)
-- **Runtime:** Lando + Docker
-- **Quality:** ESLint, Prettier, Jest
-- **CI/CD:** GitHub Actions
+
+- **Container Platform:** Lando 3.21+ (Docker)
+- **Runtime:** Node.js 18
+- **Database:** PostgreSQL 15
+- **OS:** WSL2 (Ubuntu 24.04)
 - **Automation:** Bash scripts
 
 ---
 
 ## 🤖 AI-Powered Development
 
-This project uses AI automation for development:
+This project is optimized for AI-assisted development:
 
-```
-In Killo Code (Windsurf IDE):
-  start phase 1    # AI starts Phase 1 tasks
-  continue         # Resume work
-  status           # Check progress
-  approve phase 1  # Complete phase
-```
-
-[Learn more →](docs/AI_WORKFLOW.md)
+- **Cursor/Windsurf:** Auto-opens in project directory
+- **GitHub Copilot:** Enhanced with project context
+- **AI Prompts:** Pre-configured in `.github/AI_GUIDELINES.md`
 
 ---
 
 ## 🔗 Links
 
-- **Production:** https://slovor.vercel.app
 - **GitHub:** https://github.com/Den3112/slovor
-- **GitHub Projects:** https://github.com/users/Den3112/projects/1
-- **Vercel Dashboard:** https://vercel.com/slovors-projects/slovor
-- **Supabase:** https://rsywmmnxkvwvhgrgzlei.supabase.co
+- **Issues:** https://github.com/Den3112/slovor/issues
+- **Discussions:** https://github.com/Den3112/slovor/discussions
+- **Lando Docs:** https://docs.lando.dev
+- **Next.js Docs:** https://nextjs.org/docs
+- **Supabase Docs:** https://supabase.com/docs
 
 ---
 
 ## 🐛 Troubleshooting
 
 ### Containers won't start?
+
 ```bash
-lando rebuild -y
+lando poweroff
+sudo service docker restart
+lando start
 ```
 
-### Database issues?
+### Port already in use?
+
+```bash
+sudo lsof -i:3000
+sudo kill -9 <PID>
+lando restart
+```
+
+### Database connection failed?
+
 ```bash
 lando db-reset
-lando db-migrate
+lando restart
 ```
 
-### npm install fails?
+### Full diagnostic:
+
 ```bash
-lando ssh
-cd slovor
-rm -rf node_modules package-lock.json
-npm install
+lando doctor
 ```
 
-[Full troubleshooting guide →](docs/LANDO_SETUP.md#troubleshooting)
+For more help: [docs/TESTING.md](docs/TESTING.md)
 
 ---
 
-## 📊 Project Status
-
-**Current Phase:** Phase 1 - MVP Foundation  
-**Progress:** 0/13 tasks  
-**Next Milestone:** Development environment ready
-
-[View roadmap →](docs/PROJECT_ROADMAP.md)
-
----
-
-## 👥 Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/amazing`)
-3. Work in `slovor/` directory for app code
+3. Make changes in `slovor/` directory for app code
 4. Commit changes (`git commit -m 'feat: add amazing feature'`)
 5. Push to branch (`git push origin feature/amazing`)
 6. Open Pull Request
