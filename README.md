@@ -24,6 +24,7 @@ lando start
 # Run dev server
 lando dev
 ```
+
 **Done!** Open http://localhost:3000
 
 ---
@@ -48,7 +49,7 @@ slovor_dev/                    # Repository root
 │   ├── setup-check.sh         # Validate setup
 │   ├── setup-repair.sh        # Auto-fix issues
 │   ├── lando-doctor.sh        # System diagnostics
-│   ├── cleanup-docker.sh      # Docker cleanup
+│   ├── cleanup-docker.sh      # Docker cleanup (run from WSL)
 │   └── show-urls.sh           # Show all URLs
 ├── .github/                   # GitHub workflows
 ├── .lando.yml                 # Lando configuration
@@ -81,20 +82,17 @@ lando db-reset     # Reset database
 lando db-migrate   # Run migrations
 ```
 
-### Docker Management
+### Docker Cleanup
 
 ```bash
-lando cleanup      # Safe cleanup (removes unused containers/images/volumes)
-lando cleanup-hard # Nuclear cleanup (removes EVERYTHING)
-lando info         # Show container info
-lando logs         # Show container logs
+# Safe cleanup (removes unused containers/images/volumes)
+bash scripts/cleanup-docker.sh
+
+# Nuclear cleanup (removes EVERYTHING)
+bash scripts/cleanup-docker.sh --hard
 ```
 
-**Alternative (direct bash):**
-```bash
-bash scripts/cleanup-docker.sh        # Safe cleanup
-bash scripts/cleanup-docker.sh --hard # Nuclear cleanup
-```
+**Run weekly to keep Docker tidy!**
 
 ### Project Management
 
@@ -103,6 +101,9 @@ lando start        # Start containers
 lando stop         # Stop containers
 lando restart      # Restart containers
 lando rebuild      # Rebuild from scratch
+lando poweroff     # Stop all Lando projects
+lando info         # Show container info
+lando logs         # Show container logs
 lando ssh          # Shell into app container
 ```
 
@@ -115,11 +116,6 @@ lando ssh          # Shell into app container
 Removes unused containers, images, and volumes:
 
 ```bash
-lando cleanup
-```
-
-Or directly:
-```bash
 bash scripts/cleanup-docker.sh
 ```
 
@@ -129,11 +125,6 @@ Run this **weekly** to keep Docker tidy.
 
 Removes **EVERYTHING** (use only if really needed):
 
-```bash
-lando cleanup-hard
-```
-
-Or directly:
 ```bash
 bash scripts/cleanup-docker.sh --hard
 ```
@@ -154,20 +145,6 @@ bash scripts/cleanup-docker.sh --hard
 - **ALL** images
 - **ALL** volumes (including data!)
 - **ALL** networks
-
-### Manual Cleanup
-
-```bash
-# Remove old Lando proxy containers
-docker stop $(docker ps -a | grep landoproxy | awk '{print $1}') 2>/dev/null || true
-docker rm $(docker ps -a | grep landoproxy | awk '{print $1}') 2>/dev/null || true
-
-# Clean everything manually
-docker container prune -f
-docker image prune -f
-docker volume prune -f
-docker network prune -f
-```
 
 ### Docker Desktop Settings
 
@@ -295,8 +272,8 @@ lando restart
 ### Docker taking too much space?
 
 ```bash
-lando cleanup      # Safe cleanup
-lando cleanup-hard # Nuclear option
+bash scripts/cleanup-docker.sh        # Safe cleanup
+bash scripts/cleanup-docker.sh --hard # Nuclear option
 ```
 
 ### Full diagnostic:
