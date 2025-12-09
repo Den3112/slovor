@@ -24,7 +24,6 @@ lando start
 # Run dev server
 lando dev
 ```
-
 **Done!** Open http://localhost:3000
 
 ---
@@ -85,15 +84,16 @@ lando db-migrate   # Run migrations
 ### Docker Management
 
 ```bash
-# Safe cleanup (removes unused containers/images/volumes)
-bash scripts/cleanup-docker.sh
-
-# Nuclear cleanup (removes EVERYTHING)
-bash scripts/cleanup-docker.sh --hard
-
-# Container info
+lando cleanup      # Safe cleanup (removes unused containers/images/volumes)
+lando cleanup-hard # Nuclear cleanup (removes EVERYTHING)
 lando info         # Show container info
 lando logs         # Show container logs
+```
+
+**Alternative (direct bash):**
+```bash
+bash scripts/cleanup-docker.sh        # Safe cleanup
+bash scripts/cleanup-docker.sh --hard # Nuclear cleanup
 ```
 
 ### Project Management
@@ -115,6 +115,11 @@ lando ssh          # Shell into app container
 Removes unused containers, images, and volumes:
 
 ```bash
+lando cleanup
+```
+
+Or directly:
+```bash
 bash scripts/cleanup-docker.sh
 ```
 
@@ -124,6 +129,11 @@ Run this **weekly** to keep Docker tidy.
 
 Removes **EVERYTHING** (use only if really needed):
 
+```bash
+lando cleanup-hard
+```
+
+Or directly:
 ```bash
 bash scripts/cleanup-docker.sh --hard
 ```
@@ -285,8 +295,8 @@ lando restart
 ### Docker taking too much space?
 
 ```bash
-bash scripts/cleanup-docker.sh       # Safe cleanup
-bash scripts/cleanup-docker.sh --hard # Nuclear option
+lando cleanup      # Safe cleanup
+lando cleanup-hard # Nuclear option
 ```
 
 ### Full diagnostic:

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Standalone Docker cleanup script - run from WSL directly
+# Docker cleanup script - works both standalone and via lando
 # Usage: bash scripts/cleanup-docker.sh [--hard]
+#   or:  lando cleanup / lando cleanup-hard
 
 set -e
 
@@ -18,10 +19,26 @@ if [ "$1" = "--hard" ]; then
     HARD_MODE=true
 fi
 
+# Try to detect if docker is available on host
+# If we're inside container, try to access host docker socket
+if [ -f /.dockerenv ]; then
+    # Inside container - check if docker socket is mounted
+    if [ -S /var/run/docker.sock ]; then
+        # Docker socket available, but need docker CLI
+        # Try to use host's docker via socket
+        export DOCKER_HOST=unix:///var/run/docker.sock
+    fi
+fi
+
 # Check if Docker is available
 if ! command -v docker &> /dev/null; then
-    echo -e "${RED}✗ Docker not found!${NC}"
-    echo -e "${YELLOW}Make sure Docker is installed and running${NC}"
+    echo -e "${RED}✗ Docker CLI not found!${NC}"
+    echo -e "${YELLOW}This script must run on the host (WSL), not inside container${NC}"
+    echo ""
+    echo -e "${CYAN}Run this instead:${NC}"
+    echo -e "  ${GREEN}bash scripts/cleanup-docker.sh${NC}       # Safe cleanup"
+    echo -e "  ${GREEN}bash scripts/cleanup-docker.sh --hard${NC} # Nuclear cleanup"
+    echo ""
     exit 1
 fi
 
@@ -127,7 +144,7 @@ echo ""
 echo -e "${GREEN}✓${NC} Cleanup complete!"
 echo ""
 echo -e "${YELLOW}💡 Tips:${NC}"
-echo -e "  - Run ${CYAN}bash scripts/cleanup-docker.sh${NC} weekly to keep Docker tidy"
-echo -e "  - Use ${CYAN}bash scripts/cleanup-docker.sh --hard${NC} for nuclear cleanup"
+echo -e "  - Run ${CYAN}lando cleanup${NC} weekly to keep Docker tidy"
+echo -e "  - Use ${CYAN}lando cleanup-hard${NC} for nuclear cleanup (removes everything)"
 echo -e "  - Check Docker Desktop settings: limit CPU to 2-4 cores, RAM to 4-6GB"
 echo ""
