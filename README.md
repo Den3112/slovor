@@ -37,12 +37,18 @@ lando dev
 ### Development
 - **Local:** http://localhost:3000
 - **API:** http://localhost:3000/api
-- **Database:** `postgresql://postgres:postgres@localhost:5432/slovor`
+- **Database:** `postgresql://postgres:postgres@localhost:5432/slovor` (local dev DB)
 
 ### Production
 - **Live Site:** https://slovor.vercel.app
-- **GitHub:** https://github.com/Den3112/slovor
+- **Vercel Dashboard:** https://vercel.com/slovors-projects/slovor
 - **Supabase:** https://rsywmmnxkvwvhgrgzlei.supabase.co
+
+### Project Management
+- **GitHub:** https://github.com/Den3112/slovor
+- **Project Board:** https://github.com/users/Den3112/projects/3/views/1
+- **Issues:** https://github.com/Den3112/slovor/issues
+- **Discussions:** https://github.com/Den3112/slovor/discussions
 
 ---
 
@@ -67,6 +73,7 @@ slovor_dev/                    # Repository root
 │   ├── setup-check.sh         # Validate setup
 │   ├── setup-repair.sh        # Auto-fix issues
 │   ├── lando-doctor.sh        # System diagnostics
+│   ├── check-connectivity.sh  # Check external services
 │   ├── cleanup-docker.sh      # Docker cleanup
 │   └── show-urls.sh           # Show all URLs
 ├── .github/                   # GitHub workflows
@@ -95,10 +102,17 @@ lando urls         # Show all URLs
 ### Database
 
 ```bash
-lando psql         # PostgreSQL shell
+lando psql         # PostgreSQL shell (local dev DB)
 lando db-dump      # Export database
 lando db-reset     # Reset database
 lando db-migrate   # Run migrations
+```
+
+### System Checks
+
+```bash
+bash scripts/check-connectivity.sh  # Check Vercel, Supabase, GitHub connectivity
+lando doctor                        # Full system diagnostics
 ```
 
 ### Docker Management
@@ -197,26 +211,48 @@ These limits prevent Docker from consuming all system resources.
 
 - **Local:** http://localhost:3000
 - **API:** http://localhost:3000/api
+- **Database:** postgresql://postgres:postgres@localhost:5432/slovor
+  - ℹ️ This is your **local development database** (auto-starts with `lando start`)
+  - ℹ️ Production uses Supabase (separate database)
 
 ### Production
 
 - **Live Site:** https://slovor.vercel.app
+- **Vercel Dashboard:** https://vercel.com/slovors-projects/slovor
+- **Supabase Dashboard:** https://rsywmmnxkvwvhgrgzlei.supabase.co
 
-### Database
+### Project Management
 
-- **PostgreSQL:** localhost:5432
-- **Connection String:** `postgresql://postgres:postgres@localhost:5432/slovor`
-- **User:** postgres
-- **Password:** postgres
-- **Database:** slovor
-
-### External Services
-
-- **Production:** https://slovor.vercel.app
-- **Supabase:** https://rsywmmnxkvwvhgrgzlei.supabase.co
-- **GitHub:** https://github.com/Den3112/slovor
+- **GitHub Repository:** https://github.com/Den3112/slovor
+- **Project Board:** https://github.com/users/Den3112/projects/3/views/1
+- **Issues:** https://github.com/Den3112/slovor/issues
 
 Run `lando urls` to see all endpoints.
+
+---
+
+## 🔍 System Checks
+
+### Check External Services
+
+```bash
+bash scripts/check-connectivity.sh
+```
+
+This checks connectivity to:
+- ✅ Vercel Production
+- ✅ Supabase API
+- ✅ GitHub Repository
+- ✅ GitHub Projects
+- ✅ Local PostgreSQL
+
+### Full Diagnostic
+
+```bash
+lando doctor
+```
+
+Runs comprehensive system diagnostics.
 
 ---
 
@@ -247,7 +283,7 @@ Run `lando urls` to see all endpoints.
 
 - **Container Platform:** Lando 3.21+ (Docker)
 - **Runtime:** Node.js 18
-- **Database:** PostgreSQL 15
+- **Database:** PostgreSQL 15 (local dev)
 - **OS:** WSL2 (Ubuntu 24.04)
 - **Automation:** Bash scripts
 
@@ -265,10 +301,18 @@ This project is optimized for AI-assisted development:
 
 ## 🔗 Links
 
-- **Production:** https://slovor.vercel.app
+### Production
+- **Live Site:** https://slovor.vercel.app
+- **Vercel Dashboard:** https://vercel.com/slovors-projects/slovor
+- **Supabase:** https://rsywmmnxkvwvhgrgzlei.supabase.co
+
+### Project Management
 - **GitHub:** https://github.com/Den3112/slovor
+- **Project Board:** https://github.com/users/Den3112/projects/3/views/1
 - **Issues:** https://github.com/Den3112/slovor/issues
 - **Discussions:** https://github.com/Den3112/slovor/discussions
+
+### Documentation
 - **Lando Docs:** https://docs.lando.dev
 - **Next.js Docs:** https://nextjs.org/docs
 - **Supabase Docs:** https://supabase.com/docs
@@ -315,6 +359,12 @@ bash scripts/setup.sh
 lando restart
 ```
 
+### External services unreachable?
+
+```bash
+bash scripts/check-connectivity.sh
+```
+
 ### Full diagnostic:
 
 ```bash
@@ -348,6 +398,7 @@ MIT License - see [LICENSE](LICENSE) file
 
 - **Issues:** [GitHub Issues](https://github.com/Den3112/slovor/issues)
 - **Discussions:** [GitHub Discussions](https://github.com/Den3112/slovor/discussions)
+- **Project Board:** [GitHub Projects](https://github.com/users/Den3112/projects/3/views/1)
 - **Production:** https://slovor.vercel.app
 
 ---

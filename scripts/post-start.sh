@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# Post-start welcome message with all essential info
-# This script runs inside the container after lando start
+# Post-start welcome message
+# Runs after lando start
 
-set +e  # Don't exit on errors
+set +e
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -29,10 +29,10 @@ if [ ! -f "/app/slovor/.env.local" ]; then
     echo ""
     if bash /app/scripts/setup-repair.sh 2>&1; then
         REPAIR_STATUS="ok"
-        REPAIR_MESSAGE="Auto-repair completed successfully"
+        REPAIR_MESSAGE="Environment setup completed"
     else
         REPAIR_STATUS="error"
-        REPAIR_MESSAGE="Auto-repair failed - environment setup incomplete"
+        REPAIR_MESSAGE="Environment setup incomplete"
     fi
     echo ""
 fi
@@ -62,8 +62,8 @@ echo -e "  ${YELLOW}lando format${NC}           Format code with Prettier"
 echo -e "  ${YELLOW}lando test${NC}             Run tests"
 echo ""
 echo -e "${BOLD}Database:${NC}"
-echo -e "  ${YELLOW}lando psql${NC}             PostgreSQL shell"
-echo -e "  ${YELLOW}lando db-reset${NC}         Reset database"
+echo -e "  ${YELLOW}lando psql${NC}             PostgreSQL shell (local dev DB)"
+echo -e "  ${YELLOW}lando db-reset${NC}         Reset local database"
 echo ""
 echo -e "${BOLD}Troubleshooting:${NC}"
 echo -e "  ${YELLOW}lando doctor${NC}           Full diagnostics"
@@ -91,7 +91,7 @@ echo -e "  ${BOLD}GitHub:${NC}      ${MAGENTA}https://github.com/Den3112/slovor$
 echo ""
 
 # ==========================================
-# SYSTEM STATUS - показываем в конце!
+# SYSTEM STATUS
 # ==========================================
 
 echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -119,25 +119,30 @@ fi
 echo ""
 
 # ==========================================
-# QUICK START LINKS - в самом конце!
+# QUICK START LINKS
 # ==========================================
 
 echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${BOLD}${GREEN}🚀 Quick Start Links${NC}"
 echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
-echo -e "  ${BOLD}💻 Local:${NC}"
+echo -e "  ${BOLD}💻 Local Development:${NC}"
 echo -e "     ${BLUE}http://localhost:3000${NC}           Main app"
 echo -e "     ${BLUE}http://localhost:3000/api${NC}       API"
 echo ""
 echo -e "  ${BOLD}🌐 Production:${NC}"
 echo -e "     ${MAGENTA}https://slovor.vercel.app${NC}       Live site"
 echo ""
-echo -e "  ${BOLD}🗃️ Database:${NC}"
+echo -e "  ${BOLD}🗃️  Database:${NC}"
 echo -e "     ${CYAN}postgresql://postgres:postgres@localhost:5432/slovor${NC}"
+echo -e "     ${YELLOW}↳${NC} Local development database (auto-starts with lando)"
 echo ""
-echo -e "  ${BOLD}📦 External:${NC}"
+echo -e "  ${BOLD}📊 Project Management:${NC}"
 echo -e "     ${MAGENTA}https://github.com/Den3112/slovor${NC}              GitHub"
+echo -e "     ${MAGENTA}https://github.com/users/Den3112/projects/3${NC}    Project Board"
+echo -e "     ${MAGENTA}https://vercel.com/slovors-projects/slovor${NC}     Vercel Dashboard"
+echo ""
+echo -e "  ${BOLD}☁️  Backend Services:${NC}"
 echo -e "     ${MAGENTA}https://rsywmmnxkvwvhgrgzlei.supabase.co${NC}     Supabase"
 echo ""
 echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
