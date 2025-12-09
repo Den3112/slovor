@@ -16,6 +16,11 @@ echo ""
 
 all_ok=true
 
+# Load GitHub token from .env.local if exists
+if [ -f "/app/slovor/.env.local" ]; then
+    export $(grep -v '^#' /app/slovor/.env.local | grep 'GITHUB_TOKEN' | xargs)
+fi
+
 # Check Vercel Production
 echo -ne "  ${BLUE}⟳${NC} Vercel Production...        "
 if curl -s --max-time 5 -o /dev/null -w "%{http_code}" https://slovor.vercel.app | grep -q "200\|301\|302"; then
@@ -43,9 +48,25 @@ else
     all_ok=false
 fi
 
-# Check GitHub Projects (requires auth, so just check if GitHub is up)
+# Check GitHub Projects
 echo -ne "  ${BLUE}⟳${NC} GitHub Projects...           "
-echo -e "${YELLOW}⚠ REQUIRES AUTH${NC} (manual check needed)"
+if [ -n "$GITHUB_TOKEN" ]; then
+    HTTP_CODE=$(curl -s --max-time 5 -o /dev/null -w "%{http_code}" \
+        -H "Authorization: token $GITHUB_TOKEN" \
+        https://api.github.com/users/Den3112/projects)
+    if echo "$HTTP_CODE" | grep -q "200"; then
+        echo -e "${GREEN}✓ OK${NC}"
+    else
+        echo -e "${RED}✗ FAILED${NC} (token invalid?)"
+        all_ok=false
+    fi
+else
+    echo -e "${YELLOW}⚠ NO TOKEN${NC}"
+    echo ""
+    echo -e "    ${YELLOW}→${NC} Add GITHUB_TOKEN to slovor/.env.local"
+    echo -e "    ${YELLOW}→${NC} Get token: ${BLUE}https://github.com/settings/tokens/new${NC}"
+    echo -e "    ${YELLOW}→${NC} Scopes needed: ${BOLD}repo, project${NC}"
+fi
 
 # Check local PostgreSQL
 echo -ne "  ${BLUE}⟳${NC} Local PostgreSQL...          "
@@ -68,16 +89,18 @@ echo ""
 echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
 if [ "$all_ok" = true ]; then
-    echo -e "  ${GREEN}✓ All public services are reachable${NC}"
-    echo ""
-    echo -e "  ${BOLD}Manual Checks:${NC}"
-    echo -e "    • GitHub Projects: ${BLUE}https://github.com/users/Den3112/projects/3${NC}"
-    echo -e "    • Vercel Dashboard: ${BLUE}https://vercel.com/slovors-projects/slovor${NC}"
+    echo -e "  ${GREEN}✓ All services are reachable${NC}"
     echo ""
     exit 0
 else
     echo -e "  ${RED}✗ Some services are unreachable${NC}"
-    echo -e "  ${YELLOW}→${NC} Check your internet connection"
+    echo ""
+    if [ -z "$GITHUB_TOKEN" ]; then
+        echo -e "  ${BOLD}To enable GitHub Projects check:${NC}"
+        echo -e "    1. Get token: ${BLUE}https://github.com/settings/tokens/new${NC}"
+        echo -e "    2. Add to ${GREEN}slovor/.env.local${NC}: ${BOLD}GITHUB_TOKEN=your_token${NC}"
+        echo -e "    3. Run: ${YELLOW}lando restart${NC}"
+    fi
     echo ""
     exit 1
 fi

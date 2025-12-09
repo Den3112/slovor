@@ -21,14 +21,35 @@ cd slovor_dev
 # 2. Setup (one-time only)
 bash scripts/setup.sh
 
-# 3. Start (everything auto-installs)
+# 3. Configure environment
+cp slovor/.env.example slovor/.env.local
+# Edit slovor/.env.local and add your GITHUB_TOKEN (optional)
+
+# 4. Start (everything auto-installs)
 lando start
 
-# 4. Run dev server
+# 5. Run dev server
 lando dev
 ```
 
 **Done!** Open http://localhost:3000
+
+---
+
+## 🔑 GitHub Token Setup (Optional)
+
+For full `lando status` functionality (GitHub Projects check):
+
+1. **Create token:** https://github.com/settings/tokens/new
+   - Scopes needed: `repo`, `project`
+2. **Add to .env.local:**
+   ```bash
+   GITHUB_TOKEN=ghp_your_token_here
+   ```
+3. **Restart:**
+   ```bash
+   lando restart
+   ```
 
 ---
 
@@ -61,7 +82,8 @@ slovor_dev/                    # Repository root
 │   ├── public/                # Static assets
 │   ├── supabase/              # Supabase config & migrations
 │   ├── package.json
-│   └── .env.example          # Environment template
+│   ├── .env.example           # Environment template
+│   └── .env.local             # Your credentials (git ignored)
 ├── docs/                      # Documentation
 │   ├── PROJECT_ROADMAP.md
 │   ├── LANDO_SETUP.md
@@ -96,6 +118,7 @@ lando lint:fix     # Auto-fix lint issues
 lando test         # Run tests
 lando health       # Quick health check
 lando doctor       # Full system diagnostics
+lando status       # Check all services connectivity
 lando urls         # Show all URLs
 ```
 
@@ -111,7 +134,8 @@ lando db-migrate   # Run migrations
 ### System Checks
 
 ```bash
-bash scripts/check-connectivity.sh  # Check Vercel, Supabase, GitHub connectivity
+lando status                        # Check all services (Vercel, Supabase, GitHub, etc)
+bash scripts/check-connectivity.sh  # Same as lando status
 lando doctor                        # Full system diagnostics
 ```
 
@@ -236,15 +260,17 @@ Run `lando urls` to see all endpoints.
 ### Check External Services
 
 ```bash
-bash scripts/check-connectivity.sh
+lando status
 ```
 
 This checks connectivity to:
 - ✅ Vercel Production
 - ✅ Supabase API
 - ✅ GitHub Repository
-- ✅ GitHub Projects
+- ✅ GitHub Projects (if GITHUB_TOKEN is set)
 - ✅ Local PostgreSQL
+
+**Note:** GitHub Projects check requires a token. See [GitHub Token Setup](#-github-token-setup-optional) above.
 
 ### Full Diagnostic
 
@@ -362,8 +388,18 @@ lando restart
 ### External services unreachable?
 
 ```bash
-bash scripts/check-connectivity.sh
+lando status
 ```
+
+### GitHub Projects check not working?
+
+Add GitHub token to `slovor/.env.local`:
+
+```bash
+GITHUB_TOKEN=ghp_your_token_here
+```
+
+Get token: https://github.com/settings/tokens/new (scopes: `repo`, `project`)
 
 ### Full diagnostic:
 
