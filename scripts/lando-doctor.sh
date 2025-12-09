@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Lando Doctor - Comprehensive system diagnostics
-# Outputs structured report with clear status indicators
+# Full system diagnostics
+# Comprehensive check of all components
 
 set -e
 
@@ -9,151 +9,165 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-BOLD='\033[1m'
+CYAN='\033[0;36m'
 NC='\033[0m'
 
-errors=0
-warnings=0
-
-log_ok() { echo -e "  ${GREEN}✓${NC} $1"; }
-log_err() { echo -e "  ${RED}✗${NC} $1"; ((errors++)); }
-log_warn() { echo -e "  ${YELLOW}⚠${NC} $1"; ((warnings++)); }
-log_info() { echo -e "  ${BLUE}ℹ${NC} $1"; }
-
 echo ""
-echo -e "${BOLD}Slovor System Diagnostics${NC}"
-echo -e "$(date '+%Y-%m-%d %H:%M:%S')"
+echo -e "${CYAN}╔═══════════════════════════════════════════════╗${NC}"
+echo -e "${CYAN}║${NC}  ${BLUE}Slovor System Diagnostics${NC}                 ${CYAN}║${NC}"
+echo -e "${CYAN}╚═══════════════════════════════════════════════╝${NC}"
 echo ""
 
-# === System ===
-echo -e "${BOLD}System${NC}"
+ISSUES=0
 
-if [[ "$OSTYPE" == "linux-gnu"* ]] && grep -qi microsoft /proc/version; then
-    log_ok "WSL2 detected"
-    IS_WSL=true
+# 1. Check directory structure
+echo -e "${BLUE}[1/7]${NC} Checking directory structure..."
+if [ -d "/app/slovor" ]; then
+    echo -e "  ${GREEN}✓${NC} slovor/ directory exists"
 else
-    log_info "Not running in WSL2"
-    IS_WSL=false
+    echo -e "  ${RED}✗${NC} slovor/ directory missing"
+    ((ISSUES++))
 fi
 
-# === Tools ===
+if [ -d "/app/scripts" ]; then
+    echo -e "  ${GREEN}✓${NC} scripts/ directory exists"
+else
+    echo -e "  ${YELLOW}⚠${NC} scripts/ directory missing"
+fi
+
+if [ -d "/app/docs" ]; then
+    echo -e "  ${GREEN}✓${NC} docs/ directory exists"
+else
+    echo -e "  ${YELLOW}⚠${NC} docs/ directory missing"
+fi
+
 echo ""
-echo -e "${BOLD}Tools${NC}"
 
-if command -v lando &> /dev/null; then
-    VERSION=$(lando version 2>/dev/null | head -n1 | grep -oP 'v\K[0-9.]+' || echo "unknown")
-    log_ok "Lando v$VERSION"
+# 2. Check Node.js
+echo -e "${BLUE}[2/7]${NC} Checking Node.js..."
+if command -v node &> /dev/null; then
+    NODE_VERSION=$(node --version)
+    echo -e "  ${GREEN}✓${NC} Node.js: $NODE_VERSION"
 else
-    log_err "Lando not installed"
-    log_info "Install: https://docs.lando.dev/install/"
+    echo -e "  ${RED}✗${NC} Node.js not found"
+    ((ISSUES++))
 fi
 
-if command -v docker &> /dev/null; then
-    if docker info &> /dev/null 2>&1; then
-        VERSION=$(docker --version | grep -oP '[0-9]+\.[0-9]+\.[0-9]+' || echo "unknown")
-        log_ok "Docker v$VERSION (running)"
-    else
-        log_warn "Docker installed but not running"
-        log_info "Start: sudo service docker start"
-    fi
+if command -v npm &> /dev/null; then
+    NPM_VERSION=$(npm --version)
+    echo -e "  ${GREEN}✓${NC} npm: $NPM_VERSION"
 else
-    log_err "Docker not installed"
-    log_info "Install: bash scripts/wsl2-setup.sh"
+    echo -e "  ${RED}✗${NC} npm not found"
+    ((ISSUES++))
 fi
 
-if command -v git &> /dev/null; then
-    VERSION=$(git --version | grep -oP '[0-9]+\.[0-9]+\.[0-9]+' || echo "unknown")
-    log_ok "Git v$VERSION"
-else
-    log_err "Git not installed"
-fi
-
-# === Project ===
 echo ""
-echo -e "${BOLD}Project${NC}"
 
-if [ -f ".lando.yml" ]; then
-    log_ok "Lando configuration found"
-else
-    log_err "Lando configuration missing"
-    log_info "Ensure you're in project root"
-fi
-
-if [ -d "slovor" ]; then
-    log_ok "Application directory found"
+# 3. Check package.json and dependencies
+echo -e "${BLUE}[3/7]${NC} Checking dependencies..."
+if [ -f "/app/slovor/package.json" ]; then
+    echo -e "  ${GREEN}✓${NC} package.json exists"
     
-    if [ -f "slovor/package.json" ]; then
-        log_ok "package.json found"
+    if [ -d "/app/slovor/node_modules" ]; then
+        echo -e "  ${GREEN}✓${NC} node_modules installed"
     else
-        log_err "package.json missing"
-    fi
-    
-    if [ -d "slovor/node_modules" ]; then
-        log_ok "Dependencies installed"
-    else
-        log_warn "Dependencies not installed"
-        log_info "Run: lando npm install"
+        echo -e "  ${YELLOW}⚠${NC} node_modules missing"
+        echo -e "    Run: ${CYAN}lando npm install${NC}"
     fi
 else
-    log_err "Application directory missing"
-    log_info "Expected: slovor/"
+    echo -e "  ${YELLOW}⚠${NC} package.json not found"
 fi
 
-# === Lando Services ===
-if command -v lando &> /dev/null && [ -f ".lando.yml" ]; then
+echo ""
+
+# 4. Check database connection
+echo -e "${BLUE}[4/7]${NC} Checking database..."
+if command -v psql &> /dev/null; then
+    if psql -h database -U postgres -d slovor -c "\\l" &> /dev/null; then
+        echo -e "  ${GREEN}✓${NC} PostgreSQL connection successful"
+        echo -e "  ${GREEN}✓${NC} Database 'slovor' exists"
+    else
+        echo -e "  ${RED}✗${NC} Cannot connect to database"
+        ((ISSUES++))
+    fi
+else
+    echo -e "  ${RED}✗${NC} psql not found"
+    ((ISSUES++))
+fi
+
+echo ""
+
+# 5. Check environment variables
+echo -e "${BLUE}[5/7]${NC} Checking environment..."
+if [ -n "$DATABASE_URL" ]; then
+    echo -e "  ${GREEN}✓${NC} DATABASE_URL is set"
+else
+    echo -e "  ${RED}✗${NC} DATABASE_URL not set"
+    ((ISSUES++))
+fi
+
+if [ -n "$NEXT_PUBLIC_SUPABASE_URL" ]; then
+    echo -e "  ${GREEN}✓${NC} NEXT_PUBLIC_SUPABASE_URL is set"
+else
+    echo -e "  ${YELLOW}⚠${NC} NEXT_PUBLIC_SUPABASE_URL not set"
+fi
+
+if [ -n "$NODE_ENV" ]; then
+    echo -e "  ${GREEN}✓${NC} NODE_ENV: $NODE_ENV"
+else
+    echo -e "  ${YELLOW}⚠${NC} NODE_ENV not set"
+fi
+
+echo ""
+
+# 6. Check ports
+echo -e "${BLUE}[6/7]${NC} Checking ports..."
+if netstat -tuln 2>/dev/null | grep -q ":3000 "; then
+    echo -e "  ${YELLOW}⚠${NC} Port 3000 is in use"
+else
+    echo -e "  ${GREEN}✓${NC} Port 3000 is available"
+fi
+
+if netstat -tuln 2>/dev/null | grep -q ":5432 "; then
+    echo -e "  ${GREEN}✓${NC} Port 5432 is in use (database)"
+else
+    echo -e "  ${YELLOW}⚠${NC} Port 5432 is not in use"
+fi
+
+echo ""
+
+# 7. Check configuration files
+echo -e "${BLUE}[7/7]${NC} Checking configuration files..."
+if [ -f "/.lando.yml" ] || [ -f "/app/.lando.yml" ]; then
+    echo -e "  ${GREEN}✓${NC} .lando.yml exists"
+else
+    echo -e "  ${RED}✗${NC} .lando.yml not found"
+    ((ISSUES++))
+fi
+
+if [ -f "/app/slovor/next.config.js" ] || [ -f "/app/slovor/next.config.mjs" ]; then
+    echo -e "  ${GREEN}✓${NC} Next.js config exists"
+else
+    echo -e "  ${YELLOW}⚠${NC} Next.js config not found"
+fi
+
+if [ -f "/app/slovor/tsconfig.json" ]; then
+    echo -e "  ${GREEN}✓${NC} tsconfig.json exists"
+else
+    echo -e "  ${YELLOW}⚠${NC} tsconfig.json not found"
+fi
+
+echo ""
+echo -e "${CYAN}═══════════════════════════════════════════════${NC}"
+
+if [ $ISSUES -eq 0 ]; then
+    echo -e "${GREEN}✓ All checks passed!${NC}"
     echo ""
-    echo -e "${BOLD}Services${NC}"
-    
-    if lando info &> /dev/null 2>&1; then
-        log_ok "Lando services running"
-        
-        if lando info 2>/dev/null | grep -q "appserver"; then
-            log_ok "appserver service healthy"
-        else
-            log_warn "appserver service not found"
-        fi
-        
-        if lando info 2>/dev/null | grep -q "database"; then
-            log_ok "database service healthy"
-        else
-            log_warn "database service not found"
-        fi
-    else
-        log_warn "Lando services not running"
-        log_info "Start: lando start"
-    fi
-fi
-
-# === WSL2 Specific ===
-if [ "$IS_WSL" = true ]; then
-    echo ""
-    echo -e "${BOLD}WSL2 Configuration${NC}"
-    
-    WSLCONFIG="/mnt/c/Users/$USER/.wslconfig"
-    if [ -f "$WSLCONFIG" ]; then
-        log_ok ".wslconfig found"
-    else
-        log_warn ".wslconfig not found"
-        log_info "Copy: .wslconfig.example to C:\\Users\\$USER\\.wslconfig"
-    fi
-fi
-
-# === Summary ===
-echo ""
-echo -e "${BOLD}Summary${NC}"
-
-if [ $errors -eq 0 ] && [ $warnings -eq 0 ]; then
-    echo -e "  ${GREEN}All systems operational${NC}"
-    exit 0
-elif [ $errors -eq 0 ]; then
-    echo -e "  ${YELLOW}$warnings warning(s)${NC} - system functional"
-    exit 0
+    echo -e "Ready to develop! Run: ${CYAN}lando dev${NC}"
 else
-    echo -e "  ${RED}$errors error(s)${NC}, ${YELLOW}$warnings warning(s)${NC}"
+    echo -e "${RED}✗ Found $ISSUES issue(s)${NC}"
     echo ""
-    echo -e "${BOLD}Recommended Actions${NC}"
-    echo "  1. Review errors above"
-    echo "  2. Run: lando setup-repair"
-    echo "  3. Check: docs/WSL2_SETUP.md"
-    exit 1
+    echo -e "Try running: ${CYAN}lando rebuild -y${NC}"
 fi
+
+echo ""

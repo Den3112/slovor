@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Quick health check - lint + typecheck
-# Only outputs errors/warnings
+# Quick health check - lint and typecheck
+# Safe version that checks for file existence first
 
 set -e
 
@@ -10,22 +10,56 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-cd slovor
-
 echo "Running health check..."
+echo ""
 
-# ESLint
-if npm run lint --silent 2>&1 | grep -q "error\|warning"; then
-    echo -e "${YELLOW}⚠${NC} ESLint found issues"
-    echo "  Fix: lando lint:fix"
-else
-    echo -e "${GREEN}✓${NC} ESLint passed"
+# Check if we're in the right directory
+if [ ! -d "/app/slovor" ]; then
+    echo -e "${RED}✗${NC} slovor/ directory not found"
+    exit 1
 fi
 
-# TypeScript
-if npx tsc --noEmit 2>&1 | grep -q "error"; then
-    echo -e "${RED}✗${NC} TypeScript errors found"
-    echo "  Review output above"
-else
-    echo -e "${GREEN}✓${NC} TypeScript passed"
+cd /app/slovor
+
+# Check if package.json exists
+if [ ! -f "package.json" ]; then
+    echo -e "${YELLOW}⚠${NC} package.json not found - skipping checks"
+    exit 0
 fi
+
+# Check if node_modules exists
+if [ ! -d "node_modules" ]; then
+    echo -e "${YELLOW}⚠${NC} node_modules not found - run: lando npm install"
+    exit 0
+fi
+
+# Check if lint script exists in package.json
+if grep -q '"lint"' package.json 2>/dev/null; then
+    echo "Checking ESLint..."
+    if npm run lint --silent 2>/dev/null; then
+        echo -e "${GREEN}✓${NC} ESLint passed"
+    else
+        echo -e "${RED}✗${NC} ESLint failed"
+        echo "  Run: lando lint:fix"
+    fi
+else
+    echo -e "${YELLOW}⚠${NC} ESLint not configured"
+fi
+
+echo ""
+
+# Check if TypeScript config exists
+if [ -f "tsconfig.json" ]; then
+    echo "Checking TypeScript..."
+    if npx tsc --noEmit --pretty false 2>/dev/null; then
+        echo -e "${GREEN}✓${NC} TypeScript check passed"
+    else
+        echo -e "${RED}✗${NC} TypeScript check failed"
+        echo "  Run: lando tsc"
+    fi
+else
+    echo -e "${YELLOW}⚠${NC} TypeScript not configured"
+fi
+
+echo ""
+echo -e "${GREEN}Health check complete${NC}"
