@@ -68,16 +68,17 @@ else
     echo -e "    ${YELLOW}→${NC} Scopes needed: ${BOLD}repo, project${NC}"
 fi
 
-# Check local PostgreSQL via docker ps
+# Check local PostgreSQL
 echo -ne "  ${BLUE}⟳${NC} Local PostgreSQL...          "
 if command -v docker > /dev/null 2>&1; then
+    # Running on host - check docker container
     if docker ps --format '{{.Names}}' 2>/dev/null | grep -q 'slovor_database'; then
         echo -e "${GREEN}✓ RUNNING${NC}"
     else
         echo -e "${YELLOW}⚠ STOPPED${NC} (run 'lando start')"
     fi
 else
-    # Fallback: try direct connection
+    # Running inside container - try psql connection
     if psql -h database -U postgres -d slovor -c 'SELECT 1' > /dev/null 2>&1; then
         echo -e "${GREEN}✓ RUNNING${NC}"
     else

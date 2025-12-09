@@ -1,0 +1,10 @@
+# Lando custom commands
+# Override lando status to run on HOST, not inside container
+
+tooling:
+  status:
+    service: appserver
+    description: Check connectivity to all services
+    cmd:
+      - bash /app/scripts/check-connectivity.sh
+    options:
