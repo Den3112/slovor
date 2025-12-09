@@ -9,6 +9,7 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 YELLOW='\033[1;33m'
 MAGENTA='\033[0;35m'
+RED='\033[0;31m'
 NC='\033[0m'
 
 echo ""
@@ -42,6 +43,7 @@ echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 echo -e "  ${GREEN}Local Dev:${NC}    http://localhost:3000"
 echo -e "  ${GREEN}API:${NC}          http://localhost:3000/api"
+echo -e "  ${GREEN}Production:${NC}   https://slovor.vercel.app"
 echo -e "  ${GREEN}Database:${NC}     localhost:5432"
 echo -e "                 └─ user: ${YELLOW}postgres${NC} / pass: ${YELLOW}postgres${NC}"
 echo ""
@@ -87,10 +89,10 @@ echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━�
 echo -e "${BLUE}📚 Documentation & Resources${NC}"
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
-echo -e "  ${GREEN}Local Docs:${NC}   ${CYAN}docs/${NC} folder (PROJECT_ROADMAP.md, TESTING.md, etc)"
-echo -e "  ${GREEN}GitHub:${NC}       https://github.com/Den3112/slovor"
-echo -e "  ${GREEN}Supabase:${NC}     https://rsywmmnxkvwvhgrgzlei.supabase.co"
-echo -e "  ${GREEN}Vercel:${NC}       https://vercel.com/dashboard (deploy here)"
+echo -e "  ${GREEN}Local Docs:${NC}      ${CYAN}docs/${NC} folder (PROJECT_ROADMAP.md, TESTING.md, etc)"
+echo -e "  ${GREEN}GitHub:${NC}          https://github.com/Den3112/slovor"
+echo -e "  ${GREEN}Production:${NC}      https://slovor.vercel.app"
+echo -e "  ${GREEN}Supabase DB:${NC}     https://rsywmmnxkvwvhgrgzlei.supabase.co"
 echo ""
 
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -107,6 +109,10 @@ echo -e "    ${GREEN}1.${NC} lando lint:fix"
 echo -e "    ${GREEN}2.${NC} lando format"
 echo -e "    ${GREEN}3.${NC} lando test"
 echo -e "    ${GREEN}4.${NC} git add . && git commit"
+echo ""
+echo -e "  ${YELLOW}Deploy to Production:${NC}"
+echo -e "    ${GREEN}1.${NC} git push origin main"
+echo -e "    ${GREEN}2.${NC} Vercel auto-deploys to https://slovor.vercel.app"
 echo ""
 echo -e "  ${YELLOW}End of Day:${NC}"
 echo -e "    ${GREEN}1.${NC} git push"

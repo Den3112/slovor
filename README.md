@@ -7,6 +7,8 @@
 [![Node](https://img.shields.io/badge/Node-18-green.svg)](https://nodejs.org)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org)
 
+**🌐 Production:** https://slovor.vercel.app
+
 ---
 
 ## 🚀 Quick Start
@@ -64,6 +66,7 @@ slovor_dev/                    # Repository root
 This keeps environment config separate from app code.
 
 ---
+
 ## 📚 Common Commands
 
 ### Development
@@ -104,11 +107,14 @@ lando ssh          # Shell into app container
 
 ## 🌐 Access URLs
 
-### Application
+### Development
 
 - **Local:** http://localhost:3000
-- **Proxy:** http://slovor.lndo.site
 - **API:** http://localhost:3000/api
+
+### Production
+
+- **Live Site:** https://slovor.vercel.app
 
 ### Database
 
@@ -119,6 +125,7 @@ lando ssh          # Shell into app container
 
 ### External Services
 
+- **Production:** https://slovor.vercel.app
 - **Supabase:** https://rsywmmnxkvwvhgrgzlei.supabase.co
 - **GitHub:** https://github.com/Den3112/slovor
 
@@ -147,6 +154,7 @@ Run `lando urls` to see all endpoints.
 - **Styling:** Tailwind CSS
 - **Linting:** ESLint + Prettier
 - **Testing:** Jest + React Testing Library
+- **Deployment:** Vercel (https://slovor.vercel.app)
 
 ### Development Environment (root)
 
@@ -170,12 +178,14 @@ This project is optimized for AI-assisted development:
 
 ## 🔗 Links
 
+- **Production:** https://slovor.vercel.app
 - **GitHub:** https://github.com/Den3112/slovor
 - **Issues:** https://github.com/Den3112/slovor/issues
 - **Discussions:** https://github.com/Den3112/slovor/discussions
 - **Lando Docs:** https://docs.lando.dev
 - **Next.js Docs:** https://nextjs.org/docs
 - **Supabase Docs:** https://supabase.com/docs
+- **Vercel Docs:** https://vercel.com/docs
 
 ---
 
@@ -192,8 +202,7 @@ lando start
 ### Port already in use?
 
 ```bash
-sudo lsof -i:3000
-sudo kill -9 <PID>
+sudo lsof -ti:3000 | xargs kill -9
 lando restart
 ```
 
@@ -237,6 +246,7 @@ MIT License - see [LICENSE](LICENSE) file
 
 - **Issues:** [GitHub Issues](https://github.com/Den3112/slovor/issues)
 - **Discussions:** [GitHub Discussions](https://github.com/Den3112/slovor/discussions)
+- **Production:** https://slovor.vercel.app
 
 ---
 

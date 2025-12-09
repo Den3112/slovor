@@ -9,14 +9,18 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 echo ""
-echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
 echo -e "${CYAN}  Slovor - URLs & Connection Info${NC}"
-echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
 echo ""
 
 echo -e "${BLUE}Local Development${NC}"
 echo -e "  ┌─ Application:   ${GREEN}http://localhost:3000${NC}"
 echo -e "  └─ API Endpoint:  ${GREEN}http://localhost:3000/api${NC}"
+echo ""
+
+echo -e "${BLUE}Production${NC}"
+echo -e "  └─ Live Site:     ${GREEN}https://slovor.vercel.app${NC}"
 echo ""
 
 echo -e "${BLUE}Database Connection${NC}"
@@ -31,9 +35,9 @@ echo -e "  ${CYAN}postgres://postgres:postgres@localhost:5432/slovor${NC}"
 echo ""
 
 echo -e "${BLUE}External Services${NC}"
-echo -e "  ┌─ Supabase:      https://rsywmmnxkvwvhgrgzlei.supabase.co"
-echo -e "  ├─ GitHub:        https://github.com/Den3112/slovor"
-echo -e "  └─ Vercel:        https://vercel.com/dashboard (for deployment)"
+echo -e "  ┌─ Production:    https://slovor.vercel.app"
+echo -e "  ├─ Supabase:      https://rsywmmnxkvwvhgrgzlei.supabase.co"
+echo -e "  └─ GitHub:        https://github.com/Den3112/slovor"
 echo ""
 
 echo -e "${BLUE}Quick Commands${NC}"
@@ -49,6 +53,7 @@ echo -e "  ├─ NPM:           ${CYAN}lando npm <command>${NC}"
 echo -e "  └─ Info:          ${CYAN}lando info${NC}"
 echo ""
 
-echo -e "${GREEN}✓${NC} All services running on localhost"
-echo -e "${YELLOW}💡${NC} Use ${CYAN}lando help${NC} to see full command list"
+echo -e "${GREEN}✓${NC} All services running"
+echo -e "${YELLOW}💡${NC} Local: ${CYAN}http://localhost:3000${NC}"
+echo -e "${YELLOW}💡${NC} Production: ${CYAN}https://slovor.vercel.app${NC}"
 echo ""
