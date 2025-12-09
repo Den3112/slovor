@@ -50,12 +50,12 @@ tooling:
   
   npx:
     service: app
-    description: Run npx commands (e.g., lando npx prisma)
+    description: Run npx commands
     cmd: cd /app/slovor && npx
   
   dev:
     service: app
-    description: Start Next.js dev server (localhost:3000)
+    description: Start Next.js dev server
     cmd: cd /app/slovor && npm run dev
   
   build:
@@ -70,7 +70,7 @@ tooling:
   
   lint:
     service: app
-    description: Run ESLint to check code
+    description: Run ESLint
     cmd: cd /app/slovor && npm run lint
   
   lint:fix:
@@ -85,22 +85,22 @@ tooling:
   
   test:
     service: app
-    description: Run test suite
+    description: Run tests
     cmd: cd /app/slovor && npm run test
   
   tsc:
     service: app
-    description: TypeScript type checking (no emit)
+    description: TypeScript type checking
     cmd: cd /app/slovor && npx tsc --noEmit
   
   health:
     service: app
-    description: Quick lint + typecheck
+    description: Quick health check
     cmd: bash /app/scripts/health-check.sh
   
   doctor:
     service: app
-    description: Full system diagnostics and troubleshooting
+    description: Full system diagnostics
     cmd: bash /app/scripts/lando-doctor.sh
   
   setup-check:
@@ -110,7 +110,7 @@ tooling:
   
   setup-repair:
     service: app
-    description: Auto-fix project structure issues
+    description: Auto-fix project issues
     cmd: bash /app/scripts/setup-repair.sh
   
   psql:
@@ -125,7 +125,7 @@ tooling:
   
   db-reset:
     service: database
-    description: Drop and recreate database (WARNING: destroys data!)
+    description: Reset database (WARNING deletes data)
     cmd: psql -U postgres -c 'DROP DATABASE IF EXISTS slovor; CREATE DATABASE slovor;'
   
   db-migrate:
@@ -135,12 +135,12 @@ tooling:
   
   logs:
     service: app
-    description: Show container logs (use Ctrl+C to exit)
+    description: Show container logs
     cmd: tail -f /var/log/* 2>/dev/null || echo "No logs available"
   
   urls:
     service: app
-    description: Show all working URLs and connection info
+    description: Show all URLs and credentials
     cmd: bash /app/scripts/show-urls.sh
   
   help:
