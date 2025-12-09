@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Docker cleanup script
-# Removes unused containers, images, volumes to keep Docker tidy
+# Docker cleanup script with smart prompts
+# Removes unused containers, images, volumes + offers next steps
 
 set -e
 
@@ -10,6 +10,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
 NC='\033[0m'
 
 HARD_MODE=false
@@ -35,12 +36,13 @@ if [ "$HARD_MODE" = true ]; then
     echo -e "  - Remove ALL Docker volumes"
     echo -e "  - Remove ALL Docker networks"
     echo ""
-    echo -e "${RED}You will need to rebuild everything with 'lando rebuild'${NC}"
+    echo -e "${RED}You will need to rebuild with 'lando rebuild'${NC}"
     echo ""
-    read -p "Are you ABSOLUTELY sure? Type 'yes' to continue: " -r
+    echo -e "${YELLOW}Type 'yes' to continue (or anything else to cancel):${NC}"
+    read -r REPLY
     echo
     if [[ ! $REPLY = "yes" ]]; then
-        echo -e "${GREEN}Cancelled. Nothing was deleted.${NC}"
+        echo -e "${GREEN}✓ Cancelled. Nothing was deleted.${NC}"
         exit 0
     fi
     
@@ -64,8 +66,35 @@ if [ "$HARD_MODE" = true ]; then
     docker system prune -af --volumes 2>/dev/null || true
     
     echo ""
-    echo -e "${GREEN}✓${NC} Hard cleanup complete!"
-    echo -e "${CYAN}Run 'lando start' to rebuild your environment${NC}"
+    echo -e "${GREEN}✓ Hard cleanup complete!${NC}"
+    echo ""
+    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLUE}What would you like to do next?${NC}"
+    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    echo -e "  ${MAGENTA}1${NC} - Rebuild project (lando rebuild -y)"
+    echo -e "  ${MAGENTA}2${NC} - Just start (lando start)"
+    echo -e "  ${MAGENTA}3${NC} - Exit (do nothing)"
+    echo ""
+    echo -e "${YELLOW}Enter choice [1-3]:${NC} "
+    read -r CHOICE
+    
+    case $CHOICE in
+        1)
+            echo ""
+            echo -e "${GREEN}→${NC} Running: ${CYAN}lando rebuild -y${NC}"
+            lando rebuild -y
+            ;;
+        2)
+            echo ""
+            echo -e "${GREEN}→${NC} Running: ${CYAN}lando start${NC}"
+            lando start
+            ;;
+        *)
+            echo ""
+            echo -e "${GREEN}✓${NC} Done! Run ${CYAN}lando start${NC} when ready."
+            ;;
+    esac
     echo ""
     exit 0
 fi
@@ -104,9 +133,9 @@ docker network prune -f >/dev/null 2>&1 || true
 echo -e "  ${GREEN}✓${NC} Networks cleaned"
 
 echo ""
-echo -e "${CYAN}───────────────────────────────────────────────${NC}"
+echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${BLUE}Current Docker Status${NC}"
-echo -e "${CYAN}───────────────────────────────────────────────${NC}"
+echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
 echo -e "${GREEN}Running Containers:${NC}"
@@ -117,10 +146,53 @@ echo -e "${GREEN}Disk Usage:${NC}"
 docker system df 2>/dev/null || echo "  Unable to get disk usage"
 
 echo ""
-echo -e "${GREEN}✓${NC} Cleanup complete!"
+echo -e "${GREEN}✓ Cleanup complete!${NC}"
+echo ""
+
+# Smart prompt - check if containers are running
+if docker ps | grep -q "slovor"; then
+    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLUE}Containers are running. Quick actions:${NC}"
+    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    echo -e "  ${MAGENTA}1${NC} - Restart containers (lando restart)"
+    echo -e "  ${MAGENTA}2${NC} - View logs (lando logs -f)"
+    echo -e "  ${MAGENTA}3${NC} - Start dev server (lando dev)"
+    echo -e "  ${MAGENTA}4${NC} - Exit"
+    echo ""
+    echo -e "${YELLOW}Enter choice [1-4] (or press Enter to skip):${NC} "
+    read -r CHOICE
+    
+    case $CHOICE in
+        1)
+            echo ""
+            echo -e "${GREEN}→${NC} Running: ${CYAN}lando restart${NC}"
+            lando restart
+            ;;
+        2)
+            echo ""
+            echo -e "${GREEN}→${NC} Running: ${CYAN}lando logs -f${NC}"
+            echo -e "${YELLOW}Press Ctrl+C to exit logs${NC}"
+            sleep 1
+            lando logs -f
+            ;;
+        3)
+            echo ""
+            echo -e "${GREEN}→${NC} Running: ${CYAN}lando dev${NC}"
+            lando dev
+            ;;
+        *)
+            echo ""
+            echo -e "${GREEN}✓${NC} Done!"
+            ;;
+    esac
+else
+    echo -e "${YELLOW}💡 Containers not running. Start with:${NC} ${CYAN}lando start${NC}"
+fi
+
 echo ""
 echo -e "${YELLOW}💡 Tips:${NC}"
 echo -e "  - Run ${CYAN}lando cleanup${NC} weekly to keep Docker tidy"
-echo -e "  - Use ${CYAN}lando cleanup:hard${NC} for nuclear cleanup (removes everything)"
-echo -e "  - Check Docker Desktop settings: limit CPU to 2-4 cores, RAM to 4-6GB"
+echo -e "  - Use ${CYAN}lando cleanup-hard${NC} for nuclear cleanup"
+echo -e "  - Check ${CYAN}lando doctor${NC} if something's broken"
 echo ""

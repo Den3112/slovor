@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-# Full system diagnostics
-# Comprehensive check of all components
+# Full system diagnostics with smart suggestions
 
 set -e
 
@@ -10,6 +9,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
 NC='\033[0m'
 
 echo ""
@@ -19,6 +19,7 @@ echo -e "${CYAN}╚════════════════════�
 echo ""
 
 ISSUES=0
+SUGGESTIONS=()
 
 # 1. Check directory structure
 echo -e "${BLUE}[1/7]${NC} Checking directory structure..."
@@ -26,6 +27,7 @@ if [ -d "/app/slovor" ]; then
     echo -e "  ${GREEN}✓${NC} slovor/ directory exists"
 else
     echo -e "  ${RED}✗${NC} slovor/ directory missing"
+    SUGGESTIONS+=("Run: lando setup-repair")
     ((ISSUES++))
 fi
 
@@ -50,6 +52,7 @@ if command -v node &> /dev/null; then
     echo -e "  ${GREEN}✓${NC} Node.js: $NODE_VERSION"
 else
     echo -e "  ${RED}✗${NC} Node.js not found"
+    SUGGESTIONS+=("Run: lando rebuild -y")
     ((ISSUES++))
 fi
 
@@ -72,7 +75,7 @@ if [ -f "/app/slovor/package.json" ]; then
         echo -e "  ${GREEN}✓${NC} node_modules installed"
     else
         echo -e "  ${YELLOW}⚠${NC} node_modules missing"
-        echo -e "    Run: ${CYAN}lando npm install${NC}"
+        SUGGESTIONS+=("Run: lando npm install")
     fi
 else
     echo -e "  ${YELLOW}⚠${NC} package.json not found"
@@ -88,6 +91,8 @@ if command -v psql &> /dev/null; then
         echo -e "  ${GREEN}✓${NC} Database 'slovor' exists"
     else
         echo -e "  ${RED}✗${NC} Cannot connect to database"
+        SUGGESTIONS+=("Try: lando restart")
+        SUGGESTIONS+=("Or: lando db-reset")
         ((ISSUES++))
     fi
 else
@@ -124,6 +129,7 @@ echo ""
 echo -e "${BLUE}[6/7]${NC} Checking ports..."
 if netstat -tuln 2>/dev/null | grep -q ":3000 "; then
     echo -e "  ${YELLOW}⚠${NC} Port 3000 is in use"
+    SUGGESTIONS+=("Kill process: sudo lsof -ti:3000 | xargs kill -9")
 else
     echo -e "  ${GREEN}✓${NC} Port 3000 is available"
 fi
@@ -158,16 +164,58 @@ else
 fi
 
 echo ""
-echo -e "${CYAN}═══════════════════════════════════════════════${NC}"
+echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
 if [ $ISSUES -eq 0 ]; then
     echo -e "${GREEN}✓ All checks passed!${NC}"
     echo ""
-    echo -e "Ready to develop! Run: ${CYAN}lando dev${NC}"
+    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLUE}Everything looks good! What's next?${NC}"
+    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    echo -e "  ${MAGENTA}1${NC} - Start dev server (lando dev)"
+    echo -e "  ${MAGENTA}2${NC} - View URLs (lando urls)"
+    echo -e "  ${MAGENTA}3${NC} - Run tests (lando test)"
+    echo -e "  ${MAGENTA}4${NC} - Exit"
+    echo ""
+    echo -e "${YELLOW}Enter choice [1-4] (or press Enter to skip):${NC} "
+    read -r CHOICE
+    
+    case $CHOICE in
+        1)
+            echo ""
+            echo -e "${GREEN}→${NC} Running: ${CYAN}lando dev${NC}"
+            cd /app/slovor && npm run dev
+            ;;
+        2)
+            echo ""
+            bash /app/scripts/show-urls.sh
+            ;;
+        3)
+            echo ""
+            echo -e "${GREEN}→${NC} Running: ${CYAN}lando test${NC}"
+            cd /app/slovor && npm run test
+            ;;
+        *)
+            echo ""
+            echo -e "${GREEN}✓${NC} All good! Happy coding! 🚀"
+            ;;
+    esac
 else
     echo -e "${RED}✗ Found $ISSUES issue(s)${NC}"
-    echo ""
-    echo -e "Try running: ${CYAN}lando rebuild -y${NC}"
+    
+    if [ ${#SUGGESTIONS[@]} -gt 0 ]; then
+        echo ""
+        echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+        echo -e "${YELLOW}💡 Suggested fixes:${NC}"
+        echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+        echo ""
+        for i in "${!SUGGESTIONS[@]}"; do
+            echo -e "  ${MAGENTA}$((i+1))${NC}. ${SUGGESTIONS[$i]}"
+        done
+        echo ""
+        echo -e "${YELLOW}Or try nuclear option:${NC} ${CYAN}lando rebuild -y${NC}"
+    fi
 fi
 
 echo ""
