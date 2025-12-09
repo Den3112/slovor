@@ -1,130 +1,65 @@
-#!/bin/bash
-# Automatic setup repair script
-# Fixes common issues automatically
+#!/usr/bin/env bash
+
+# Auto-repair script
+# Fixes common setup issues with progress reporting
 
 set -e
 
-echo "🔧 Slovor Project Auto-Repair"
-echo "=============================="
-echo ""
-
-RED='\033[0;31m'
 GREEN='\033[0;32m'
+BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-print_step() {
-    echo -e "${YELLOW}➜${NC} $1"
+repaired=0
+
+repair() {
+    echo -e "${BLUE}⟳${NC} $1..."
+    ((repaired++))
 }
 
-print_success() {
-    echo -e "${GREEN}✅ $1${NC}"
+repair_ok() {
+    echo -e "${GREEN}✓${NC} $1"
 }
 
-print_error() {
-    echo -e "${RED}❌ $1${NC}"
-}
+echo -e "${BLUE}Auto-repair starting...${NC}"
+echo ""
 
-# Install Node.js dependencies
-print_step "Installing npm dependencies..."
-if [ -f "package.json" ]; then
-    npm install
-    print_success "Dependencies installed"
-else
-    print_error "package.json not found!"
-    exit 1
+# Create app directory if missing
+if [ ! -d "slovor" ]; then
+    repair "Creating application directory"
+    mkdir -p slovor
+    repair_ok "Created slovor/"
+fi
+
+# Install dependencies if missing
+if [ -f "slovor/package.json" ] && [ ! -d "slovor/node_modules" ]; then
+    repair "Installing dependencies"
+    cd slovor
+    npm install --silent --legacy-peer-deps || npm install --silent --force
+    cd ..
+    repair_ok "Dependencies installed"
 fi
 
 # Create .env.local if missing
-print_step "Checking .env.local..."
-if [ ! -f ".env.local" ]; then
-    if [ -f ".env.example" ]; then
-        cp .env.example .env.local
-        print_success "Created .env.local from .env.example"
-        echo ""
-        echo -e "${YELLOW}⚠️  IMPORTANT: Edit .env.local with your actual credentials!${NC}"
-        echo ""
-    else
-        print_error ".env.example not found!"
-    fi
-else
-    print_success ".env.local already exists"
-fi
-
-# Install global tools if missing
-print_step "Checking global tools..."
-
-if ! command -v supabase &> /dev/null; then
-    print_step "Installing Supabase CLI globally..."
-    npm install -g supabase
-    print_success "Supabase CLI installed"
-fi
-
-if ! command -v typescript &> /dev/null && ! command -v tsc &> /dev/null; then
-    print_step "Installing TypeScript globally..."
-    npm install -g typescript
-    print_success "TypeScript installed"
-fi
-
-# Setup Git hooks with Husky
-print_step "Setting up Git hooks..."
-if [ -f "package.json" ] && grep -q '"prepare"' package.json; then
-    npm run prepare 2>/dev/null || true
-    print_success "Git hooks configured"
+if [ -f "slovor/.env.example" ] && [ ! -f "slovor/.env.local" ]; then
+    repair "Creating environment file"
+    cp slovor/.env.example slovor/.env.local
+    repair_ok "Created .env.local from template"
+    echo -e "${YELLOW}⚠${NC} Update .env.local with your credentials"
 fi
 
 # Create necessary directories
-print_step "Creating project directories..."
-mkdir -p .next
-mkdir -p public
-mkdir -p src/app
-mkdir -p src/components
-mkdir -p src/lib
-mkdir -p supabase/migrations
-print_success "Directories created"
-
-# Check database connection
-print_step "Checking database connection..."
-if [ -f ".env.local" ]; then
-    # Source env file
-    set -a
-    source .env.local 2>/dev/null || true
-    set +a
-    
-    if [ -n "$DATABASE_URL" ]; then
-        print_success "Database URL configured"
-    else
-        print_error "DATABASE_URL not set in .env.local"
+for dir in "slovor/src" "slovor/public" "slovor/supabase"; do
+    if [ ! -d "$dir" ]; then
+        repair "Creating $dir"
+        mkdir -p "$dir"
+        repair_ok "Created $dir"
     fi
-fi
-
-# Verify installation
-echo ""
-print_step "Verifying installation..."
-echo ""
-
-if command -v node &> /dev/null; then
-    echo "Node.js: $(node --version)"
-fi
-
-if command -v npm &> /dev/null; then
-    echo "npm: $(npm --version)"
-fi
-
-if command -v tsc &> /dev/null || [ -f "node_modules/.bin/tsc" ]; then
-    echo "TypeScript: ✅"
-fi
-
-if [ -d "node_modules" ]; then
-    PACKAGE_COUNT=$(ls -1 node_modules | wc -l)
-    echo "Packages installed: $PACKAGE_COUNT"
-fi
+done
 
 echo ""
-print_success "Auto-repair completed!"
-echo ""
-echo "🚀 Next steps:"
-echo "   1. Edit .env.local with your credentials"
-echo "   2. Run: npm run dev"
-echo "   3. Or start AI: 'start phase 1' in Killo Code"
-echo ""
+if [ $repaired -eq 0 ]; then
+    echo -e "${GREEN}✓${NC} No repairs needed"
+else
+    echo -e "${GREEN}✓${NC} Completed $repaired repair(s)"
+fi

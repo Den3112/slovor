@@ -1,175 +1,159 @@
 #!/usr/bin/env bash
 
-# Lando Doctor - Comprehensive system health check
-# Usage: lando doctor
+# Lando Doctor - Comprehensive system diagnostics
+# Outputs structured report with clear status indicators
 
 set -e
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+BOLD='\033[1m'
 NC='\033[0m'
 
 errors=0
 warnings=0
 
-print_status() {
-    if [ $2 -eq 0 ]; then
-        echo -e "${GREEN}✅${NC} $1"
-    else
-        echo -e "${RED}❌${NC} $1"
-        ((errors++))
-    fi
-}
-
-print_warning() {
-    echo -e "${YELLOW}⚠️${NC} $1"
-    ((warnings++))
-}
+log_ok() { echo -e "  ${GREEN}✓${NC} $1"; }
+log_err() { echo -e "  ${RED}✗${NC} $1"; ((errors++)); }
+log_warn() { echo -e "  ${YELLOW}⚠${NC} $1"; ((warnings++)); }
+log_info() { echo -e "  ${BLUE}ℹ${NC} $1"; }
 
 echo ""
-echo "═══════════════════════════════════════════════════"
-echo "🏥 Lando Doctor - System Health Check"
-echo "═══════════════════════════════════════════════════"
+echo -e "${BOLD}Slovor System Diagnostics${NC}"
+echo -e "$(date '+%Y-%m-%d %H:%M:%S')"
 echo ""
 
-echo "📋 System Information"
-echo "───────────────────────────────────────────────────"
+# === System ===
+echo -e "${BOLD}System${NC}"
 
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    if grep -qi microsoft /proc/version; then
-        echo "OS: WSL2 ($(lsb_release -ds 2>/dev/null || echo 'Linux'))"
-        IS_WSL=true
-    else
-        echo "OS: Linux ($(lsb_release -ds 2>/dev/null || echo 'Unknown'))"
-        IS_WSL=false
-    fi
+if [[ "$OSTYPE" == "linux-gnu"* ]] && grep -qi microsoft /proc/version; then
+    log_ok "WSL2 detected"
+    IS_WSL=true
 else
-    echo "OS: $OSTYPE"
+    log_info "Not running in WSL2"
     IS_WSL=false
 fi
 
+# === Tools ===
 echo ""
-echo "🔧 Core Tools"
-echo "───────────────────────────────────────────────────"
+echo -e "${BOLD}Tools${NC}"
 
 if command -v lando &> /dev/null; then
-    LANDO_VERSION=$(lando version 2>/dev/null | head -n1 || echo "unknown")
-    print_status "Lando: $LANDO_VERSION" 0
+    VERSION=$(lando version 2>/dev/null | head -n1 | grep -oP 'v\K[0-9.]+' || echo "unknown")
+    log_ok "Lando v$VERSION"
 else
-    print_status "Lando: Not installed" 1
+    log_err "Lando not installed"
+    log_info "Install: https://docs.lando.dev/install/"
 fi
 
 if command -v docker &> /dev/null; then
-    if docker info &> /dev/null; then
-        DOCKER_VERSION=$(docker --version | grep -oP '[0-9]+\.[0-9]+\.[0-9]+' || echo "unknown")
-        print_status "Docker: v$DOCKER_VERSION (running)" 0
+    if docker info &> /dev/null 2>&1; then
+        VERSION=$(docker --version | grep -oP '[0-9]+\.[0-9]+\.[0-9]+' || echo "unknown")
+        log_ok "Docker v$VERSION (running)"
     else
-        print_warning "Docker: Installed but not running"
-        echo "   Run: sudo service docker start"
+        log_warn "Docker installed but not running"
+        log_info "Start: sudo service docker start"
     fi
 else
-    print_status "Docker: Not installed" 1
-fi
-
-if command -v node &> /dev/null; then
-    NODE_VERSION=$(node --version | sed 's/v//')
-    print_status "Node.js: v$NODE_VERSION" 0
-else
-    print_warning "Node.js: Not in PATH (using container version)"
+    log_err "Docker not installed"
+    log_info "Install: bash scripts/wsl2-setup.sh"
 fi
 
 if command -v git &> /dev/null; then
-    GIT_VERSION=$(git --version | grep -oP '[0-9]+\.[0-9]+\.[0-9]+' || echo "unknown")
-    print_status "Git: v$GIT_VERSION" 0
+    VERSION=$(git --version | grep -oP '[0-9]+\.[0-9]+\.[0-9]+' || echo "unknown")
+    log_ok "Git v$VERSION"
 else
-    print_status "Git: Not installed" 1
+    log_err "Git not installed"
 fi
 
+# === Project ===
 echo ""
-echo "📦 Project Status"
-echo "───────────────────────────────────────────────────"
+echo -e "${BOLD}Project${NC}"
 
 if [ -f ".lando.yml" ]; then
-    print_status "Lando config: Found" 0
+    log_ok "Lando configuration found"
 else
-    print_status "Lando config: Not found" 1
+    log_err "Lando configuration missing"
+    log_info "Ensure you're in project root"
 fi
 
 if [ -d "slovor" ]; then
-    print_status "App directory: Found" 0
+    log_ok "Application directory found"
     
     if [ -f "slovor/package.json" ]; then
-        print_status "package.json: Found" 0
+        log_ok "package.json found"
     else
-        print_status "package.json: Not found" 1
+        log_err "package.json missing"
     fi
     
     if [ -d "slovor/node_modules" ]; then
-        print_status "node_modules: Installed" 0
+        log_ok "Dependencies installed"
     else
-        print_warning "node_modules: Not installed (run: lando npm install)"
+        log_warn "Dependencies not installed"
+        log_info "Run: lando npm install"
     fi
 else
-    print_status "App directory: Not found" 1
+    log_err "Application directory missing"
+    log_info "Expected: slovor/"
 fi
 
-echo ""
-echo "🐳 Lando Containers"
-echo "───────────────────────────────────────────────────"
-
+# === Lando Services ===
 if command -v lando &> /dev/null && [ -f ".lando.yml" ]; then
-    if lando info &> /dev/null; then
-        print_status "Lando: Running" 0
+    echo ""
+    echo -e "${BOLD}Services${NC}"
+    
+    if lando info &> /dev/null 2>&1; then
+        log_ok "Lando services running"
         
-        if lando info | grep -q "appserver"; then
-            print_status "Service (appserver): Healthy" 0
+        if lando info 2>/dev/null | grep -q "appserver"; then
+            log_ok "appserver service healthy"
         else
-            print_status "Service (appserver): Not found" 1
+            log_warn "appserver service not found"
         fi
         
-        if lando info | grep -q "database"; then
-            print_status "Service (database): Healthy" 0
+        if lando info 2>/dev/null | grep -q "database"; then
+            log_ok "database service healthy"
         else
-            print_status "Service (database): Not found" 1
+            log_warn "database service not found"
         fi
     else
-        print_warning "Lando: Not started (run: lando start)"
+        log_warn "Lando services not running"
+        log_info "Start: lando start"
     fi
 fi
 
+# === WSL2 Specific ===
 if [ "$IS_WSL" = true ]; then
     echo ""
-    echo "🔍 WSL2 Specific"
-    echo "───────────────────────────────────────────────────"
+    echo -e "${BOLD}WSL2 Configuration${NC}"
     
     WSLCONFIG="/mnt/c/Users/$USER/.wslconfig"
     if [ -f "$WSLCONFIG" ]; then
-        print_status ".wslconfig: Found" 0
+        log_ok ".wslconfig found"
     else
-        print_warning ".wslconfig: Not found (using defaults)"
+        log_warn ".wslconfig not found"
+        log_info "Copy: .wslconfig.example to C:\\Users\\$USER\\.wslconfig"
     fi
 fi
 
+# === Summary ===
 echo ""
-echo "═══════════════════════════════════════════════════"
-echo "📊 Summary"
-echo "═══════════════════════════════════════════════════"
+echo -e "${BOLD}Summary${NC}"
 
 if [ $errors -eq 0 ] && [ $warnings -eq 0 ]; then
-    echo -e "${GREEN}✅ All checks passed! System is healthy.${NC}"
+    echo -e "  ${GREEN}All systems operational${NC}"
     exit 0
 elif [ $errors -eq 0 ]; then
-    echo -e "${YELLOW}⚠️  $warnings warning(s) found.${NC}"
-    echo "   System functional but optimizations recommended."
+    echo -e "  ${YELLOW}$warnings warning(s)${NC} - system functional"
     exit 0
 else
-    echo -e "${RED}❌ $errors error(s) and $warnings warning(s) found.${NC}"
+    echo -e "  ${RED}$errors error(s)${NC}, ${YELLOW}$warnings warning(s)${NC}"
     echo ""
-    echo "🔧 Quick fixes:"
-    echo "   1. Install missing tools: bash scripts/wsl2-setup.sh"
-    echo "   2. Start Docker: sudo service docker start"
-    echo "   3. Start Lando: lando start"
-    echo ""
+    echo -e "${BOLD}Recommended Actions${NC}"
+    echo "  1. Review errors above"
+    echo "  2. Run: lando setup-repair"
+    echo "  3. Check: docs/WSL2_SETUP.md"
     exit 1
 fi

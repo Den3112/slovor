@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 
-# Pre-start checks - ensures Docker is running
+# Pre-start check - ensures Docker is ready
+# Silent on success, reports errors clearly
 
 set -e
 
-echo "🔍 Pre-start checks..."
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
 
-if ! docker info &> /dev/null; then
-    echo "⚠️  Docker not running, attempting to start..."
+if ! docker info &> /dev/null 2>&1; then
+    echo -e "${YELLOW}⚠${NC} Docker not running, starting..." >&2
     
     if command -v systemctl &> /dev/null; then
         sudo systemctl start docker 2>/dev/null || true
@@ -17,12 +20,11 @@ if ! docker info &> /dev/null; then
     
     sleep 2
     
-    if ! docker info &> /dev/null; then
-        echo "❌ Docker failed to start"
-        echo "   Run: sudo service docker start"
+    if ! docker info &> /dev/null 2>&1; then
+        echo -e "${RED}✗${NC} Failed to start Docker" >&2
+        echo "  → Run: sudo service docker start" >&2
         exit 1
     fi
 fi
 
-echo "✅ Docker running"
 exit 0

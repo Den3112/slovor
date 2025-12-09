@@ -11,11 +11,11 @@ services:
     scanner: false
     
     ports:
-      - '3000:3000'    # Next.js dev server
-      - '54321:54321'  # Supabase local
+      - '3000:3000'
+      - '54321:54321'
     
     build:
-      - cd slovor && npm install --legacy-peer-deps || npm install --force
+      - cd slovor && npm install --silent --legacy-peer-deps || npm install --silent --force
     
     overrides:
       environment:
@@ -23,7 +23,6 @@ services:
         DATABASE_URL: postgres://postgres:postgres@database:5432/slovor
         NEXT_PUBLIC_SUPABASE_URL: https://rsywmmnxkvwvhgrgzlei.supabase.co
         NEXT_PUBLIC_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzeXdtbW54a3Z3dmhncmd6bGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyMDA0MjAsImV4cCI6MjA4MDc3NjQyMH0.pNzBIic-uopmLaP8iU3VtQGasTmicyK-loUMbocYZq0
-        # WSL2 file watching optimizations
         WATCHPACK_POLLING: 'true'
         CHOKIDAR_USEPOLLING: 'true'
         CHOKIDAR_INTERVAL: 1000
@@ -99,14 +98,11 @@ tooling:
   health:
     service: appserver
     description: Quick health check (lint + typecheck)
-    cmd: |
-      cd slovor &&
-      npm run lint &&
-      npx tsc --noEmit
+    cmd: bash scripts/health-check.sh
   
   doctor:
     service: appserver
-    description: Full system health check
+    description: Full system diagnostics
     cmd: bash scripts/lando-doctor.sh
   
   setup-check:
@@ -146,31 +142,7 @@ tooling:
 
 events:
   pre-start:
-    - appserver: echo "🔍 Running pre-start checks..."
-    - appserver: bash scripts/pre-start-check.sh || true
+    - appserver: bash scripts/pre-start-check.sh
   
   post-start:
-    - appserver: echo ""
-    - appserver: echo "═══════════════════════════════════════════════════"
-    - appserver: echo "🚀 Slovor Development Environment (WSL2 + Docker)"
-    - appserver: echo "═══════════════════════════════════════════════════"
-    - appserver: echo ""
-    - appserver: echo "📦 Checking dependencies..."
-    - appserver: bash scripts/setup-check.sh || bash scripts/setup-repair.sh
-    - appserver: echo ""
-    - appserver: echo "✅ Environment ready!"
-    - appserver: echo ""
-    - appserver: echo "═══════════════════════════════════════════════════"
-    - appserver: echo "📚 Quick Commands:"
-    - appserver: echo "   lando dev          → Start dev server"
-    - appserver: echo "   lando health       → Quick health check"
-    - appserver: echo "   lando doctor       → Full diagnostics"
-    - appserver: echo "   lando lint         → Run linting"
-    - appserver: echo "   lando test         → Run tests"
-    - appserver: echo "   lando psql         → Database shell"
-    - appserver: echo "═══════════════════════════════════════════════════"
-    - appserver: echo "🌐 URLs:"
-    - appserver: echo "   App: http://localhost:3000"
-    - appserver: echo "   API: http://localhost:3000/api"
-    - appserver: echo "═══════════════════════════════════════════════════"
-    - appserver: echo ""
+    - appserver: bash scripts/post-start.sh
