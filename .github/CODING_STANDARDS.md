@@ -1,8 +1,10 @@
 # Universal Coding Standards & Best Practices
 
-**Version:** 1.0  
+**Version:** 1.1  
 **Purpose:** World-class development standards for any project  
 **Stack Agnostic:** Applicable to all tech stacks
+
+> **📋 For complete development workflow:** See [DEVELOPMENT_WORKFLOW.md](DEVELOPMENT_WORKFLOW.md)
 
 ---
 
@@ -66,6 +68,8 @@ fix(api): handle null response
 docs(readme): update setup steps
 ```
 
+> **🔄 Complete Git Workflow:** See [DEVELOPMENT_WORKFLOW.md](DEVELOPMENT_WORKFLOW.md) for full commit/push/deploy process
+
 ---
 
 ### 4. Testing
@@ -113,4 +117,33 @@ docs(readme): update setup steps
 
 ---
 
-**Last Updated:** 2025-12-08
+## Task Completion Checklist
+
+Every task MUST complete these steps:
+
+- [ ] Code written and tested locally
+- [ ] All tests passing (`pnpm test`)
+- [ ] Linting passing (`pnpm lint`)
+- [ ] Type checking passing (`pnpm type-check`)
+- [ ] Build successful (`pnpm build`)
+- [ ] **Code committed with proper message**
+- [ ] **Changes pushed to GitHub**
+- [ ] **Related issue(s) closed**
+- [ ] **Project board updated**
+- [ ] **Documentation updated (if needed)**
+- [ ] **Vercel deployment successful**
+- [ ] **Production site tested**
+
+> **📋 See [DEVELOPMENT_WORKFLOW.md](DEVELOPMENT_WORKFLOW.md) for detailed step-by-step process**
+
+---
+
+## Related Documentation
+
+- **[Development Workflow](DEVELOPMENT_WORKFLOW.md)** - Complete task workflow from code to deployment
+- **[AI Agent System](AI_AGENT_SYSTEM.md)** - AI-assisted development guidelines
+- **[Project Setup](PROJECT_SETUP.md)** - Initial project configuration
+
+---
+
+**Last Updated:** 2025-12-10
