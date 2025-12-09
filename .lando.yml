@@ -1,9 +1,6 @@
 name: slovor
 
-proxy:
-  app:
-    - slovor.lndo.site:3000
-    - slovor-api.lndo.site:3000
+# No proxy - use localhost:3000 directly
 
 services:
   app:
@@ -43,7 +40,7 @@ services:
 tooling:
   npm:
     service: app
-    description: Run npm commands
+    description: Run npm commands inside container
     cmd: cd /app/slovor && npm
   
   node:
@@ -53,17 +50,17 @@ tooling:
   
   npx:
     service: app
-    description: Run npx commands
+    description: Run npx commands (e.g., lando npx prisma)
     cmd: cd /app/slovor && npx
   
   dev:
     service: app
-    description: Start Next.js development server
+    description: Start Next.js dev server (localhost:3000)
     cmd: cd /app/slovor && npm run dev
   
   build:
     service: app
-    description: Build Next.js for production
+    description: Build production bundle
     cmd: cd /app/slovor && npm run build
   
   start:
@@ -73,7 +70,7 @@ tooling:
   
   lint:
     service: app
-    description: Run ESLint
+    description: Run ESLint to check code
     cmd: cd /app/slovor && npm run lint
   
   lint:fix:
@@ -88,47 +85,47 @@ tooling:
   
   test:
     service: app
-    description: Run tests
+    description: Run test suite
     cmd: cd /app/slovor && npm run test
   
   tsc:
     service: app
-    description: TypeScript type checking
+    description: TypeScript type checking (no emit)
     cmd: cd /app/slovor && npx tsc --noEmit
   
   health:
     service: app
-    description: Quick health check (lint + typecheck)
+    description: Quick lint + typecheck
     cmd: bash /app/scripts/health-check.sh
   
   doctor:
     service: app
-    description: Full system diagnostics
+    description: Full system diagnostics and troubleshooting
     cmd: bash /app/scripts/lando-doctor.sh
   
   setup-check:
     service: app
-    description: Validate project setup
+    description: Validate project structure
     cmd: bash /app/scripts/setup-check.sh
   
   setup-repair:
     service: app
-    description: Auto-repair project setup
+    description: Auto-fix project structure issues
     cmd: bash /app/scripts/setup-repair.sh
   
   psql:
     service: database
-    description: Connect to PostgreSQL
+    description: PostgreSQL interactive shell
     cmd: psql -U postgres slovor
   
   db-dump:
     service: database
-    description: Dump database to stdout
+    description: Export database to SQL
     cmd: pg_dump -U postgres slovor
   
   db-reset:
     service: database
-    description: Reset database
+    description: Drop and recreate database (WARNING: destroys data!)
     cmd: psql -U postgres -c 'DROP DATABASE IF EXISTS slovor; CREATE DATABASE slovor;'
   
   db-migrate:
@@ -138,13 +135,18 @@ tooling:
   
   logs:
     service: app
-    description: Show container logs
+    description: Show container logs (use Ctrl+C to exit)
     cmd: tail -f /var/log/* 2>/dev/null || echo "No logs available"
   
   urls:
     service: app
-    description: Show all project URLs
+    description: Show all working URLs and connection info
     cmd: bash /app/scripts/show-urls.sh
+  
+  help:
+    service: app
+    description: Show detailed usage guide
+    cmd: bash /app/scripts/post-start.sh
 
 events:
   post-start:
