@@ -36,6 +36,22 @@ lando dev
 
 ---
 
+## 📝 Development Workflow
+
+> **⚠️ IMPORTANT:** Before contributing, read the complete workflow guide:
+> 
+> **📄 [Development Workflow Guide](.github/DEVELOPMENT_WORKFLOW.md)**
+> 
+> Every task MUST follow the complete workflow:
+> 1. Code & test locally
+> 2. Commit with proper message
+> 3. Push to GitHub
+> 4. Close related issues
+> 5. Update project board
+> 6. Verify deployment
+
+---
+
 ## 🔑 GitHub Token Setup (Optional)
 
 For full `lando status` functionality (GitHub Projects check):
@@ -98,7 +114,7 @@ slovor_dev/                    # Repository root
 │   ├── check-connectivity.sh  # Check external services
 │   ├── cleanup-docker.sh      # Docker cleanup
 │   └── show-urls.sh           # Show all URLs
-├── .github/                   # GitHub workflows
+├── .github/                   # GitHub workflows & docs
 ├── .lando.yml                 # Lando configuration
 ├── .gitattributes             # Git file attributes
 └── README.md                  # This file
@@ -284,12 +300,17 @@ Runs comprehensive system diagnostics.
 
 ## 📖 Documentation
 
+### Development Process
+- **[Development Workflow](.github/DEVELOPMENT_WORKFLOW.md)** - ⚠️ **READ THIS FIRST** - Complete task workflow
+- **[Coding Standards](.github/CODING_STANDARDS.md)** - Code style guide
+- **[AI Agent System](.github/AI_AGENT_SYSTEM.md)** - AI-assisted development
+
+### Project Setup
 - **[Project Roadmap](docs/PROJECT_ROADMAP.md)** - Development plan
 - **[Lando Setup](docs/LANDO_SETUP.md)** - Lando configuration guide
 - **[WSL2 Setup](docs/WSL2_SETUP.md)** - Windows + WSL2 installation
 - **[Shell Setup](docs/SHELL_SETUP.md)** - Terminal auto-navigation
 - **[Testing Guide](docs/TESTING.md)** - How to test everything
-- **[Coding Standards](.github/CODING_STANDARDS.md)** - Code style guide
 
 ---
 
@@ -322,6 +343,7 @@ This project is optimized for AI-assisted development:
 - **Cursor/Windsurf:** Auto-opens in project directory
 - **GitHub Copilot:** Enhanced with project context
 - **AI Prompts:** Pre-configured in `.github/AI_GUIDELINES.md`
+- **Workflow:** See [DEVELOPMENT_WORKFLOW.md](.github/DEVELOPMENT_WORKFLOW.md)
 
 ---
 
@@ -413,11 +435,11 @@ For more help: [docs/TESTING.md](docs/TESTING.md)
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing`)
-3. Make changes in `slovor/` directory for app code
-4. Commit changes (`git commit -m 'feat: add amazing feature'`)
-5. Push to branch (`git push origin feature/amazing`)
+1. Read [Development Workflow](.github/DEVELOPMENT_WORKFLOW.md) first
+2. Fork the repository
+3. Create feature branch (`git checkout -b feature/amazing`)
+4. Make changes in `slovor/` directory for app code
+5. Follow the complete workflow (code → commit → push → close issue → deploy)
 6. Open Pull Request
 
 [Coding standards →](.github/CODING_STANDARDS.md)
