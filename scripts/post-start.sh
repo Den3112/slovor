@@ -91,21 +91,82 @@ echo -e "  ${BOLD}Docs:${NC}        ${GREEN}docs/${NC} folder (ROADMAP, TESTING,
 echo -e "  ${BOLD}GitHub:${NC}      ${MAGENTA}https://github.com/Den3112/slovor${NC}"
 echo ""
 
+# ==========================================
+# SYSTEM STATUS CHECK
+# ==========================================
+
 echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${BOLD}${BLUE}📡 Quick Status${NC}"
+echo -e "${BOLD}${BLUE}📡 System Status${NC}"
 echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
+# Load GitHub token
+if [ -f "/app/slovor/.env.local" ]; then
+    export $(grep -v '^#' /app/slovor/.env.local | grep 'GITHUB_TOKEN' | xargs) 2>/dev/null || true
+fi
+
+# Check external services
+echo -e "  ${BOLD}External Services:${NC}"
+
+# Vercel
+echo -ne "    ${BLUE}⟳${NC} Vercel Production...        "
+if curl -s --max-time 3 -o /dev/null -w "%{http_code}" https://slovor.vercel.app 2>/dev/null | grep -q "200\|301\|302"; then
+    echo -e "${GREEN}✓ OK${NC}"
+else
+    echo -e "${RED}✗ FAILED${NC}"
+fi
+
+# Supabase
+echo -ne "    ${BLUE}⟳${NC} Supabase API...             "
+if curl -s --max-time 3 -o /dev/null -w "%{http_code}" https://rsywmmnxkvwvhgrgzlei.supabase.co 2>/dev/null | grep -q "200\|301\|302\|404"; then
+    echo -e "${GREEN}✓ OK${NC}"
+else
+    echo -e "${RED}✗ FAILED${NC}"
+fi
+
+# GitHub
+echo -ne "    ${BLUE}⟳${NC} GitHub Repository...         "
+if curl -s --max-time 3 -o /dev/null -w "%{http_code}" https://github.com/Den3112/slovor 2>/dev/null | grep -q "200"; then
+    echo -e "${GREEN}✓ OK${NC}"
+else
+    echo -e "${RED}✗ FAILED${NC}"
+fi
+
+# GitHub Projects
+echo -ne "    ${BLUE}⟳${NC} GitHub Projects...           "
+if [ -n "$GITHUB_TOKEN" ]; then
+    HTTP_CODE=$(curl -s --max-time 3 -o /dev/null -w "%{http_code}" \
+        -H "Authorization: token $GITHUB_TOKEN" \
+        https://api.github.com/users/Den3112/projects 2>/dev/null)
+    if echo "$HTTP_CODE" | grep -q "200"; then
+        echo -e "${GREEN}✓ OK${NC}"
+    else
+        echo -e "${RED}✗ FAILED${NC} (token invalid?)"
+    fi
+else
+    echo -e "${YELLOW}⚠ NO TOKEN${NC}"
+fi
+
+# PostgreSQL
+echo -ne "    ${BLUE}⟳${NC} Local PostgreSQL...          "
+if psql -h database -U postgres -d slovor -c 'SELECT 1' > /dev/null 2>&1; then
+    echo -e "${GREEN}✓ RUNNING${NC}"
+else
+    echo -e "${YELLOW}⚠ STOPPED${NC} (run 'lando start')"
+fi
+
+echo ""
+echo -e "  ${BOLD}Setup Status:${NC}"
+
 if [ "$REPAIR_STATUS" = "ok" ]; then
-    echo -e "  ${GREEN}✓${NC} Environment ready"
+    echo -e "    ${GREEN}✓${NC} Environment ready"
     if [ -n "$REPAIR_MESSAGE" ]; then
-        echo -e "  ${GREEN}✓${NC} $REPAIR_MESSAGE"
+        echo -e "    ${GREEN}✓${NC} $REPAIR_MESSAGE"
     fi
     echo ""
     echo -e "  ${GREEN}→${NC} Ready to code! Run: ${YELLOW}lando dev${NC}"
-    echo -e "  ${GREEN}→${NC} Check services: ${YELLOW}lando status${NC}"
 else
-    echo -e "  ${RED}✗${NC} Issues detected: $REPAIR_MESSAGE"
+    echo -e "    ${RED}✗${NC} Issues detected: $REPAIR_MESSAGE"
     echo ""
     echo -e "  ${YELLOW}→${NC} ${BOLD}Action needed:${NC}"
     echo -e "       1. Check errors above"
