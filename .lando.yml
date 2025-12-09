@@ -1,35 +1,45 @@
 name: slovor
 recipe: node
+
 config:
   node: '18'
   webroot: slovor
-  
+
 services:
   appserver:
     type: node:18
     scanner: false
+    
     ports:
-      - '3000:3000'
-      - '54321:54321'
+      - '3000:3000'    # Next.js dev server
+      - '54321:54321'  # Supabase local
+    
     build:
-      - cd slovor && npm install
+      - cd slovor && npm install --legacy-peer-deps || npm install --force
+    
     overrides:
       environment:
         NODE_ENV: development
         DATABASE_URL: postgres://postgres:postgres@database:5432/slovor
         NEXT_PUBLIC_SUPABASE_URL: https://rsywmmnxkvwvhgrgzlei.supabase.co
         NEXT_PUBLIC_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzeXdtbW54a3Z3dmhncmd6bGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyMDA0MjAsImV4cCI6MjA4MDc3NjQyMH0.pNzBIic-uopmLaP8iU3VtQGasTmicyK-loUMbocYZq0
+        # WSL2 file watching optimizations
+        WATCHPACK_POLLING: 'true'
+        CHOKIDAR_USEPOLLING: 'true'
+        CHOKIDAR_INTERVAL: 1000
   
   database:
     type: postgres:15
     portforward: 5432
+    
     creds:
       user: postgres
       password: postgres
       database: slovor
+    
     config:
       database: slovor/supabase/migrations
-      
+
 tooling:
   npm:
     service: appserver
@@ -41,6 +51,11 @@ tooling:
     description: Run node commands
     cmd: cd slovor && node
   
+  npx:
+    service: appserver
+    description: Run npx commands
+    cmd: cd slovor && npx
+  
   dev:
     service: appserver
     description: Start Next.js development server
@@ -51,10 +66,20 @@ tooling:
     description: Build Next.js for production
     cmd: cd slovor && npm run build
   
+  start:
+    service: appserver
+    description: Start production server
+    cmd: cd slovor && npm run start
+  
   lint:
     service: appserver
     description: Run ESLint
     cmd: cd slovor && npm run lint
+  
+  lint:fix:
+    service: appserver
+    description: Auto-fix ESLint issues
+    cmd: cd slovor && npm run lint -- --fix
   
   format:
     service: appserver
@@ -71,6 +96,19 @@ tooling:
     description: TypeScript type checking
     cmd: cd slovor && npx tsc --noEmit
   
+  health:
+    service: appserver
+    description: Quick health check (lint + typecheck)
+    cmd: |
+      cd slovor &&
+      npm run lint &&
+      npx tsc --noEmit
+  
+  doctor:
+    service: appserver
+    description: Full system health check
+    cmd: bash scripts/lando-doctor.sh
+  
   setup-check:
     service: appserver
     description: Validate project setup
@@ -86,6 +124,11 @@ tooling:
     description: Connect to PostgreSQL
     cmd: psql -U postgres slovor
   
+  db-dump:
+    service: database
+    description: Dump database to stdout
+    cmd: pg_dump -U postgres slovor
+  
   db-reset:
     service: database
     description: Reset database
@@ -95,18 +138,39 @@ tooling:
     service: appserver
     description: Run Supabase migrations
     cmd: cd slovor && supabase db push
+  
+  logs:
+    service: appserver
+    description: Show container logs
+    cmd: tail -f /var/log/* 2>/dev/null || echo "No logs available"
 
 events:
+  pre-start:
+    - appserver: echo "🔍 Running pre-start checks..."
+    - appserver: bash scripts/pre-start-check.sh || true
+  
   post-start:
-    - appserver: echo "\n🚀 Slovor Dev Environment starting...\n"
-    - appserver: cd slovor && npm install
+    - appserver: echo ""
+    - appserver: echo "═══════════════════════════════════════════════════"
+    - appserver: echo "🚀 Slovor Development Environment (WSL2 + Docker)"
+    - appserver: echo "═══════════════════════════════════════════════════"
+    - appserver: echo ""
+    - appserver: echo "📦 Checking dependencies..."
     - appserver: bash scripts/setup-check.sh || bash scripts/setup-repair.sh
-    - appserver: echo "\n✅ Slovor is ready!\n"
-    - appserver: echo "📚 Quick commands:"
-    - appserver: echo "   lando dev          - Start dev server"
-    - appserver: echo "   lando npm install  - Install dependencies"
-    - appserver: echo "   lando lint         - Run linting"
-    - appserver: echo "   lando test         - Run tests"
-    - appserver: echo "   lando psql         - Connect to database\n"
-    - appserver: echo "🤖 AI Commands (Killo Code):"
-    - appserver: echo "   start phase 1      - Begin development\n"
+    - appserver: echo ""
+    - appserver: echo "✅ Environment ready!"
+    - appserver: echo ""
+    - appserver: echo "═══════════════════════════════════════════════════"
+    - appserver: echo "📚 Quick Commands:"
+    - appserver: echo "   lando dev          → Start dev server"
+    - appserver: echo "   lando health       → Quick health check"
+    - appserver: echo "   lando doctor       → Full diagnostics"
+    - appserver: echo "   lando lint         → Run linting"
+    - appserver: echo "   lando test         → Run tests"
+    - appserver: echo "   lando psql         → Database shell"
+    - appserver: echo "═══════════════════════════════════════════════════"
+    - appserver: echo "🌐 URLs:"
+    - appserver: echo "   App: http://localhost:3000"
+    - appserver: echo "   API: http://localhost:3000/api"
+    - appserver: echo "═══════════════════════════════════════════════════"
+    - appserver: echo ""

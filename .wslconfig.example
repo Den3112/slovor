@@ -1,0 +1,24 @@
+# WSL2 Configuration for Slovor Development
+# Location: C:\Users\YourUsername\.wslconfig
+# After changes: wsl --shutdown in PowerShell
+
+[wsl2]
+# Memory limit (adjust based on your RAM)
+# Recommended: 4GB for 8GB RAM, 8GB for 16GB RAM
+memory=4GB
+
+# CPU cores (adjust based on your CPU)
+# Recommended: Half of your total cores
+processors=4
+
+# Swap size
+swap=2GB
+
+# Disable page reporting for better performance
+pageReporting=false
+
+# Enable localhost forwarding (access WSL2 services from Windows)
+localhostForwarding=true
+
+# Network mode
+networkingMode=NAT
