@@ -11,23 +11,24 @@
 
 ---
 
-## 🚀 Quick Start (Works Out of the Box!)
+## 🚀 Quick Start
 
 ```bash
-# Clone
+# 1. Clone
 git clone https://github.com/Den3112/slovor.git slovor_dev
 cd slovor_dev
 
-# Start (everything auto-installs)
+# 2. Setup (one-time only)
+bash scripts/setup.sh
+
+# 3. Start (everything auto-installs)
 lando start
 
-# Run dev server
+# 4. Run dev server
 lando dev
 ```
 
 **Done!** Open http://localhost:3000
-
-**All scripts are executable by default** - no `chmod +x` needed!
 
 ---
 
@@ -62,6 +63,7 @@ slovor_dev/                    # Repository root
 │   ├── SHELL_SETUP.md
 │   └── TESTING.md
 ├── scripts/                   # Development scripts
+│   ├── setup.sh               # One-time setup
 │   ├── setup-check.sh         # Validate setup
 │   ├── setup-repair.sh        # Auto-fix issues
 │   ├── lando-doctor.sh        # System diagnostics
@@ -69,7 +71,7 @@ slovor_dev/                    # Repository root
 │   └── show-urls.sh           # Show all URLs
 ├── .github/                   # GitHub workflows
 ├── .lando.yml                 # Lando configuration
-├── .gitattributes             # Git file attributes (executable scripts)
+├── .gitattributes             # Git file attributes
 └── README.md                  # This file
 ```
 
@@ -303,6 +305,14 @@ lando restart
 ```bash
 bash scripts/cleanup-docker.sh        # Safe cleanup
 bash scripts/cleanup-docker.sh --hard # Nuclear option
+```
+
+### Post-start script fails?
+
+```bash
+# Re-run setup to fix permissions
+bash scripts/setup.sh
+lando restart
 ```
 
 ### Full diagnostic:
