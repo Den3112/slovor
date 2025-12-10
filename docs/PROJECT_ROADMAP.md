@@ -1,29 +1,52 @@
 # Slovor Project Roadmap
 
 **Project:** Slovor Marketplace for Slovakia  
-**Status:** Phase 1 - Ready to Start  
-**Last Updated:** 2025-12-08  
+**Status:** Phase 1 - In Progress  
+**Last Updated:** 2025-12-10  
 
 ---
 
 ## Overview
 
-Classifieds marketplace (like Avito/OLX) built with Next.js 15, TypeScript, Supabase, deployed on Vercel.
+Classifieds marketplace (like Avito/OLX) built with Next.js 14, TypeScript, Supabase, deployed on Vercel.
 
 **Tech Stack:**
-- Frontend: Next.js 15, React 19, TypeScript 5, Tailwind CSS 4
+- Frontend: Next.js 14, React 18, TypeScript 5
 - Backend: Supabase (PostgreSQL, Auth, Storage)
 - Deployment: Vercel
 - Tools: ESLint, Prettier, Jest, Sentry
 
 ---
 
+## Current Status
+
+✅ **Completed:**
+- Repository setup
+- Lando local development environment
+- Minimal Next.js 14 project
+- Documentation structure
+- Vercel deployment configured
+
+🚧 **In Progress:**
+- Phase 1: Foundation setup
+
+---
+
 ## Phases
 
-### Phase 1: MVP Foundation 📋 READY
+### Phase 1: MVP Foundation 🚧 IN PROGRESS
 **Duration:** 1-2 days  
-**Tasks:** 13  
-**Goal:** Complete dev environment setup
+**Goal:** Complete dev environment setup + basic Next.js structure
+
+**Tasks:**
+- [x] Repository and documentation
+- [x] Minimal Next.js project
+- [ ] Environment configuration
+- [ ] Project structure setup
+- [ ] UI component library setup
+- [ ] Supabase integration
+- [ ] Database schema
+- [ ] API routes foundation
 
 ### Phase 2: Browsing & Discovery 📋 PLANNED
 **Duration:** 3-4 days  
@@ -47,7 +70,7 @@ Classifieds marketplace (like Avito/OLX) built with Next.js 15, TypeScript, Supa
 
 | Phase | Duration | Status |
 |-------|----------|--------|
-| Phase 1 | 1-2 days | 📋 Ready |
+| Phase 1 | 1-2 days | 🚧 In Progress |
 | Phase 2 | 3-4 days | 📋 Planned |
 | Phase 3 | 2-3 days | 📋 Planned |
 | Phase 4 | 3-4 days | 📋 Planned |
@@ -71,11 +94,11 @@ Classifieds marketplace (like Avito/OLX) built with Next.js 15, TypeScript, Supa
 ## Resources
 
 - **Repository:** https://github.com/Den3112/slovor
-- **GitHub Projects:** https://github.com/users/Den3112/projects/1
 - **Production Site:** https://slovor.vercel.app
 - **Vercel Dashboard:** https://vercel.com/slovors-projects/slovor
 - **Supabase Dashboard:** https://rsywmmnxkvwvhgrgzlei.supabase.co
 
 ---
 
-**Maintainer:** DeNiS (Den3112)
+**Maintainer:** DeNiS (Den3112)  
+**AI Partner:** Perplexity AI
