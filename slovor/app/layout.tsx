@@ -1,3 +1,5 @@
+import './globals.css'
+
 export const metadata = {
   title: 'Slovor - In Development',
   description: 'Interactive marketplace platform for Slovakia',
@@ -10,7 +12,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="sk">
-      <body>{children}</body>
+      <body className="antialiased">{children}</body>
     </html>
   )
 }
