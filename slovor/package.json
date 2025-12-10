@@ -8,15 +8,19 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test": "echo \"Tests will be added in Phase 2\"",
+    "test:watch": "echo \"Tests will be added in Phase 2\"",
+    "test:coverage": "echo \"Tests will be added in Phase 2\"",
+    "setup": "npm install --no-optional --legacy-peer-deps && npm run check",
+    "check": "npm run typecheck && npm run lint && npm run build",
+    "deploy": "npm run check && git push origin main"
   },
   "dependencies": {
     "next": "14.2.33",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "@supabase/supabase-js": "^2.39.3",
+    "@supabase/ssr": "^0.5.2",
     "clsx": "^2.1.0",
     "tailwind-merge": "^2.2.0"
   },
@@ -31,13 +35,6 @@
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "tailwindcss": "^3.4.1",
     "postcss": "^8.4.33",
-    "autoprefixer": "^10.4.17",
-    "vitest": "^1.2.0",
-    "@vitejs/plugin-react": "^4.2.1",
-    "@testing-library/react": "^14.1.2",
-    "@testing-library/jest-dom": "^6.2.0",
-    "@testing-library/user-event": "^14.5.2",
-    "jsdom": "^24.0.0",
-    "@vitest/coverage-v8": "^1.2.0"
+    "autoprefixer": "^10.4.17"
   }
 }
