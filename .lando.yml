@@ -1,9 +1,5 @@
 name: slovor
-recipe: nodejs
 
-config:
-  nodejs: '20'
-  
 services:
   # Node.js server for Next.js
   appserver:
