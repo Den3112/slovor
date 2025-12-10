@@ -1,3 +1,10 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Slovor - Home',
+  description: 'Welcome to Slovor marketplace platform',
+}
+
 export default function Home() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8 gradient-purple text-white">
@@ -13,18 +20,18 @@ export default function Home() {
         {/* Status Card */}
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
           <h2 className="text-2xl font-semibold mb-4 flex items-center justify-center gap-2">
-            🚧 Development in Progress
+            ✅ Phase 1 Complete!
           </h2>
           
           <div className="space-y-3 text-lg">
             <p>
-              <span className="font-medium">Current Phase:</span> Foundation Setup
+              <span className="font-medium">Current Phase:</span> Foundation Complete
             </p>
             <p>
-              <span className="font-medium">Status:</span> Building core infrastructure
+              <span className="font-medium">Status:</span> Ready for Phase 2
             </p>
             <p className="opacity-80">
-              <span className="font-medium">Deployment:</span> Active on Vercel
+              <span className="font-medium">Deployment:</span> Production Ready
             </p>
           </div>
         </div>
