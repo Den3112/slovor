@@ -1,146 +1,136 @@
-# Slovor
+# Slovor - Interactive Marketplace Platform
 
-**Marketplace Platform for Slovakia**
+Modern marketplace platform for Slovakia built with Next.js 14, Supabase, and TypeScript.
 
-Classifieds marketplace built with Next.js 14, TypeScript, and Supabase.
+## Quick Start
 
----
+### Prerequisites
+- [Lando](https://lando.dev/) installed
+- Git
 
-## 🚀 Quick Start
+### One-Command Setup
 
-### Local Development (Lando)
-
+**Windows:**
 ```bash
-# Start Lando environment
-lando start
-
-# Navigate to Next.js app
-cd slovor
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+setup.bat
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
-
-### Without Lando
-
+**macOS/Linux:**
 ```bash
-cd slovor
-npm install
-npm run dev
+chmod +x setup.sh
+./setup.sh
 ```
 
----
+**Or use Make:**
+```bash
+make setup
+```
 
-## 📚 Documentation
+### Development
 
-**Essential:**
-- [DEVELOPMENT.md](docs/DEVELOPMENT.md) - Development workflow (START HERE)
-- [PROJECT_ROADMAP.md](docs/PROJECT_ROADMAP.md) - Project phases and timeline
-- [PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) - Repository structure
+**Windows:**
+```bash
+dev.bat
+```
 
-**Setup Guides:**
-- [LANDO_SETUP.md](docs/LANDO_SETUP.md) - Local environment with Docker
-- [WSL2_SETUP.md](docs/WSL2_SETUP.md) - Windows WSL2 configuration
-- [QUICK_START.md](docs/QUICK_START.md) - Quick start guide
+**macOS/Linux/Make:**
+```bash
+make dev
+```
 
-**Testing:**
-- [TESTING.md](docs/TESTING.md) - Testing guidelines
+Then open [http://slovor.lndo.site](http://slovor.lndo.site)
 
----
+## Available Commands
 
-## 🛠️ Tech Stack
+### Using Make (recommended)
 
-**Frontend:**
-- Next.js 14 (App Router)
-- React 18
-- TypeScript 5
-- Tailwind CSS ✅
+```bash
+make dev        # Start development server
+make check      # Run all quality checks
+make build      # Build for production
+make lint       # Run ESLint
+make typecheck  # Check TypeScript
+make ssh        # Open Lando terminal
+make clean      # Remove node_modules
+make deploy     # Deploy to GitHub
+```
 
-**Backend:**
-- Supabase (PostgreSQL, Auth, Storage)
-- Next.js API Routes
+### Using Batch Files (Windows)
 
-**Development:**
-- Lando (Docker-based local env)
-- ESLint
-- TypeScript strict mode
+```bash
+dev.bat         # Start development server
+check.bat       # Run quality checks
+setup.bat       # Initial setup
+```
 
-**Deployment:**
-- Vercel (automatic from main branch)
+### Manual Commands (inside Lando)
 
----
+```bash
+lando ssh
+cd slovor
+npm run dev      # Start dev server
+npm run build    # Production build
+npm run lint     # ESLint
+npm run typecheck # TypeScript check
+npm run check    # All checks at once
+```
 
-## 🌐 Links
+## Project Structure
 
-- **Production:** https://slovor.vercel.app
-- **Repository:** https://github.com/Den3112/slovor
-- **Vercel Dashboard:** https://vercel.com/slovors-projects/slovor
-- **Supabase Dashboard:** https://rsywmmnxkvwvhgrgzlei.supabase.co
+```
+slovor/
+├── app/              # Next.js 14 App Router
+├── components/       # React components
+│   └── ui/          # Reusable UI components
+├── lib/             # Utilities and helpers
+│   └── supabase/    # Supabase client
+├── types/           # TypeScript type definitions
+├── public/          # Static assets
+└── docs/            # Documentation
+```
 
----
+## Tech Stack
 
-## 📊 Current Status
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript 5
+- **Styling:** Tailwind CSS 3
+- **Database:** Supabase (PostgreSQL)
+- **Auth:** Supabase Auth (planned for Phase 3)
+- **Hosting:** Vercel
+- **Dev Environment:** Lando + Docker
 
-**Phase:** 1 - Foundation Setup ✅ **COMPLETED** (2025-12-10)  
-**Last Updated:** 2025-12-10  
+## Development Phases
 
-✅ **Phase 1 Completed:**
-- ✅ Repository setup
-- ✅ Lando environment  
-- ✅ Next.js 14 project structure
-- ✅ Documentation framework
-- ✅ Vercel deployment
-- ✅ Tailwind CSS integration
-- ✅ UI component library (Button, Card, Input)
-- ✅ Supabase client configuration
-- ✅ TypeScript types for database
-- ✅ Database schema design
-- ✅ Environment variables setup
-- ✅ Project structure organization
+- ✅ **Phase 1:** Foundation & Infrastructure (COMPLETED)
+- 🚧 **Phase 2:** Browsing & Discovery (In Planning)
+- 📅 **Phase 3:** Authentication & User Profiles
+- 📅 **Phase 4:** Listings & Transactions
+- 📅 **Phase 5:** Optimization & Analytics
 
-**Production Ready:** https://slovor.vercel.app ✅
+See [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md) for detailed roadmap.
 
-📋 **Next Phase:**
-- Phase 2: Browsing & Discovery
-  - Category pages
-  - Listing cards
-  - Search & filters
-  - Detail pages
+## Environment Variables
 
-See [PROJECT_ROADMAP.md](docs/PROJECT_ROADMAP.md) for details.
+Create `.env.local` in the `slovor/` directory:
 
----
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-## 🤝 Team Workflow
+## Documentation
 
-**AI (Perplexity):**
-- Writes all code
-- Manages GitHub
-- Creates documentation
-- Fixes bugs
+- [Project Plan](docs/PROJECT_PLAN.md) - Complete development roadmap
+- [Development Guide](docs/DEVELOPMENT.md) - Setup and workflow
+- [Database Schema](docs/DATABASE.md) - Database structure
+- [Architecture](docs/ARCHITECTURE.md) - System design
 
-**Human + Grok:**
-- Tests locally
-- Provides feedback
-- Reports issues
-- Handles tasks AI cannot do
+## Links
 
-See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for complete workflow.
+- **Live Site:** [https://slovor.vercel.app](https://slovor.vercel.app)
+- **Repository:** [https://github.com/Den3112/slovor](https://github.com/Den3112/slovor)
+- **Project Board:** [GitHub Projects](https://github.com/users/Den3112/projects/3)
 
----
+## License
 
-## 📝 License
-
-Private project - All rights reserved
-
----
-
-## 👤 Maintainer
-
-**DeNiS** ([@Den3112](https://github.com/Den3112))  
-AI Partner: Perplexity AI
+MIT © Den3112
