@@ -1,184 +1,169 @@
 name: slovor
+recipe: nodejs
 
-# Clean container naming: slovor-app, slovor-db
-
+config:
+  nodejs: '20'
+  
 services:
-  app:
-    type: node:18
-    scanner: false
-    
-    ports:
-      - '3000:3000'
-      - '54321:54321'
-    
-    build:
-      - cd /app/slovor && npm install --silent --legacy-peer-deps || npm install --silent --force
-    
+  # Node.js server for Next.js
+  appserver:
+    type: node:20
+    port: 3000
+    scanner:
+      retry: 3
+      timeout: 2000
+    healthcheck:
+      command: "node --version && npm --version"
+      user: node
+      retry: 3
+      timeout: 5000
     overrides:
       environment:
         NODE_ENV: development
-        DATABASE_URL: postgres://postgres:postgres@database:5432/slovor
-        NEXT_PUBLIC_SUPABASE_URL: https://rsywmmnxkvwvhgrgzlei.supabase.co
-        NEXT_PUBLIC_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzeXdtbW54a3Z3dmhncmd6bGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyMDA0MjAsImV4cCI6MjA4MDc3NjQyMH0.pNzBIic-uopmLaP8iU3VtQGasTmicyK-loUMbocYZq0
-        WATCHPACK_POLLING: 'true'
-        CHOKIDAR_USEPOLLING: 'true'
-        CHOKIDAR_INTERVAL: 1000
-        PORT: 3000
-      
-      # Resource limits for optimization
-      deploy:
-        resources:
-          limits:
-            cpus: '2'
-            memory: 2G
-          reservations:
-            cpus: '0.5'
-            memory: 512M
+        NEXT_TELEMETRY_DISABLED: 1
   
+  # PostgreSQL for local development
   database:
     type: postgres:15
     portforward: 5432
-    
     creds:
+      user: slovor
+      password: slovor
+      database: slovor_db
+    healthcheck:
+      command: "pg_isready -U slovor"
       user: postgres
-      password: postgres
-      database: slovor
-    
-    config:
-      database: slovor/supabase/migrations
-    
-    overrides:
-      # Resource limits for database
-      deploy:
-        resources:
-          limits:
-            cpus: '1'
-            memory: 1G
-          reservations:
-            cpus: '0.25'
-            memory: 256M
+      retry: 5
+      timeout: 3000
+  
+  # Mailhog for email testing
+  mailhog:
+    type: mailhog
+    portforward: false
+    hogfrom:
+      - appserver
 
+# Proxy configuration
+proxy:
+  appserver:
+    - slovor.lndo.site:3000
+  mailhog:
+    - mail.slovor.lndo.site
+
+# Automated health check events
+events:
+  # Pre-start - critical checks
+  pre-start:
+    - appserver: echo "🚀 Starting Slovor health checks..."
+    - appserver: chmod +x /app/.lando/scripts/*.sh
+    - appserver: /app/.lando/scripts/check-git.sh
+    - appserver: /app/.lando/scripts/check-docker.sh
+    - appserver: /app/.lando/scripts/validate-env.sh
+  
+  # Post-start - service checks
+  post-start:
+    - appserver: /app/.lando/scripts/check-nodejs.sh
+    - database: /app/.lando/scripts/check-database.sh
+    - appserver: /app/.lando/scripts/check-services.sh
+    - appserver: echo "✅ Slovor environment ready!"
+  
+  # Pre-rebuild
+  pre-rebuild:
+    - appserver: echo "🔧 Validating configuration before rebuild..."
+    - appserver: chmod +x /app/.lando/scripts/*.sh
+    - appserver: /app/.lando/scripts/validate-env.sh
+  
+  # Post-rebuild
+  post-rebuild:
+    - appserver: npm install
+    - appserver: echo "📦 Dependencies installed"
+  
+  # Pre-destroy
+  pre-destroy:
+    - appserver: echo "🗑️ Cleaning up Slovor environment..."
+
+# Custom tooling commands
 tooling:
+  # Development commands
   npm:
-    service: app
-    description: Run npm commands inside container
-    cmd: cd /app/slovor && npm
+    service: appserver
+    cmd: npm
   
   node:
-    service: app
-    description: Run node commands
-    cmd: cd /app/slovor && node
+    service: appserver
+    cmd: node
   
-  npx:
-    service: app
-    description: Run npx commands (e.g. lando npx prisma)
-    cmd: cd /app/slovor && npx
+  next:
+    service: appserver
+    cmd: npm run
   
+  # Health check commands
+  check-all:
+    service: appserver
+    cmd:
+      - /app/.lando/scripts/check-git.sh
+      - /app/.lando/scripts/check-docker.sh
+      - /app/.lando/scripts/check-wsl.sh
+      - /app/.lando/scripts/check-nodejs.sh
+      - /app/.lando/scripts/check-database.sh
+      - /app/.lando/scripts/check-services.sh
+      - /app/.lando/scripts/validate-env.sh
+    description: "Run all health checks"
+  
+  check-env:
+    service: appserver
+    cmd: /app/.lando/scripts/validate-env.sh
+    description: "Validate environment variables"
+  
+  check-deps:
+    service: appserver
+    cmd: npm outdated
+    description: "Check for outdated dependencies"
+  
+  # Development server
   dev:
-    service: app
-    description: Start Next.js dev server (localhost 3000)
-    cmd: cd /app/slovor && npm run dev
+    service: appserver
+    cmd: npm run dev
+    description: "Start Next.js development server"
   
   build:
-    service: app
-    description: Build production bundle
-    cmd: cd /app/slovor && npm run build
-  
-  start:
-    service: app
-    description: Start production server
-    cmd: cd /app/slovor && npm run start
+    service: appserver
+    cmd: npm run build
+    description: "Build production version"
   
   lint:
-    service: app
-    description: Run ESLint to check code
-    cmd: cd /app/slovor && npm run lint
-  
-  lint:fix:
-    service: app
-    description: Auto-fix ESLint issues
-    cmd: cd /app/slovor && npm run lint -- --fix
-  
-  format:
-    service: app
-    description: Format code with Prettier
-    cmd: cd /app/slovor && npm run format
+    service: appserver
+    cmd: npm run lint
+    description: "Run ESLint"
   
   test:
-    service: app
-    description: Run test suite
-    cmd: cd /app/slovor && npm run test
+    service: appserver
+    cmd: npm test
+    description: "Run tests"
   
-  tsc:
-    service: app
-    description: TypeScript type checking (no emit)
-    cmd: cd /app/slovor && npx tsc --noEmit
-  
-  health:
-    service: app
-    description: Quick lint and typecheck
-    cmd: bash /app/scripts/health-check.sh
-  
-  doctor:
-    service: app
-    description: Full system diagnostics and troubleshooting
-    cmd: bash /app/scripts/lando-doctor.sh
-  
-  status:
-    service: app
-    description: Check connectivity to all services
-    cmd: bash /app/scripts/check-connectivity.sh
-  
-  setup-check:
-    service: app
-    description: Validate project structure
-    cmd: bash /app/scripts/setup-check.sh
-  
-  setup-repair:
-    service: app
-    description: Auto-fix project structure issues
-    cmd: bash /app/scripts/setup-repair.sh
-  
-  update:
-    service: app
-    description: Update Lando and dependencies
-    cmd: bash /app/scripts/lando-update.sh
-  
+  # Database commands
   psql:
     service: database
-    description: PostgreSQL interactive shell
-    cmd: psql -U postgres slovor
+    cmd: psql -U slovor slovor_db
+    description: "Connect to PostgreSQL"
   
-  db-dump:
+  db-import:
     service: database
-    description: Export database to SQL
-    cmd: pg_dump -U postgres slovor
+    cmd: psql -U slovor slovor_db
+    description: "Import database"
+    options:
+      file:
+        description: SQL file to import
+        alias:
+          - f
   
-  db-reset:
-    service: database
-    description: Drop and recreate database WARNING destroys data
-    cmd: psql -U postgres -c 'DROP DATABASE IF EXISTS slovor; CREATE DATABASE slovor;'
-  
-  db-migrate:
-    service: app
-    description: Run Supabase migrations
-    cmd: cd /app/slovor && supabase db push
-  
+  # Utility commands
   logs:
-    service: app
-    description: Show container logs (use Ctrl+C to exit)
-    cmd: tail -f /var/log/* 2>/dev/null || echo "No logs available"
-  
-  urls:
-    service: app
-    description: Show all working URLs and connection info
-    cmd: bash /app/scripts/show-urls.sh
-  
-  help:
-    service: app
-    description: Show detailed usage guide
-    cmd: bash /app/scripts/post-start.sh
+    service: appserver
+    cmd: tail -f /tmp/*.log
+    description: "View application logs"
 
-events:
-  post-start:
-    - app: bash /app/scripts/post-start.sh
+# Environment files
+env_file:
+  - .env.local
+  - .env
